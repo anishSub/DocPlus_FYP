@@ -1,0 +1,314 @@
+/* --- Variables --- */
+:root {
+    --primary: #0092B8;
+    --secondary: #1C398E;
+    --text-dark: #111827;
+    --text-gray: #6B7280;
+    --text-light: #9CA3AF;
+    --bg-gray: #F9FAFB;
+    --border: #E5E7EB;
+    --gradient: linear-gradient(90deg, #0092B8 0%, #1447E6 50%, #1C398E 100%);
+    --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+/* --- General Layout --- */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.section-padding { padding: 60px 0; }
+.bg-gray { background-color: var(--bg-gray); }
+.text-dark { color: var(--text-dark); }
+.text-cyan { color: var(--primary); }
+.text-yellow { color: #F59E0B; }
+.fw-bold { font-weight: 700; }
+
+/* --- Hero Section --- */
+.doctors-hero {
+    background: var(--gradient);
+    padding: 80px 0 100px;
+    text-align: center;
+    color: white;
+    position: relative;
+}
+
+.hero-content h1 { font-size: 48px; margin-bottom: 16px; font-weight: 700; }
+.hero-content p { font-size: 20px; opacity: 0.9; margin-bottom: 40px; }
+
+/* Search Bar Container */
+.search-wrapper {
+    background: white;
+    padding: 8px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+}
+
+.search-bar {
+    flex: 1;
+    background: var(--bg-gray);
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.search-icon { color: var(--text-light); font-size: 18px; }
+
+.search-bar input {
+    border: none;
+    background: transparent;
+    width: 100%;
+    font-size: 16px;
+    outline: none;
+    color: var(--text-dark);
+}
+
+.btn-filter {
+    background: var(--gradient);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 16px;
+    margin-left: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity 0.2s;
+}
+.btn-filter:hover { opacity: 0.9; }
+
+/* --- Main Content --- */
+.results-header {
+    margin-bottom: 32px;
+    font-size: 16px;
+    color: var(--text-gray);
+}
+
+.doctors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 32px;
+}
+
+/* --- DOCTOR CARD STYLES (New Design) --- */
+.doctor-card {
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.doctor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px -5px rgba(0,0,0,0.1);
+}
+
+/* 1. Header Image & Rating */
+.doc-header-image {
+    width: 100%;
+    height: 260px; /* Fixed height for consistency */
+    position: relative;
+    background-color: #f3f4f6;
+}
+
+.doc-header-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+}
+
+.rating-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: white;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #374151;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.text-yellow { color: #F59E0B; }
+
+/* 2. Card Body Content */
+.card-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Identity Section */
+.doc-identity h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 4px;
+}
+
+.specialty {
+    color: #0092B8; /* Teal Color */
+    font-size: 16px;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.degree {
+    color: #6B7280;
+    font-size: 14px;
+}
+
+/* Meta Row (Years & Location) */
+.doc-meta-row {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+}
+
+.meta-item {
+    font-size: 15px;
+    color: #4B5563;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.icon-teal {
+    color: #0092B8; /* Teal icon color */
+    font-size: 16px;
+}
+
+/* Divider Line */
+.divider {
+    height: 1px;
+    background-color: #E5E7EB;
+    width: 100%;
+}
+
+/* Details (Hospital / Available) */
+.doc-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.detail-block label {
+    display: block;
+    font-size: 13px;
+    color: #9CA3AF;
+    margin-bottom: 2px;
+}
+
+.detail-block p {
+    font-size: 15px;
+    color: #374151;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* Footer Section */
+.doc-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.fee-review-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.fee-box label {
+    font-size: 13px;
+    color: #9CA3AF;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.price {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.review-box {
+    text-align: right;
+}
+
+.review-count {
+    font-size: 13px;
+    color: #6B7280;
+    line-height: 1.2;
+    display: block;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-book-now {
+    flex: 1;
+    background: linear-gradient(90deg, #0092B8 0%, #1C398E 100%);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity 0.2s;
+}
+
+.btn-book-now:hover { opacity: 0.9; }
+
+.btn-chat {
+    width: 48px;
+    flex-shrink: 0;
+    background: white;
+    border: 2px solid #0092B8;
+    color: #0092B8;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.btn-chat:hover {
+    background: #F0F9FF;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .search-wrapper { flex-direction: column; padding: 12px; gap: 12px; }
+    .search-bar { width: 100%; }
+    .btn-filter { width: 100%; justify-content: center; margin-left: 0; }
+}

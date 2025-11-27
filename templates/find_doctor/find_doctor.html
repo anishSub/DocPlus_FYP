@@ -1,0 +1,286 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/find_doctor/find_doctor.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="doctors-hero">
+    <div class="container hero-content">
+        <h1>Find Doctors</h1>
+        <p>Connect with qualified and experienced doctors across Nepal</p>
+        
+        <div class="search-wrapper">
+            <div class="search-bar">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" placeholder="Search doctors by name or specialty...">
+            </div>
+            <button class="btn-filter">
+                <i class="fas fa-sliders-h"></i> Filters
+            </button>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding bg-gray">
+    <div class="container">
+        
+        <div class="results-header">
+            <p>Found <span class="text-dark fw-bold">8</span> doctors</p>
+        </div>
+
+        <div class="doctors-grid">
+            
+            <div class="doctor-card">
+                <div class="doc-header-image">
+                    <img src="{% static 'images/photos/doctor_photo.jpeg' %}" alt="Dr. Rajesh Kumar Sharma">
+                    <div class="rating-badge">
+                        <i class="fas fa-star text-yellow"></i> 4.8
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="doc-identity">
+                        <h3>Dr. Rajesh Kumar Sharma</h3>
+                        <span class="specialty">Cardiologist</span>
+                        <p class="degree">MD, DM (Cardiology)</p>
+                    </div>
+
+                    <div class="doc-meta-row">
+                        <div class="meta-item">
+                            <i class="fas fa-briefcase icon-teal"></i> 15 years
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-map-marker-alt icon-teal"></i> Kathmandu
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="doc-details">
+                        <div class="detail-block">
+                            <label>Hospital</label>
+                            <p>Tribhuvan University Teaching Hospital</p>
+                        </div>
+                        <div class="detail-block">
+                            <label>Available</label>
+                            <p>Mon, Wed, Fri</p>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="doc-footer">
+                        <div class="fee-review-row">
+                            <div class="fee-box">
+                                <label>Consultation Fee</label>
+                                <div class="price">NPR 1500</div>
+                            </div>
+                            <div class="review-box">
+                                <span class="review-count">324 <br> reviews</span>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn-book-now">
+                                <i class="far fa-calendar-check"></i> Book Now
+                            </button>
+                            <button class="btn-chat">
+                                <i class="far fa-comment-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doctor-card">
+                <div class="doc-header-image">
+                    <img src="{% static 'images/photos/doctor_photo.jpeg' %}" alt="Dr. Sita Devi Thapa">
+                    <div class="rating-badge">
+                        <i class="fas fa-star text-yellow"></i> 4.9
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="doc-identity">
+                        <h3>Dr. Sita Devi Thapa</h3>
+                        <span class="specialty">Pediatrician</span>
+                        <p class="degree">MBBS, MD (Pediatrics)</p>
+                    </div>
+
+                    <div class="doc-meta-row">
+                        <div class="meta-item">
+                            <i class="fas fa-briefcase icon-teal"></i> 12 years
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-map-marker-alt icon-teal"></i> Kathmandu
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="doc-details">
+                        <div class="detail-block">
+                            <label>Hospital</label>
+                            <p>Grande International Hospital</p>
+                        </div>
+                        <div class="detail-block">
+                            <label>Available</label>
+                            <p>Tue, Thu, Sat</p>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="doc-footer">
+                        <div class="fee-review-row">
+                            <div class="fee-box">
+                                <label>Consultation Fee</label>
+                                <div class="price">NPR 1200</div>
+                            </div>
+                            <div class="review-box">
+                                <span class="review-count">456 <br> reviews</span>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn-book-now">
+                                <i class="far fa-calendar-check"></i> Book Now
+                            </button>
+                            <button class="btn-chat">
+                                <i class="far fa-comment-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doctor-card">
+                <div class="doc-header-image">
+                    <img src="{% static 'images/photos/doctor_photo.jpeg' %}" alt="Dr. Ramesh Gurung">
+                    <div class="rating-badge">
+                        <i class="fas fa-star text-yellow"></i> 4.7
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="doc-identity">
+                        <h3>Dr. Ramesh Gurung</h3>
+                        <span class="specialty">Orthopedic Surgeon</span>
+                        <p class="degree">MS (Orthopedics)</p>
+                    </div>
+
+                    <div class="doc-meta-row">
+                        <div class="meta-item">
+                            <i class="fas fa-briefcase icon-teal"></i> 18 years
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-map-marker-alt icon-teal"></i> Kathmandu
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="doc-details">
+                        <div class="detail-block">
+                            <label>Hospital</label>
+                            <p>Norvic International Hospital</p>
+                        </div>
+                        <div class="detail-block">
+                            <label>Available</label>
+                            <p>Mon, Tue, Thu</p>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="doc-footer">
+                        <div class="fee-review-row">
+                            <div class="fee-box">
+                                <label>Consultation Fee</label>
+                                <div class="price">NPR 1800</div>
+                            </div>
+                            <div class="review-box">
+                                <span class="review-count">289 <br> reviews</span>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn-book-now">
+                                <i class="far fa-calendar-check"></i> Book Now
+                            </button>
+                            <button class="btn-chat">
+                                <i class="far fa-comment-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doctor-card">
+                <div class="doc-header-image">
+                    <img src="{% static 'images/photos/doctor_photo.jpeg' %}" alt="Dr. Anita Shrestha">
+                    <div class="rating-badge">
+                        <i class="fas fa-star text-yellow"></i> 4.5
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="doc-identity">
+                        <h3>Dr. Anita Shrestha</h3>
+                        <span class="specialty">Dermatologist</span>
+                        <p class="degree">MD (Dermatology)</p>
+                    </div>
+
+                    <div class="doc-meta-row">
+                        <div class="meta-item">
+                            <i class="fas fa-briefcase icon-teal"></i> 10 years
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-map-marker-alt icon-teal"></i> Lalitpur
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="doc-details">
+                        <div class="detail-block">
+                            <label>Hospital</label>
+                            <p>Patan Hospital</p>
+                        </div>
+                        <div class="detail-block">
+                            <label>Available</label>
+                            <p>Wed, Fri, Sat</p>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="doc-footer">
+                        <div class="fee-review-row">
+                            <div class="fee-box">
+                                <label>Consultation Fee</label>
+                                <div class="price">NPR 1000</div>
+                            </div>
+                            <div class="review-box">
+                                <span class="review-count">198 <br> reviews</span>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn-book-now">
+                                <i class="far fa-calendar-check"></i> Book Now
+                            </button>
+                            <button class="btn-chat">
+                                <i class="far fa-comment-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

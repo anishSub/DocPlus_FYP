@@ -1,0 +1,229 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/about_us/about_us.css' %}">
+
+<section class="about-hero">
+    <div class="hero-bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
+    <div class="container hero-content">
+        <div class="badge">
+            <i class="fas fa-info-circle"></i> About Us
+        </div>
+        <h1>Transforming Healthcare in Nepal</h1>
+        <p >We're on a mission to make quality healthcare accessible to every Nepali citizen, regardless of their location or economic status.</p>
+    </div>
+</section>
+
+<section class="section-padding bg-gray">
+    <div class="container grid-2">
+        <div class="gradient-card-wrapper mission-gradient">
+            <div class="card-inner">
+                <div class="icon-box mission-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <h3>Our Mission</h3>
+                <p>To revolutionize healthcare accessibility in Nepal by creating a comprehensive digital platform that bridges the gap between patients and healthcare providers, making quality medical care just a click away for everyone—especially those in remote and underserved communities.</p>
+            </div>
+        </div>
+        <div class="gradient-card-wrapper vision-gradient">
+            <div class="card-inner">
+                <div class="icon-box vision-icon">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <h3>Our Vision</h3>
+                <p>To become Nepal's leading healthcare platform where technology and compassion converge—enabling every citizen to find, connect with, and receive care from qualified medical professionals seamlessly, creating a healthier nation for future generations.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="section-header">
+            <h2>Our Core Values</h2>
+            <p>The principles that guide everything we do</p>
+        </div>
+        <div class="grid-4">
+            <div class="value-card">
+                <div class="value-icon icon-patient">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3>Patient First</h3>
+                <p>Every decision prioritizes patient wellbeing and accessibility.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon icon-excellence">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3>Excellence</h3>
+                <p>We verify all providers to ensure highest quality standards.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon icon-inclusivity">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Inclusivity</h3>
+                <p>Healthcare for all, regardless of location or status.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon icon-innovation">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <h3>Innovation</h3>
+                <p>Leveraging technology to solve healthcare challenges.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding bg-gradient-light">
+    <div class="container">
+        <div class="section-header">
+            <h2>The Challenge We're Solving</h2>
+            <p>Understanding Nepal's healthcare crisis</p>
+        </div>
+        
+        <div class="grid-3 stats-grid">
+            <div class="stat-box">
+                <h2 class="text-transparent">60%</h2>
+                <p>Doctor positions unfilled</p>
+            </div>
+            <div class="stat-box">
+                <h2 class="text-transparent">51%</h2>
+                <p>Out-of-pocket health spending</p>
+            </div>
+            <div class="stat-box">
+                <h2 class="text-transparent">25%+</h2>
+                <p>Healthcare jobs vacant</p>
+            </div>
+        </div>
+
+        <div class="grid-2 barriers-grid">
+            <div class="barrier-card">
+                <div class="emoji-icon">🏔️</div>
+                <h3>Geographic Barriers</h3>
+                <p>Remote areas lack road facilities and healthcare access due to Nepal's diverse terrain.</p>
+            </div>
+            <div class="barrier-card">
+                <div class="emoji-icon">📊</div>
+                <h3>Information Gap</h3>
+                <p>No centralized platform for doctor qualifications and hospital facilities.</p>
+            </div>
+            <div class="barrier-card">
+                <div class="emoji-icon">⏰</div>
+                <h3>Outdated Systems</h3>
+                <p>Manual queue systems cause hours of waiting at government hospitals.</p>
+            </div>
+            <div class="barrier-card">
+                <div class="emoji-icon">🚫</div>
+                <h3>Limited Access</h3>
+                <p>No secure messaging or online consultation for patients with minor symptoms.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding bg-main-gradient text-white">
+    <div class="container">
+        <div class="section-header text-left">
+            <h2>Our Solution: DocPlus Platform</h2>
+            <p class="opacity-90">A comprehensive digital healthcare ecosystem that connects patients with providers, offers verified information, and enables remote consultations—all in one place.</p>
+        </div>
+        <div class="grid-3">
+            <div class="solution-card">
+                <i class="fas fa-check-circle solution-icon"></i>
+                <h3>Verified Information</h3>
+                <p>Detailed profiles with ratings and reviews.</p>
+            </div>
+            <div class="solution-card">
+                <i class="fas fa-calendar-check solution-icon"></i>
+                <h3>Instant Booking</h3>
+                <p>Schedule appointments in seconds.</p>
+            </div>
+            <div class="solution-card">
+                <i class="fas fa-video solution-icon"></i>
+                <h3>Remote Care</h3>
+                <p>5-min audio consultations via WebRTC.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="section-header">
+            <h2>Our Impact So Far</h2>
+            <p>Making a difference in healthcare accessibility</p>
+        </div>
+        <div class="grid-4 impact-grid">
+            <div class="impact-item">
+                <h2 class="text-transparent">500+</h2>
+                <p>Verified Doctors</p>
+            </div>
+            <div class="impact-item">
+                <h2 class="text-transparent">150+</h2>
+                <p>Partner Hospitals</p>
+            </div>
+            <div class="impact-item">
+                <h2 class="text-transparent">50K+</h2>
+                <p>Patient Reviews</p>
+            </div>
+            <div class="impact-item">
+                <h2 class="text-transparent">100K+</h2>
+                <p>Appointments</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding bg-gray">
+    <div class="container">
+        <div class="section-header">
+            <h2>Built with Modern Technology</h2>
+            <p>Secure, scalable, and reliable platform</p>
+        </div>
+        <div class="grid-3">
+            <div class="tech-card">
+                <div class="tech-line frontend-line"></div>
+                <h3>Frontend</h3>
+                <ul class="tech-list">
+                    <li><span class="dot frontend-dot"></span> React for dynamic UI</li>
+                    <li><span class="dot frontend-dot"></span> Responsive design</li>
+                    <li><span class="dot frontend-dot"></span> WebRTC for calls</li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <div class="tech-line backend-line"></div>
+                <h3>Backend</h3>
+                <ul class="tech-list">
+                    <li><span class="dot backend-dot"></span> Django framework</li>
+                    <li><span class="dot backend-dot"></span> MySQL database</li>
+                    <li><span class="dot backend-dot"></span> RESTful APIs</li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <div class="tech-line ai-line"></div>
+                <h3>AI & Security</h3>
+                <ul class="tech-list">
+                    <li><span class="dot ai-dot"></span> ML recommendations</li>
+                    <li><span class="dot ai-dot"></span> Sentiment analysis</li>
+                    <li><span class="dot ai-dot"></span> Encrypted data</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding bg-main-gradient text-white text-center">
+    <div class="container">
+        <h2 class="cta-title">Join Our Healthcare Revolution</h2>
+        <p class="cta-text">Whether you're a patient seeking care or a healthcare provider, DocPlus is here to transform your experience.</p>
+        <a href="#" class="btn-white">Get Started Today</a>
+    </div>
+</section>
+
+{% endblock %}

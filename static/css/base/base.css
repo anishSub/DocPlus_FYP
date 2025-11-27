@@ -1,0 +1,275 @@
+/* Reset & Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+:root {
+    --primary: #0092B8;
+    --secondary: #1C398E;
+    --gradient: linear-gradient(135deg, #0092B8 0%, #155DFC 100%);
+    --text-dark: #101828;
+    --text-gray: #4A5565;
+    --bg-light: #F9FAFB;
+    --white: #ffffff;
+}
+
+body { background: var(--white); color: var(--text-dark); padding-top: 80px; /* Space for fixed header */ }
+a { text-decoration: none; color: inherit; transition: 0.3s; }
+ul { list-style: none; }
+
+/* --- HEADER --- */
+.header {
+    position: fixed;
+    top: 0; left: 0; width: 100%;
+    height: 80px;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+}
+
+.header-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* --- LOGO STYLES --- */
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-link {
+    display: block; 
+    line-height: 0; 
+}
+
+.logo-img {
+    height: 70px; 
+    width: auto;
+    object-fit: contain;
+    display: block;
+}
+
+/* Navigation */
+.nav-links { display: flex; gap: 30px; }
+.nav-item { color: var(--text-gray); font-weight: 500; font-size: 16px; }
+.nav-item:hover, .nav-item.active { color: var(--primary); }
+
+/* Right Actions */
+.header-actions { display: flex; align-items: center; gap: 20px; }
+.emergency-contact { display: flex; align-items: center; gap: 8px; color: var(--text-gray); font-size: 14px; }
+.emergency-contact i { color: #E53E3E; font-size: 18px; }
+
+/* Menu Toggle (Hidden on Desktop) */
+.menu-toggle {
+    display: none;
+    font-size: 28px;
+    color: var(--text-dark);
+    cursor: pointer;
+}
+
+/* Buttons */
+.btn {
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 16px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #0092B8 0%, #1C398E 100%);
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+}
+
+/* --- FOOTER --- */
+.footer-logo-img {
+    height: 80px;
+    width: auto;
+    object-fit: contain;
+}
+
+.footer {
+    background: linear-gradient(135deg, #101828 0%, #1C398E 50%, #101828 100%);
+    color: white;
+    padding-top: 48px;
+    width: 100%;
+}
+
+.footer-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 20px;
+}
+
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.footer-brand { flex: 1.5; min-width: 250px; }
+.footer-brand p {
+    font-size: 14px; color: #99A1AF; line-height: 1.6; margin-bottom: 20px; max-width: 300px;
+}
+
+.social-icons { display: flex; gap: 15px; }
+.social-icons a i { font-size: 24px; color: #99A1AF; transition: 0.3s; }
+.social-icons a:hover i { color: white; }
+
+.footer-col { flex: 1; min-width: 180px; }
+.footer-col h3 { font-size: 16px; margin-bottom: 20px; color: white; font-weight: 600; }
+.footer-col ul li { margin-bottom: 12px; }
+.footer-col ul li a { color: #99A1AF; font-size: 14px; }
+.footer-col ul li a:hover { color: white; }
+
+.contact-list li { display: flex; gap: 12px; align-items: flex-start; color: #99A1AF; font-size: 14px; }
+.contact-list i { color: #00D3F2; font-size: 18px; margin-top: 2px; }
+
+.footer-bottom {
+    border-top: 1px solid #1E2939; padding-top: 20px;
+    display: flex; justify-content: space-between; font-size: 14px; color: #99A1AF;
+}
+
+.legal-links { display: flex; gap: 24px; }
+.legal-links a { color: #99A1AF; }
+
+/* =========================================
+   RESPONSIVE HEADER (TABLET & MOBILE)
+   ========================================= */
+@media (max-width: 1024px) {
+    /* Show Hamburger */
+    .menu-toggle {
+        display: block;
+    }
+
+    /* Hide Links and Actions by default */
+    .nav-links,
+    .header-actions {
+        position: absolute;
+        top: 80px; /* Height of header */
+        left: 0;
+        width: 100%;
+        background: white;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        overflow: hidden;
+        max-height: 0; /* Hidden state */
+        transition: max-height 0.3s ease-out;
+        display: none; /* Completely hide to prevent clicking */
+    }
+
+    /* Stack Links vertically */
+    .nav-item {
+        width: 100%;
+        text-align: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    /* Adjust Buttons container */
+    .header-actions {
+        top: auto; /* Position below links */
+        box-shadow: none;
+        background: white;
+        padding: 20px;
+        gap: 15px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    /* Active State (Added by JS) */
+    .nav-links.active,
+    .header-actions.active {
+        display: flex;
+        max-height: 500px; /* Open state */
+    }
+
+    /* Stack header actions properly when open */
+    .header-actions.active {
+        position: absolute;
+        top: 290px; /* Pushes below the nav links (approx calculation) */
+        box-shadow: 0 10px 10px rgba(0,0,0,0.05);
+    }
+    
+    /* Footer Stacking */
+    .footer-top { flex-direction: column; gap: 30px; }
+    .footer-bottom { flex-direction: column; gap: 15px; text-align: center; align-items: center; }
+}
+
+/* --- USER PROFILE STYLES (Added) --- */
+
+/* Container for the profile pic and name */
+.user-profile-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 10px;
+}
+
+/* The Profile Circle (Placeholder for Image) */
+.profile-circle {
+    width: 40px;
+    height: 40px;
+    background: #E0F2FE; /* Light Blue Background */
+    color: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.user-name-text {
+    font-weight: 500;
+    color: var(--text-dark);
+    font-size: 15px;
+}
+
+/* Logout Form Styling */
+.logout-form {
+    margin: 0;
+    padding: 0;
+}
+
+/* Make the form button look exactly like the link buttons */
+.logout-form button {
+    font-family: 'Inter', sans-serif; /* Ensure font matches */
+}
+
+/* Responsive Adjustment for User Profile */
+@media (max-width: 1024px) {
+    .user-profile-display {
+        flex-direction: column;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    .user-name-text {
+        color: var(--text-dark);
+        font-size: 16px;
+    }
+}

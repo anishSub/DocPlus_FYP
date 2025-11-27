@@ -1,0 +1,274 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/contact_us/contact_us.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="contact-hero">
+    <div class="hero-content">
+        <h1>Get in Touch</h1>
+        <p>We're here to help and answer any questions you might have. We look forward to hearing from you!</p>
+        
+        <div class="hero-badges">
+            <div class="badge">
+                <i class="fas fa-headset"></i> 24/7 Support Available
+            </div>
+            <div class="badge">
+                <i class="fas fa-bolt"></i> Quick Response Time
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="main-wrapper section-padding">
+    
+    <div class="contact-split-layout">
+        
+        <div class="left-sidebar-wrapper">
+            
+            <div class="info-card sidebar-card">
+                <div class="icon-box bg-cyan">
+                    <i class="fas fa-phone-alt"></i>
+                </div>
+                <div>
+                    <h3>Phone</h3>
+                    <p>+977 01-5970032</p>
+                    <p>+977 9841234567</p>
+                </div>
+            </div>
+
+            <div class="info-card sidebar-card">
+                <div class="icon-box bg-blue">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div>
+                    <h3>Email</h3>
+                    <p>info@docplus.com.np</p>
+                    <p>support@docplus.com.np</p>
+                </div>
+            </div>
+
+            <div class="info-card sidebar-card">
+                <div class="icon-box bg-green">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                    <h3>Address</h3>
+                    <p>Kathmandu, Nepal</p>
+                    <p>New Baneshwor, Ward No. 32</p>
+                </div>
+            </div>
+
+            <div class="info-card sidebar-card">
+                <div class="icon-box bg-orange">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div>
+                    <h3>Working Hours</h3>
+                    <p>Mon - Fri: 9:00 AM - 6:00 PM</p>
+                    <p>Sat: 9:00 AM - 2:00 PM</p>
+                </div>
+            </div>
+
+            <div class="office-card sidebar-card mt-4">
+                <div class="office-img-wrapper">
+                    <img src="{% static 'images/photos/office.jpg' %}" alt="DocPlus Office" class="office-img">
+                </div>
+                <div class="office-content">
+                    <h3>Visit Our Office</h3>
+                    <p>Come visit our office in Kathmandu. We'd love to meet you in person!</p>
+                </div>
+            </div>
+
+            <div class="social-card sidebar-card">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#" class="social-btn facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-btn twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-btn instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-btn linkedin"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div> <div class="right-content-wrapper">
+            
+            <div class="form-container white-card">
+                <div class="form-header">
+                    <h2>Send Us a Message</h2>
+                    <p>Fill out the form below and we'll get back to you as soon as possible.</p>
+                </div>
+                <form>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name *</label>
+                            <input type="text" placeholder="Your name">
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address *</label>
+                            <input type="email" placeholder="your@email.com">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Phone Number *</label>
+                            <input type="tel" placeholder="+977 9841234567">
+                        </div>
+                        <div class="form-group">
+                            <label>Subject *</label>
+                            <div class="select-wrapper">
+                                <select>
+                                    <option>Select a subject</option>
+                                    <option>General Inquiry</option>
+                                    <option>Appointment Booking</option>
+                                    <option>Technical Support</option>
+                                    <option>Partnerships</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Message *</label>
+                        <textarea placeholder="Tell us how we can help you..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-send">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+            </div>
+
+            <div class="departments-section white-card mt-8">
+                <h2>Contact Specific Departments</h2>
+                <div class="dept-grid">
+                    <div class="dept-card">
+                        <div>
+                            <h4>General Inquiry</h4>
+                            <p>info@docplus.com.np</p>
+                        </div>
+                        <a href="mailto:info@docplus.com.np" class="dept-btn"><i class="fas fa-envelope"></i></a>
+                    </div>
+                    <div class="dept-card">
+                        <div>
+                            <h4>Technical Support</h4>
+                            <p>support@docplus.com.np</p>
+                        </div>
+                        <a href="mailto:support@docplus.com.np" class="dept-btn"><i class="fas fa-tools"></i></a>
+                    </div>
+                    <div class="dept-card">
+                        <div>
+                            <h4>Appointments</h4>
+                            <p>appointments@docplus.com.np</p>
+                        </div>
+                        <a href="mailto:appointments@docplus.com.np" class="dept-btn"><i class="fas fa-calendar-check"></i></a>
+                    </div>
+                    <div class="dept-card">
+                        <div>
+                            <h4>Partnerships</h4>
+                            <p>partners@docplus.com.np</p>
+                        </div>
+                        <a href="mailto:partners@docplus.com.np" class="dept-btn"><i class="fas fa-handshake"></i></a>
+                    </div>
+                </div>
+            </div>
+
+        </div> </div> </div> 
+  <section class="cta-banner">
+    <div class="main-wrapper cta-content">
+        <div class="cta-text">
+            <div class="cta-icon-wrapper">
+                 <i class="fas fa-first-aid cta-big-icon"></i>
+            </div>
+            <div>
+                <h2>Need Immediate Assistance?</h2>
+                <p>Our dedicated support team is available 24/7 to help you with any questions or concerns.</p>
+            </div>
+        </div>
+        <div class="cta-buttons">
+            <a href="tel:+977015970032" class="btn-white"><i class="fas fa-phone-alt"></i> Call Now</a>
+            <a href="mailto:support@docplus.com.np" class="btn-outline"><i class="fas fa-envelope"></i> Email Us</a>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding bg-gray">
+    <div class="main-wrapper">
+        
+        <div class="find-us-section mb-16">
+            <h2>Find Us</h2>
+            <p class="subtitle">Visit our office in Kathmandu, Nepal</p>
+            
+            <div class="map-card white-card">
+                <i class="fas fa-map-marked-alt map-icon"></i>
+                <h3>DocPlus Headquarters</h3>
+                <p>New Baneshwor, Ward No. 32</p>
+                <p>Kathmandu, Nepal</p>
+                <a href="#" target="_blank" class="btn-map">Open in Google Maps</a>
+            </div>
+        </div>
+
+        <div class="faq-section" id="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            <p class="subtitle">Quick answers to common questions</p>
+            
+            <div class="faq-container">
+                
+                <div class="faq-item">
+                    <div class="faq-header">
+                        <h4>What are your operating hours?</h4>
+                        <i class="fas fa-plus faq-icon"></i>
+                    </div>
+                    <div class="faq-body">
+                        <div class="faq-content">
+                            <p>We are open Monday to Friday from 9:00 AM to 6:00 PM, and Saturday from 9:00 AM to 2:00 PM. Our online support is available 24/7.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-header">
+                        <h4>How quickly will I receive a response?</h4>
+                        <i class="fas fa-plus faq-icon"></i>
+                    </div>
+                    <div class="faq-body">
+                        <div class="faq-content">
+                            <p>We typically respond to all inquiries within 24 hours during business days. For urgent matters, please call our hotline.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-header">
+                        <h4>Can I schedule an appointment through this form?</h4>
+                        <i class="fas fa-plus faq-icon"></i>
+                    </div>
+                    <div class="faq-body">
+                        <div class="faq-content">
+                            <p>While you can request appointments through this form, we recommend using our online booking system for faster confirmation.</p>
+                        </div>
+                    </div>
+                </div>
+
+                 <div class="faq-item">
+                    <div class="faq-header">
+                        <h4>Do you offer emergency support?</h4>
+                        <i class="fas fa-plus faq-icon"></i>
+                    </div>
+                    <div class="faq-body">
+                        <div class="faq-content">
+                            <p>Yes! For medical emergencies, please call our 24/7 emergency hotline at +977 01-5970032.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/contact_us/contact_us.js' %}"></script>
+
+{% endblock %}
