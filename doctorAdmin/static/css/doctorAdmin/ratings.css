@@ -1,0 +1,158 @@
+/* --- Page Layout --- */
+.reviews-container {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    min-height: 80vh; /* Make the white card tall */
+}
+
+/* --- Header Section --- */
+.reviews-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.reviews-header h2 {
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.aggregate-rating {
+    text-align: right;
+}
+
+.rating-number {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.rating-number i {
+    color: #fbbf24; /* Golden Yellow */
+    font-size: 24px;
+}
+
+.rating-text {
+    font-size: 14px;
+    color: var(--text-grey);
+    display: block;
+    margin-top: 4px;
+}
+
+/* --- Reviews List --- */
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.review-card {
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    background-color: #fff;
+}
+
+/* Card Top: User Info & Stars */
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.reviewer-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.avatar.blue {
+    background: var(--header-gradient);
+}
+
+.info-text h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+}
+
+.info-text .date {
+    font-size: 13px;
+    color: var(--text-grey);
+}
+
+/* Star Rating in Card */
+.star-rating {
+    color: #fbbf24; /* Golden Yellow */
+    font-size: 14px;
+    display: flex;
+    gap: 4px;
+}
+
+/* Comment Text */
+.review-comment {
+    font-size: 15px;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+/* --- RESPONSIVENESS --- */
+@media (max-width: 768px) {
+    .reviews-container {
+        padding: 20px;
+    }
+
+    /* Stack Header */
+    .reviews-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .aggregate-rating {
+        text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .rating-number {
+        font-size: 24px;
+    }
+
+    /* Card Adjustments */
+    .card-top {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .star-rating {
+        /* Move stars below name on mobile */
+        padding-left: 64px; /* Align with text, offset by avatar width */
+        margin-top: -8px; /* Pull closer to name */
+    }
+}

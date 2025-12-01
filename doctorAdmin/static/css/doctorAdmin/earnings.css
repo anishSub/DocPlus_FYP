@@ -1,0 +1,263 @@
+/* --- Earnings Overview Card --- */
+.earnings-overview-card {
+    background: linear-gradient(90deg, #0092b8, #1c398e); /* Blue Gradient */
+    border-radius: 16px;
+    padding: 32px;
+    color: white;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 12px rgba(0, 146, 184, 0.2);
+}
+
+.earnings-overview-card h2 {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    opacity: 0.9;
+}
+
+.stats-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.stat-item .label {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.stat-item .value {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* --- Recent Transactions --- */
+.transactions-section {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 32px;
+    border: 1px solid #e5e7eb;
+}
+
+.transactions-section h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+}
+
+/* Table Styles */
+.table-responsive {
+    /* Removed overflow-x here to allow card layout on mobile */
+    width: 100%;
+}
+
+.transactions-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.transactions-table th {
+    text-align: left;
+    padding: 16px 0;
+    color: var(--text-grey);
+    font-weight: 500;
+    font-size: 14px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.transactions-table td {
+    padding: 20px 0;
+    font-size: 14px;
+    color: var(--text-dark);
+    border-bottom: 1px solid #f3f4f6;
+    vertical-align: middle;
+}
+
+.transactions-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.status-badge.completed {
+    background-color: #dcfce7; /* Light Green BG */
+    color: #166534; /* Dark Green Text */
+}
+
+.status-badge.pending {
+    background-color: #fef9c3; /* Light Yellow BG */
+    color: #854d0e; /* Dark Yellow Text */
+}
+
+/* --- Payment Methods Section --- */
+.payment-methods-section {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid #e5e7eb;
+}
+
+.payment-methods-section h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+}
+
+.payment-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.payment-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.icon-box {
+    width: 48px;
+    height: 48px;
+    background-color: #eff6ff; /* Light Blue */
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-blue);
+    font-size: 20px;
+}
+
+.details h4 {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+}
+
+.details p {
+    font-size: 14px;
+    color: var(--text-grey);
+}
+
+.badge-primary {
+    background-color: #dcfce7;
+    color: #166534;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+/* Add Button */
+.add-payment-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: #f9fafb;
+    border: 1px dashed #d1d5db;
+    border-radius: 10px;
+    color: var(--text-grey);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.add-payment-btn:hover {
+    background-color: #f3f4f6;
+    border-color: var(--primary-blue);
+    color: var(--primary-blue);
+}
+
+/* --- RESPONSIVENESS (UPDATED) --- */
+@media (max-width: 768px) {
+    /* Stack Stats Overview */
+    .stats-row {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    /* Stack Payment Card */
+    .payment-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .badge-primary {
+        align-self: flex-start;
+    }
+
+    /* --- MOBILE TABLE CARD VIEW --- */
+    /* This makes the table look like a list of cards on mobile */
+    .transactions-table, 
+    .transactions-table tbody, 
+    .transactions-table tr, 
+    .transactions-table td {
+        display: block;
+        width: 100%;
+    }
+
+    /* Hide Table Header */
+    .transactions-table thead {
+        display: none;
+    }
+
+    /* Card Style for Rows */
+    .transactions-table tr {
+        margin-bottom: 16px;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    /* Flex Cells: Label on Left, Value on Right */
+    .transactions-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: right;
+        padding: 10px 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .transactions-table td:last-child {
+        border-bottom: none;
+    }
+
+    /* Add Labels automatically via CSS */
+    .transactions-table td:nth-of-type(1)::before { content: "Date"; font-weight: 600; color: #6b7280; }
+    .transactions-table td:nth-of-type(2)::before { content: "Patient"; font-weight: 600; color: #6b7280; }
+    .transactions-table td:nth-of-type(3)::before { content: "Type"; font-weight: 600; color: #6b7280; }
+    .transactions-table td:nth-of-type(4)::before { content: "Amount"; font-weight: 600; color: #6b7280; }
+    .transactions-table td:nth-of-type(5)::before { content: "Status"; font-weight: 600; color: #6b7280; }
+}

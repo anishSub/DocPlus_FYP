@@ -1,0 +1,45 @@
+{% extends 'doctorAdmin/base.html' %}
+{% load static %}
+
+{% block title %}My Patients{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/doctorAdmin/patients.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2>My Patients</h2>
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search patients...">
+        </div>
+    </div>
+
+    <!-- Patients Table Container -->
+    <div class="table-container">
+        <table class="patients-table">
+            <thead>
+                <tr>
+                    <th>Patient Name</th>
+                    <th>Last Visit</th>
+                    <th>Diagnosis</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows... -->
+                <tr>
+                    <td><div class="patient-profile"><div class="avatar blue">R</div><span>Rajesh Kumar</span></div></td>
+                    <td>2024-11-20</td>
+                    <td>Hypertension</td>
+                    <td><span class="status-badge treatment">Under Treatment</span></td>
+                    <td><div class="actions"><button class="icon-action"><i class="far fa-eye"></i></button></div></td>
+                </tr>
+                <!-- More Rows -->
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

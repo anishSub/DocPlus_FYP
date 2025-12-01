@@ -1,0 +1,225 @@
+{% extends 'doctorAdmin/base.html' %}
+{% load static %}
+
+{% block title %}Weekly Schedule{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/doctorAdmin/schedule.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2>Weekly Schedule</h2>
+        <button class="add-btn">
+            <i class="fas fa-plus"></i> Add Availability
+        </button>
+    </div>
+
+    <!-- Schedule List -->
+    <div class="schedule-list">
+        
+        <!-- Monday -->
+        <div class="schedule-card active-day">
+            <div class="day-time">
+                <h3>Monday</h3>
+                <span class="time">9:00 AM - 5:00 PM</span>
+            </div>
+            
+            <div class="stats-group">
+                <div class="stat-item">
+                    <span class="stat-value">12</span>
+                    <span class="stat-label">Patients</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-label">In-Person</span>
+                    <span class="type-sub">Type</span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="icon-btn edit"><i class="far fa-edit"></i></button>
+                <button class="icon-btn delete"><i class="far fa-trash-alt"></i></button>
+            </div>
+        </div>
+
+        <!-- Tuesday -->
+        <div class="schedule-card active-day">
+            <div class="day-time">
+                <h3>Tuesday</h3>
+                <span class="time">2:00 PM - 6:00 PM</span>
+            </div>
+            
+            <div class="stats-group">
+                <div class="stat-item">
+                    <span class="stat-value">8</span>
+                    <span class="stat-label">Patients</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-label">In-Person</span>
+                    <span class="type-sub">Type</span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="icon-btn edit"><i class="far fa-edit"></i></button>
+                <button class="icon-btn delete"><i class="far fa-trash-alt"></i></button>
+            </div>
+        </div>
+
+        <!-- Wednesday -->
+        <div class="schedule-card active-day">
+            <div class="day-time">
+                <h3>Wednesday</h3>
+                <span class="time">9:00 AM - 5:00 PM</span>
+            </div>
+            
+            <div class="stats-group">
+                <div class="stat-item">
+                    <span class="stat-value">10</span>
+                    <span class="stat-label">Patients</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-label">Video Call</span>
+                    <span class="type-sub">Type</span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="icon-btn edit"><i class="far fa-edit"></i></button>
+                <button class="icon-btn delete"><i class="far fa-trash-alt"></i></button>
+            </div>
+        </div>
+
+        <!-- Thursday -->
+        <div class="schedule-card active-day">
+            <div class="day-time">
+                <h3>Thursday</h3>
+                <span class="time">2:00 PM - 6:00 PM</span>
+            </div>
+            
+            <div class="stats-group">
+                <div class="stat-item">
+                    <span class="stat-value">6</span>
+                    <span class="stat-label">Patients</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-label">Both</span>
+                    <span class="type-sub">Type</span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="icon-btn edit"><i class="far fa-edit"></i></button>
+                <button class="icon-btn delete"><i class="far fa-trash-alt"></i></button>
+            </div>
+        </div>
+
+        <!-- Friday -->
+        <div class="schedule-card active-day">
+            <div class="day-time">
+                <h3>Friday</h3>
+                <span class="time">9:00 AM - 5:00 PM</span>
+            </div>
+            
+            <div class="stats-group">
+                <div class="stat-item">
+                    <span class="stat-value">11</span>
+                    <span class="stat-label">Patients</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-label">In-Person</span>
+                    <span class="type-sub">Type</span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="icon-btn edit"><i class="far fa-edit"></i></button>
+                <button class="icon-btn delete"><i class="far fa-trash-alt"></i></button>
+            </div>
+        </div>
+
+        <!-- Saturday (Inactive) -->
+        <div class="schedule-card inactive-day">
+            <div class="day-time">
+                <h3>Saturday</h3>
+                <span class="time">Not Available</span>
+            </div>
+            
+            <div class="stats-group">
+                <div class="stat-item">
+                    <span class="stat-value">0</span>
+                    <span class="stat-label">Patients</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-label">-</span>
+                    <span class="type-sub">Type</span>
+                </div>
+            </div>
+            <!-- No Actions for inactive days usually, or just edit -->
+        </div>
+
+        <!-- Sunday (Inactive) -->
+        <div class="schedule-card inactive-day">
+            <div class="day-time">
+                <h3>Sunday</h3>
+                <span class="time">Not Available</span>
+            </div>
+            
+            <div class="stats-group">
+                <div class="stat-item">
+                    <span class="stat-value">0</span>
+                    <span class="stat-label">Patients</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-label">-</span>
+                    <span class="type-sub">Type</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Consultation Settings Section -->
+    <div class="settings-section">
+        <h3>Consultation Settings</h3>
+        
+        <div class="settings-list">
+            <!-- Setting 1 -->
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4>Enable Video Consultations</h4>
+                    <p>Allow patients to book online video calls</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider round"></span>
+                </label>
+            </div>
+
+            <!-- Setting 2 -->
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4>Auto-Accept Appointments</h4>
+                    <p>Automatically accept appointment requests</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+
+            <!-- Setting 3 -->
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4>Send Appointment Reminders</h4>
+                    <p>Notify patients before appointments</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+{% endblock %}

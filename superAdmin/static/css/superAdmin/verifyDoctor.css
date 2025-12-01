@@ -1,0 +1,203 @@
+/* --- Header Section --- */
+.verification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.verification-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.pending-badge {
+    background-color: #fef9c3; /* Light Yellow */
+    color: #854d0e; /* Dark Yellow/Brown */
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid #fde047;
+}
+
+/* --- Verification List --- */
+.verification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.doctor-card {
+    background: #fff;
+    border: 2px solid #fde047; /* Yellow Border */
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    background-color: #fffbeb; /* Very light yellow tint */
+}
+
+/* Top Section: Profile */
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.doctor-profile {
+    display: flex;
+    gap: 20px;
+}
+
+.avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+.avatar.blue { background-color: #0e5c98; } /* Dark Blue */
+
+.info h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 4px;
+}
+
+.specialty {
+    display: block;
+    font-size: 14px;
+    color: #0092b8; /* Cyan/Blue */
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+.meta-info {
+    display: flex;
+    gap: 24px;
+    font-size: 14px;
+    color: #4b5563;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+}
+
+.meta-info i {
+    color: #9ca3af;
+    margin-right: 6px;
+    width: 16px;
+    text-align: center;
+}
+
+.time-icon {
+    color: #d97706; /* Amber */
+    font-size: 20px;
+}
+
+/* Documents Section */
+.documents-section {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+}
+
+.documents-section h4 {
+    font-size: 14px;
+    color: #4b5563;
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.doc-list {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.doc-btn {
+    background-color: #eff6ff; /* Light Blue BG */
+    color: #2563eb; /* Blue Text */
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+.doc-btn:hover { background-color: #dbeafe; }
+
+/* Footer Actions */
+.actions-footer {
+    display: flex;
+    gap: 16px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb; /* Separator */
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity 0.2s;
+    flex: 1;
+}
+.btn:hover { opacity: 0.9; }
+
+.btn-approve { background-color: #16a34a; color: white; }
+.btn-reject { background-color: #dc2626; color: white; }
+.btn-info { background-color: #f3f4f6; color: #374151; }
+
+
+/* --- RESPONSIVENESS --- */
+@media (max-width: 768px) {
+    .card-top {
+        position: relative;
+    }
+    
+    .time-icon {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    .doctor-profile {
+        flex-direction: column; /* Stack Avatar on top of text */
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .meta-info {
+        flex-direction: column; /* Stack contact details */
+        gap: 8px;
+    }
+
+    .doc-list {
+        flex-direction: column; /* Stack document buttons */
+    }
+    
+    .doc-btn {
+        width: 100%; /* Full width buttons */
+    }
+
+    .actions-footer {
+        flex-direction: column; /* Stack action buttons */
+        gap: 12px;
+    }
+}

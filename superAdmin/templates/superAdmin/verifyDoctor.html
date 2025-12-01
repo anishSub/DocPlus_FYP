@@ -1,0 +1,138 @@
+{% extends 'superAdmin/base.html' %}
+{% load static %}
+
+{% block title %}Doctor Verification{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/superAdmin/verifyDoctor.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Header Section -->
+    <div class="verification-header">
+        <h2>Doctor Verification</h2>
+        <span class="pending-badge">Pending: 3</span>
+    </div>
+
+    <!-- Doctor Verification List -->
+    <div class="verification-list">
+        
+        <!-- Doctor Card 1 -->
+        <div class="doctor-card">
+            <div class="card-top">
+                <div class="doctor-profile">
+                    <div class="avatar blue">A</div>
+                    <div class="info">
+                        <h3>Dr. Amit Thapa</h3>
+                        <span class="specialty">Cardiology</span>
+                        
+                        <div class="meta-info">
+                            <span><i class="far fa-envelope"></i> amit.thapa@email.com</span>
+                            <span><i class="fas fa-phone-alt"></i> +977 9841234567</span>
+                        </div>
+                        
+                        <div class="meta-info">
+                            <span><i class="far fa-building"></i> Grande Hospital</span>
+                            <span><i class="far fa-clock"></i> 12 years</span>
+                        </div>
+                    </div>
+                </div>
+                <i class="far fa-clock time-icon"></i>
+            </div>
+
+            <div class="documents-section">
+                <h4>Documents Submitted:</h4>
+                <div class="doc-list">
+                    <a href="#" class="doc-btn"><i class="far fa-file-alt"></i> Medical License</a>
+                    <a href="#" class="doc-btn"><i class="far fa-file-alt"></i> Education Certificate</a>
+                    <a href="#" class="doc-btn"><i class="far fa-id-card"></i> ID Proof</a>
+                </div>
+            </div>
+
+            <div class="actions-footer">
+                <button class="btn btn-approve"><i class="fas fa-check-circle"></i> Approve & Activate</button>
+                <button class="btn btn-reject"><i class="fas fa-times-circle"></i> Reject Application</button>
+                <button class="btn btn-info">Request More Info</button>
+            </div>
+        </div>
+
+        <!-- Doctor Card 2 -->
+        <div class="doctor-card">
+            <div class="card-top">
+                <div class="doctor-profile">
+                    <div class="avatar blue">P</div>
+                    <div class="info">
+                        <h3>Dr. Priya Sharma</h3>
+                        <span class="specialty">Neurology</span>
+                        
+                        <div class="meta-info">
+                            <span><i class="far fa-envelope"></i> priya.sharma@email.com</span>
+                            <span><i class="fas fa-phone-alt"></i> +977 9847654321</span>
+                        </div>
+                        
+                        <div class="meta-info">
+                            <span><i class="far fa-building"></i> Nepal Mediciti</span>
+                            <span><i class="far fa-clock"></i> 8 years</span>
+                        </div>
+                    </div>
+                </div>
+                <i class="far fa-clock time-icon"></i>
+            </div>
+
+            <div class="documents-section">
+                <h4>Documents Submitted:</h4>
+                <div class="doc-list">
+                    <a href="#" class="doc-btn"><i class="far fa-file-alt"></i> Medical License</a>
+                    <a href="#" class="doc-btn"><i class="far fa-file-alt"></i> Education Certificate</a>
+                    <a href="#" class="doc-btn"><i class="far fa-id-card"></i> ID Proof</a>
+                </div>
+            </div>
+
+            <div class="actions-footer">
+                <button class="btn btn-approve"><i class="fas fa-check-circle"></i> Approve & Activate</button>
+                <button class="btn btn-reject"><i class="fas fa-times-circle"></i> Reject Application</button>
+                <button class="btn btn-info">Request More Info</button>
+            </div>
+        </div>
+
+        <!-- Doctor Card 3 -->
+        <div class="doctor-card">
+            <div class="card-top">
+                <div class="doctor-profile">
+                    <div class="avatar blue">B</div>
+                    <div class="info">
+                        <h3>Dr. Bikash Rai</h3>
+                        <span class="specialty">Orthopedics</span>
+                        
+                        <div class="meta-info">
+                            <span><i class="far fa-envelope"></i> bikash.rai@email.com</span>
+                            <span><i class="fas fa-phone-alt"></i> +977 9843216789</span>
+                        </div>
+                        
+                        <div class="meta-info">
+                            <span><i class="far fa-building"></i> Teaching Hospital</span>
+                            <span><i class="far fa-clock"></i> 15 years</span>
+                        </div>
+                    </div>
+                </div>
+                <i class="far fa-clock time-icon"></i>
+            </div>
+
+            <div class="documents-section">
+                <h4>Documents Submitted:</h4>
+                <div class="doc-list">
+                    <a href="#" class="doc-btn"><i class="far fa-file-alt"></i> Medical License</a>
+                    <a href="#" class="doc-btn"><i class="far fa-file-alt"></i> Education Certificate</a>
+                    <a href="#" class="doc-btn"><i class="far fa-id-card"></i> ID Proof</a>
+                </div>
+            </div>
+
+            <div class="actions-footer">
+                <button class="btn btn-approve"><i class="fas fa-check-circle"></i> Approve & Activate</button>
+                <button class="btn btn-reject"><i class="fas fa-times-circle"></i> Reject Application</button>
+                <button class="btn btn-info">Request More Info</button>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

@@ -1,0 +1,210 @@
+{% extends 'superAdmin/base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard Overview{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/superAdmin/overview.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- 1. Welcome Banner -->
+    <div class="welcome-banner">
+        <h2>Welcome, Administrator</h2>
+        <p>Here's what's happening with DocPlus today</p>
+    </div>
+
+    <!-- 2. Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="icon-box blue"><i class="fas fa-users"></i></div>
+                <span class="trend positive"><i class="fas fa-arrow-up"></i> +15%</span>
+            </div>
+            <div class="stat-data">
+                <h3>12,543</h3>
+                <p>Total Users</p>
+                <small>8,234 Patients, 4,309 Doctors</small>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="icon-box purple"><i class="far fa-building"></i></div>
+                <span class="trend positive"><i class="fas fa-arrow-up"></i> +8</span>
+            </div>
+            <div class="stat-data">
+                <h3>147</h3>
+                <p>Total Hospitals</p>
+                <small>23 Pending Approval</small>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="icon-box green"><i class="far fa-calendar-check"></i></div>
+                <span class="trend positive"><i class="fas fa-arrow-up"></i> +23%</span>
+            </div>
+            <div class="stat-data">
+                <h3>856</h3>
+                <p>Appointments Today</p>
+                <small>524 Completed</small>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="icon-box orange"><i class="fas fa-dollar-sign"></i></div>
+                <span class="trend positive"><i class="fas fa-arrow-up"></i> +18%</span>
+            </div>
+            <div class="stat-data">
+                <h3>Rs 24.5L</h3>
+                <p>Platform Revenue</p>
+                <small>This Month</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Quick Actions -->
+    <div class="section-title"><h3>Quick Actions</h3></div>
+    <div class="quick-actions-grid">
+        <div class="action-card blue">
+            <i class="fas fa-user-check"></i>
+            <h4>Verify Doctors</h4>
+            <span class="badge">3 Pending</span>
+        </div>
+        <div class="action-card indigo">
+            <i class="far fa-hospital"></i>
+            <h4>Approve Hospitals</h4>
+            <span class="badge">2 Pending</span>
+        </div>
+        <div class="action-card amber">
+            <i class="far fa-star"></i>
+            <h4>Review Moderation</h4>
+            <span class="badge">1 Flagged</span>
+        </div>
+        <div class="action-card green">
+            <i class="fas fa-chart-line"></i>
+            <h4>View Analytics</h4>
+            <span class="badge">Reports</span>
+        </div>
+    </div>
+
+    <!-- 4. Pending Approvals (Two Columns) -->
+    <div class="approvals-grid">
+        <!-- Doctors Column -->
+        <div class="approval-column">
+            <div class="column-header">
+                <h3>Pending Doctor Approvals</h3>
+                <a href="#">View All <i class="fas fa-chevron-right"></i></a>
+            </div>
+            
+            <div class="approval-card">
+                <div class="info">
+                    <h4>Dr. Amit Thapa</h4>
+                    <p>Cardiology</p>
+                    <span class="time-ago"><i class="far fa-clock"></i> 2h ago</span>
+                </div>
+                <div class="actions">
+                    <button class="btn approve">Approve</button>
+                    <button class="btn reject">Reject</button>
+                </div>
+            </div>
+
+            <div class="approval-card">
+                <div class="info">
+                    <h4>Dr. Priya Sharma</h4>
+                    <p>Neurology</p>
+                    <span class="time-ago"><i class="far fa-clock"></i> 5h ago</span>
+                </div>
+                <div class="actions">
+                    <button class="btn approve">Approve</button>
+                    <button class="btn reject">Reject</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hospitals Column -->
+        <div class="approval-column">
+            <div class="column-header">
+                <h3>Pending Hospital Approvals</h3>
+                <a href="#">View All <i class="fas fa-chevron-right"></i></a>
+            </div>
+            
+            <div class="approval-card">
+                <div class="info">
+                    <h4>Kathmandu Medical Center</h4>
+                    <p>Kathmandu, Nepal</p>
+                    <span class="time-ago"><i class="far fa-clock"></i> 1d ago</span>
+                </div>
+                <div class="actions">
+                    <button class="btn approve">Approve</button>
+                    <button class="btn reject">Reject</button>
+                </div>
+            </div>
+
+            <div class="approval-card">
+                <div class="info">
+                    <h4>Pokhara Health Clinic</h4>
+                    <p>Pokhara, Nepal</p>
+                    <span class="time-ago"><i class="far fa-clock"></i> 2d ago</span>
+                </div>
+                <div class="actions">
+                    <button class="btn approve">Approve</button>
+                    <button class="btn reject">Reject</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Recent Appointments Table -->
+    <div class="recent-appointments">
+        <h3>Recent Appointments</h3>
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Date & Time</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Rajesh Kumar</td>
+                        <td>Dr. Arjun Sharma</td>
+                        <td>
+                            <div class="datetime">2024-11-24 <span>10:00 AM</span></div>
+                        </td>
+                        <td>Video Call</td>
+                        <td><span class="status completed">Completed</span></td>
+                        <td>Rs 1,500</td>
+                    </tr>
+                    <tr>
+                        <td>Sita Devi</td>
+                        <td>Dr. Priya Singh</td>
+                        <td>
+                            <div class="datetime">2024-11-24 <span>11:30 AM</span></div>
+                        </td>
+                        <td>In-Person</td>
+                        <td><span class="status scheduled">Scheduled</span></td>
+                        <td>Rs 2,000</td>
+                    </tr>
+                    <tr>
+                        <td>Ram Bahadur</td>
+                        <td>Dr. Amit Thapa</td>
+                        <td>
+                            <div class="datetime">2024-11-24 <span>02:00 PM</span></div>
+                        </td>
+                        <td>Video Call</td>
+                        <td><span class="status cancelled">Cancelled</span></td>
+                        <td>Rs 1,500</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

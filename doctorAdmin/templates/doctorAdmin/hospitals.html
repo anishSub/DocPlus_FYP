@@ -1,0 +1,109 @@
+{% extends 'doctorAdmin/base.html' %}
+{% load static %}
+
+{% block title %}My Hospitals{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/doctorAdmin/hospitals.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2>My Hospitals & Clinics</h2>
+        <button class="add-btn">
+            <i class="fas fa-plus"></i> Add Hospital
+        </button>
+    </div>
+
+    <!-- Hospital List -->
+    <div class="hospital-list">
+        
+        <!-- Hospital Card 1 -->
+        <div class="hospital-card">
+            <div class="card-content">
+                <div class="hospital-logo">
+                    <i class="far fa-building"></i>
+                </div>
+                
+                <div class="hospital-info">
+                    <div class="info-header">
+                        <h3>Grande International Hospital</h3>
+                        <div class="top-actions">
+                            <button class="icon-action edit"><i class="far fa-edit"></i></button>
+                            <button class="icon-action delete"><i class="far fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Kathmandu, Nepal</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-stethoscope"></i>
+                            <span>Cardiology</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-user-md"></i>
+                            <span>Senior Consultant</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="far fa-clock"></i>
+                            <span>Mon, Wed, Fri - 9:00 AM to 5:00 PM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <button class="btn-primary">View Details</button>
+                <button class="btn-secondary">Update Schedule</button>
+            </div>
+        </div>
+
+        <!-- Hospital Card 2 -->
+        <div class="hospital-card">
+            <div class="card-content">
+                <div class="hospital-logo">
+                    <i class="far fa-hospital"></i>
+                </div>
+                
+                <div class="hospital-info">
+                    <div class="info-header">
+                        <h3>Nepal Mediciti Hospital</h3>
+                        <div class="top-actions">
+                            <button class="icon-action edit"><i class="far fa-edit"></i></button>
+                            <button class="icon-action delete"><i class="far fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Lalitpur, Nepal</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-stethoscope"></i>
+                            <span>Cardiology</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-briefcase-medical"></i>
+                            <span>Visiting Doctor</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="far fa-clock"></i>
+                            <span>Tue, Thu - 2:00 PM to 6:00 PM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <button class="btn-primary">View Details</button>
+                <button class="btn-secondary">Update Schedule</button>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

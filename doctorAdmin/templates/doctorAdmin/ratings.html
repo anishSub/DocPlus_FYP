@@ -1,0 +1,93 @@
+{% extends 'doctorAdmin/base.html' %}
+{% load static %}
+
+{% block title %}Patient Reviews{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/doctorAdmin/ratings.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Main Content Container -->
+    <div class="reviews-container">
+        
+        <!-- Header Section with Aggregate Rating -->
+        <div class="reviews-header">
+            <h2>Patient Reviews</h2>
+            <div class="aggregate-rating">
+                <div class="rating-number">
+                    <i class="fas fa-star"></i> 4.8
+                </div>
+                <span class="rating-text">Based on 247 reviews</span>
+            </div>
+        </div>
+
+        <!-- Reviews List -->
+        <div class="reviews-list">
+            
+            <!-- Review 1 -->
+            <div class="review-card">
+                <div class="card-top">
+                    <div class="reviewer-info">
+                        <div class="avatar blue">R</div>
+                        <div class="info-text">
+                            <h4>Rajesh Kumar</h4>
+                            <span class="date">2024-11-20</span>
+                        </div>
+                    </div>
+                    <div class="star-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                <p class="review-comment">Excellent doctor! Very professional and caring.</p>
+            </div>
+
+            <!-- Review 2 -->
+            <div class="review-card">
+                <div class="card-top">
+                    <div class="reviewer-info">
+                        <div class="avatar blue">S</div>
+                        <div class="info-text">
+                            <h4>Sita Sharma</h4>
+                            <span class="date">2024-11-18</span>
+                        </div>
+                    </div>
+                    <div class="star-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                <p class="review-comment">Best cardiologist in Kathmandu. Highly recommended!</p>
+            </div>
+
+            <!-- Review 3 -->
+            <div class="review-card">
+                <div class="card-top">
+                    <div class="reviewer-info">
+                        <div class="avatar blue">R</div>
+                        <div class="info-text">
+                            <h4>Ram Bahadur</h4>
+                            <span class="date">2024-11-15</span>
+                        </div>
+                    </div>
+                    <div class="star-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                <p class="review-comment">Good experience. Very knowledgeable doctor.</p>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

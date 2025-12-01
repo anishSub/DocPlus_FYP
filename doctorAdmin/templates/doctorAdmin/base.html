@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Doctor Dashboard{% endblock %}</title>
+    
+    <!-- GLOBAL CSS (Base) -->
+    <link rel="stylesheet" href="{% static 'css/doctorAdmin/base.css' %}">
+    
+    <!-- PAGE SPECIFIC CSS -->
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- 1. TOP NAVBAR -->
+    <header class="top-navbar">
+        <div class="nav-left">
+            <button class="icon-btn menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="profile-img">
+                <img src="https://ui-avatars.com/api/?name=Arjun+Sharma&background=random" alt="Doctor">
+            </div>
+            <div class="profile-info">
+                <h3>Dr. Arjun Sharma</h3>
+                <span>Cardiologist</span>
+            </div>
+        </div>
+        <div class="nav-right">
+            <button class="icon-btn"><i class="far fa-bell"></i><span class="dot"></span></button>
+            <button class="icon-btn"><i class="fas fa-cog"></i></button>
+            <button class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </header>
+
+    <!-- 2. LAYOUT CONTAINER -->
+    <div class="dashboard-container">
+        
+        <!-- 3. SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <nav class="side-nav">
+                <!-- Dashboard -->
+                <a href="{% url 'doctor_admin_dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'doctor_admin_dashboard' %}active{% endif %}">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Overview</span>
+                </a>
+                
+                <!-- Appointments -->
+                <a href="{% url 'doctor_admin_appointments' %}" class="nav-item {% if request.resolver_match.url_name == 'doctor_admin_appointments' %}active{% endif %}">
+                    <i class="far fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+                
+                <!-- Patients -->
+                <a href="{% url 'patients_list' %}" class="nav-item {% if request.resolver_match.url_name == 'patients_list' %}active{% endif %}">
+                    <i class="fas fa-user-injured"></i>
+                    <span>My Patients</span>
+                </a>
+                
+                <!-- Schedule (UPDATED HERE) -->
+                <a href="{% url 'doctor_schedule' %}" class="nav-item {% if request.resolver_match.url_name == 'doctor_schedule' %}active{% endif %}">
+                    <i class="far fa-clock"></i>
+                    <span>Schedule</span>
+                </a>
+                
+                <!-- Other links (Placeholders) -->
+                <a href="{% url 'hospital_info' %}" class="nav-item {% if request.resolver_match.url_name == 'hospital_info' %}active{% endif %}">
+                    <i class="far fa-hospital"></i>
+                    <span>Hospitals</span>
+                </a>
+
+                
+                <a href="{% url 'doctor_earnings' %}" class="nav-item {% if request.resolver_match.url_name == 'doctor_earnings' %}active{% endif %}">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>Earnings</span>
+                </a>
+                <a href="{% url 'doctor_ratings' %}" class="nav-item {% if request.resolver_match.url_name == 'doctor_ratings' %}active{% endif %}">
+                    <i class="far fa-star"></i>
+                    <span>Reviews</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 4. MAIN CONTENT -->
+        <main class="main-content">
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+
+    <!-- GLOBAL SCRIPTS -->
+    <script src="{% static 'js/doctorAdmin/doctor_admin.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

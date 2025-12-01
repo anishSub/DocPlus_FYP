@@ -1,0 +1,132 @@
+/* =========================================
+   1. GLOBAL VARIABLES
+   ========================================= */
+:root {
+    --primary-blue: #0092b8; /* Light Blue for accents */
+    --header-bg: #0e5c98;    /* Dark Blue for Header */
+    --bg-color: #f3f4f6;
+    --white: #ffffff;
+    --text-dark: #1f2937;
+    --text-grey: #6b7280;
+    --border-color: #e5e7eb;
+    
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    
+    --font-family: 'Inter', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--font-family); background-color: var(--bg-color); color: var(--text-dark); }
+
+/* =========================================
+   2. TOP NAVBAR
+   ========================================= */
+.top-navbar {
+    background-color: var(--header-bg);
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    position: fixed;
+    top: 0; left: 0; width: 100%;
+    z-index: 1000;
+    color: var(--white);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-left { display: flex; align-items: center; gap: 16px; }
+
+/* Menu Toggle (Mobile) */
+.menu-toggle {
+    display: none;
+    background: transparent; border: none; color: white;
+    font-size: 24px; cursor: pointer;
+}
+
+.brand-logo {
+    width: 40px; height: 40px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+}
+
+.brand-info h3 { font-size: 16px; font-weight: 600; margin-bottom: 2px; }
+.brand-info span { font-size: 12px; opacity: 0.8; }
+
+.nav-right { display: flex; align-items: center; gap: 16px; }
+.icon-btn { background: transparent; border: none; color: white; font-size: 20px; cursor: pointer; position: relative; }
+.icon-btn .dot { position: absolute; top: 0; right: 0; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; }
+.logout-btn { 
+    background: rgba(255,255,255,0.15); 
+    border: 1px solid rgba(255,255,255,0.2); 
+    color: white; padding: 8px 16px; border-radius: 6px; 
+    cursor: pointer; font-size: 14px; 
+    display: flex; align-items: center; gap: 8px; 
+    transition: all 0.2s;
+}
+.logout-btn:hover { background: rgba(255,255,255,0.25); }
+
+/* =========================================
+   3. SIDEBAR (Floating Card)
+   ========================================= */
+.dashboard-container { display: flex; margin-top: 70px; min-height: calc(100vh - 70px); }
+
+.sidebar {
+    width: 250px;
+    background-color: var(--white);
+    padding: 24px 12px;
+    position: fixed;
+    top: 94px; left: 24px; 
+    height: calc(100vh - 118px);
+    overflow-y: auto;
+    display: flex; flex-direction: column;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    z-index: 900;
+    transition: transform 0.3s ease-in-out;
+}
+
+.side-nav { display: flex; flex-direction: column; gap: 4px; }
+
+.nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    color: var(--text-grey); text-decoration: none;
+    border-radius: 8px; font-size: 14px; font-weight: 500;
+    transition: all 0.2s;
+}
+
+.nav-item:hover { background-color: #f3f4f6; color: var(--header-bg); }
+.nav-item.active { background-color: var(--header-bg); color: var(--white); box-shadow: 0 4px 6px rgba(14, 92, 152, 0.2); }
+.nav-item i { width: 20px; text-align: center; }
+
+/* =========================================
+   4. MAIN CONTENT
+   ========================================= */
+.main-content {
+    margin-left: 300px;
+    flex: 1;
+    padding: 32px 32px 32px 0;
+    display: flex; flex-direction: column; gap: 24px;
+}
+
+/* =========================================
+   5. RESPONSIVE
+   ========================================= */
+@media (max-width: 1024px) {
+    .menu-toggle { display: block; }
+    .sidebar { transform: translateX(-300px); left: 0; top: 70px; height: calc(100vh - 70px); margin: 0; border-radius: 0 16px 16px 0; }
+    .sidebar.active { transform: translateX(0); }
+    .main-content { margin-left: 0; padding: 24px; }
+}
+
+@media (max-width: 768px) {
+    .top-navbar { padding: 0 16px; }
+    .brand-info { display: none; }
+    .logout-btn span { display: none; } /* Hide text, keep icon */
+    .logout-btn { padding: 8px; }
+}

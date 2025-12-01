@@ -1,0 +1,209 @@
+/* Specific Styles for Patients Table 
+   (Inherits layout/sidebar/header from base.css)
+*/
+
+/* Status Colors */
+:root {
+    --status-blue-bg: #dbeafe;
+    --status-blue-text: #1e40af;
+    --status-yellow-bg: #fef9c3;
+    --status-yellow-text: #854d0e;
+    --status-green-bg: #dcfce7;
+    --status-green-text: #166534;
+}
+
+/* Page Header */
+.page-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 24px; 
+    flex-wrap: wrap; 
+    gap: 16px; 
+}
+
+.page-header h2 { 
+    font-size: 24px; 
+    font-weight: 600; 
+    color: var(--text-dark); 
+}
+
+.search-box { 
+    position: relative; 
+    width: 300px; 
+}
+
+.search-box input { 
+    width: 100%; 
+    padding: 10px 16px 10px 40px; 
+    border-radius: 8px; 
+    border: 1px solid var(--border-color); 
+    outline: none; 
+    font-size: 14px; 
+}
+
+.search-box i { 
+    position: absolute; 
+    left: 14px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    color: var(--text-grey); 
+}
+
+/* Table Styles */
+.table-container { 
+    background: var(--white); 
+    border-radius: 12px; 
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+    /* overflow-x: auto;  <-- Removed here, handled in media query if needed */
+}
+
+.patients-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    /* min-width: 800px; <-- Removed to allow stacking on mobile */
+}
+
+.patients-table th { 
+    text-align: left; 
+    padding: 16px 24px; 
+    font-size: 14px; 
+    font-weight: 600; 
+    color: var(--text-grey); 
+    border-bottom: 1px solid var(--border-color); 
+}
+
+.patients-table td { 
+    padding: 16px 24px; 
+    font-size: 14px; 
+    color: var(--text-dark); 
+    border-bottom: 1px solid #f3f4f6; 
+    vertical-align: middle; 
+}
+
+/* Components */
+.patient-profile { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+}
+
+.avatar { 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    color: white; 
+    font-weight: 600; 
+    font-size: 16px; 
+    background: var(--header-gradient); 
+    flex-shrink: 0;
+}
+
+.patient-profile span { 
+    font-weight: 500; 
+}
+
+.status-badge { 
+    padding: 6px 12px; 
+    border-radius: 20px; 
+    font-size: 12px; 
+    font-weight: 500; 
+    display: inline-block; 
+    white-space: nowrap;
+}
+
+.status-badge.treatment { background-color: var(--status-blue-bg); color: var(--status-blue-text); }
+.status-badge.warning { background-color: var(--status-yellow-bg); color: var(--status-yellow-text); }
+.status-badge.recovered { background-color: var(--status-green-bg); color: var(--status-green-text); }
+
+.actions { 
+    display: flex; 
+    gap: 12px; 
+}
+
+.icon-action { 
+    background: none; 
+    border: none; 
+    cursor: pointer; 
+    font-size: 16px; 
+    color: var(--primary-blue); 
+    transition: color 0.2s; 
+}
+
+.icon-action:hover { 
+    color: var(--dark-blue); 
+}
+
+/* --- RESPONSIVENESS (Mobile Vertical Table) --- */
+@media (max-width: 768px) {
+    /* 1. Header Layout */
+    .page-header { 
+        flex-direction: column; 
+        align-items: flex-start; 
+        gap: 16px; 
+    }
+    .search-box { 
+        width: 100%; 
+    }
+
+    /* 2. RESET Table display to BLOCK */
+    .patients-table, 
+    .patients-table tbody, 
+    .patients-table tr, 
+    .patients-table td {
+        display: block;
+        width: 100%;
+    }
+
+    /* 3. Hide Table Header Row */
+    .patients-table thead {
+        display: none;
+    }
+
+    /* 4. Style Rows as Cards */
+    .patients-table tr {
+        margin-bottom: 16px;
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    /* 5. Style Cells as Flex Rows (Label + Value) */
+    .patients-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: right;
+        padding: 12px 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .patients-table td:last-child {
+        border-bottom: none;
+    }
+
+    /* 6. Add LABELS via CSS (So you don't need to change HTML) */
+    /* Cell 1: Name (We style this specially, no label) */
+    .patients-table td:nth-of-type(1) {
+        justify-content: flex-start;
+        border-bottom: 2px solid #f3f4f6;
+        padding-bottom: 16px;
+        margin-bottom: 8px;
+    }
+
+    /* Cells 2-5: Add Labels */
+    .patients-table td:nth-of-type(2)::before { content: "Last Visit"; font-weight: 600; color: var(--text-grey); }
+    .patients-table td:nth-of-type(3)::before { content: "Diagnosis"; font-weight: 600; color: var(--text-grey); }
+    .patients-table td:nth-of-type(4)::before { content: "Status"; font-weight: 600; color: var(--text-grey); }
+    .patients-table td:nth-of-type(5)::before { content: "Actions"; font-weight: 600; color: var(--text-grey); }
+    
+    /* Fix alignment for Actions on mobile */
+    .patients-table td:nth-of-type(5) {
+        justify-content: space-between;
+    }
+}

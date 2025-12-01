@@ -1,0 +1,156 @@
+{% extends 'superAdmin/base.html' %}
+{% load static %}
+
+{% block title %}Hospital Management{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/superAdmin/hospitals.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- 1. Header Section -->
+    <div class="hospitals-header">
+        <h2>Hospital Management</h2>
+        
+        <div class="header-controls">
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search hospitals...">
+            </div>
+            <button class="btn-primary add-btn">
+                <i class="far fa-hospital"></i> Add Hospital
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. Pending Approvals Section -->
+    <div class="pending-section">
+        <h3>
+            <i class="fas fa-exclamation-circle"></i> 
+            Pending Approvals (2)
+        </h3>
+        
+        <div class="pending-grid">
+            <!-- Pending Card 1 -->
+            <div class="pending-card yellow-border">
+                <div class="card-body">
+                    <div class="hospital-icon blue-bg">
+                        <i class="far fa-building"></i>
+                    </div>
+                    <div class="hospital-details">
+                        <h4>Kathmandu Medical Center</h4>
+                        <div class="detail-row"><i class="fas fa-map-marker-alt"></i> Kathmandu, Nepal</div>
+                        <div class="detail-row"><i class="far fa-hospital"></i> Multi-Specialty Hospital</div>
+                        <div class="detail-row"><i class="fas fa-phone-alt"></i> +977 01-5970032</div>
+                        <div class="detail-row"><i class="far fa-envelope"></i> info@ktmmedical.com</div>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-approve"><i class="fas fa-check-circle"></i> Approve</button>
+                    <button class="btn btn-reject"><i class="fas fa-times-circle"></i> Reject</button>
+                    <button class="btn btn-view"><i class="far fa-eye"></i> View Details</button>
+                </div>
+            </div>
+
+            <!-- Pending Card 2 -->
+            <div class="pending-card yellow-border">
+                <div class="card-body">
+                    <div class="hospital-icon blue-bg">
+                        <i class="far fa-hospital"></i>
+                    </div>
+                    <div class="hospital-details">
+                        <h4>Pokhara Health Clinic</h4>
+                        <div class="detail-row"><i class="fas fa-map-marker-alt"></i> Pokhara, Nepal</div>
+                        <div class="detail-row"><i class="far fa-hospital"></i> General Clinic</div>
+                        <div class="detail-row"><i class="fas fa-phone-alt"></i> +977 061-530214</div>
+                        <div class="detail-row"><i class="far fa-envelope"></i> contact@pokharahealth.com</div>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-approve"><i class="fas fa-check-circle"></i> Approve</button>
+                    <button class="btn btn-reject"><i class="fas fa-times-circle"></i> Reject</button>
+                    <button class="btn btn-view"><i class="far fa-eye"></i> View Details</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. All Hospitals Section -->
+    <div class="all-hospitals-section">
+        <h3>All Hospitals</h3>
+        
+        <div class="hospitals-list">
+            <!-- Hospital Card 1 -->
+            <div class="hospital-card">
+                <div class="card-main">
+                    <div class="hospital-icon blue-bg">
+                        <i class="far fa-building"></i>
+                    </div>
+                    <div class="main-info">
+                        <h4>Grande International Hospital</h4>
+                        <span class="location"><i class="fas fa-map-marker-alt"></i> Kathmandu, Nepal</span>
+                    </div>
+                    
+                    <div class="stats-row">
+                        <span class="stat">45 Doctors</span>
+                        <span class="stat">200 Beds</span>
+                        <span class="rating"><i class="fas fa-star"></i> 4.8</span>
+                    </div>
+                </div>
+                <div class="card-tools">
+                    <button class="icon-tool view"><i class="far fa-eye"></i></button>
+                    <button class="icon-tool edit"><i class="far fa-edit"></i></button>
+                    <button class="icon-tool delete"><i class="far fa-trash-alt"></i></button>
+                </div>
+            </div>
+
+            <!-- Hospital Card 2 -->
+            <div class="hospital-card">
+                <div class="card-main">
+                    <div class="hospital-icon blue-bg">
+                        <i class="far fa-hospital"></i>
+                    </div>
+                    <div class="main-info">
+                        <h4>Nepal Mediciti Hospital</h4>
+                        <span class="location"><i class="fas fa-map-marker-alt"></i> Lalitpur, Nepal</span>
+                    </div>
+                    
+                    <div class="stats-row">
+                        <span class="stat">38 Doctors</span>
+                        <span class="stat">150 Beds</span>
+                        <span class="rating"><i class="fas fa-star"></i> 4.7</span>
+                    </div>
+                </div>
+                <div class="card-tools">
+                    <button class="icon-tool view"><i class="far fa-eye"></i></button>
+                    <button class="icon-tool edit"><i class="far fa-edit"></i></button>
+                    <button class="icon-tool delete"><i class="far fa-trash-alt"></i></button>
+                </div>
+            </div>
+
+            <!-- Hospital Card 3 -->
+            <div class="hospital-card">
+                <div class="card-main">
+                    <div class="hospital-icon blue-bg">
+                        <i class="far fa-building"></i>
+                    </div>
+                    <div class="main-info">
+                        <h4>Teaching Hospital</h4>
+                        <span class="location"><i class="fas fa-map-marker-alt"></i> Kathmandu, Nepal</span>
+                    </div>
+                    
+                    <div class="stats-row">
+                        <span class="stat">120 Doctors</span>
+                        <span class="stat">500 Beds</span>
+                        <span class="rating"><i class="fas fa-star"></i> 4.5</span>
+                    </div>
+                </div>
+                <div class="card-tools">
+                    <button class="icon-tool view"><i class="far fa-eye"></i></button>
+                    <button class="icon-tool edit"><i class="far fa-edit"></i></button>
+                    <button class="icon-tool delete"><i class="far fa-trash-alt"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

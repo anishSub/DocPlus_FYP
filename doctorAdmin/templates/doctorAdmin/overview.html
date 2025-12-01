@@ -1,81 +1,14 @@
+{% extends 'doctorAdmin/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor Dashboard</title>
-    
-    <!-- Link to your CSS -->
-    <link rel="stylesheet" href="{% static 'css/doctorAdmin/overview.css' %}">
-    
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
 
-    <!-- 1. Top Navigation Bar -->
-    <header class="top-navbar">
-        <div class="nav-left">
-            <div class="profile-img">
-                <img src="https://ui-avatars.com/api/?name=Arjun+Sharma&background=random" alt="Doctor">
-            </div>
-            <div class="profile-info">
-                <h3>Dr. Arjun Sharma</h3>
-                <span>Cardiologist</span>
-            </div>
-        </div>
-        <div class="nav-right">
-            <button class="icon-btn"><i class="far fa-bell"></i><span class="dot"></span></button>
-            <button class="icon-btn"><i class="fas fa-cog"></i></button>
-            <button class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-        </div>
-    </header>
+{% block title %}Overview - Doctor Dashboard{% endblock %}
 
-    <div class="dashboard-container">
-        
-        <!-- 2. Sidebar Navigation -->
-        <aside class="sidebar">
-            <nav class="side-nav">
-                <!-- Ensure these URL names match your urls.py -->
-                <a href="{% url 'doctor_admin_dashboard' %}" class="nav-item active">
-                    <i class="fas fa-chart-pie"></i>
-                    <span>Overview</span>
-                </a>
-                <a href="{% url 'doctor_admin_appointments' %}" class="nav-item">
-                    <i class="far fa-calendar-check"></i>
-                    <span>Appointments</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i class="fas fa-user-injured"></i>
-                    <span>My Patients</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i class="far fa-clock"></i>
-                    <span>Schedule</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i class="far fa-hospital"></i>
-                    <span>Hospitals</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i class="fas fa-dollar-sign"></i>
-                    <span>Earnings</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i class="far fa-star"></i>
-                    <span>Reviews</span>
-                </a>
-            </nav>
-        </aside>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/doctorAdmin/overview.css' %}">
+{% endblock %}
 
-        <!-- 3. Main Content Area -->
-        <main class="main-content">
-            
-            <!-- A. Stats Grid -->
+{% block content %}
+<!-- A. Stats Grid -->
             <section class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-header">
@@ -131,7 +64,6 @@
             </section>
 
             <!-- C. Today's Appointments -->
-            <!-- This section matches the design in your image -->
             <section class="appointments-section">
                 <div class="section-header">
                     <h3>Today's Appointments</h3>
@@ -139,7 +71,6 @@
                 </div>
                 
                 <div class="appointment-list">
-                    <!-- Item 1: Video Call -->
                     <div class="appointment-card">
                         <div class="patient-info">
                             <div class="avatar blue">R</div>
@@ -155,7 +86,6 @@
                         <button class="start-btn">Start</button>
                     </div>
 
-                    <!-- Item 2: In-Person -->
                     <div class="appointment-card">
                         <div class="patient-info">
                             <div class="avatar purple">S</div>
@@ -171,7 +101,6 @@
                         <button class="start-btn">Start</button>
                     </div>
 
-                    <!-- Item 3: Video Call -->
                     <div class="appointment-card">
                         <div class="patient-info">
                             <div class="avatar blue">R</div>
@@ -189,9 +118,8 @@
                 </div>
             </section>
 
-            <!-- D. Bottom Grid (Recent Patients & Reviews) -->
+            <!-- D. Bottom Grid -->
             <div class="bottom-grid">
-                
                 <!-- Recent Patients -->
                 <section class="panel-card">
                     <div class="section-header">
@@ -262,5 +190,8 @@
             </div>
         </main>
     </div>
-</body>
-</html>
+
+{% endblock %}
+
+
+

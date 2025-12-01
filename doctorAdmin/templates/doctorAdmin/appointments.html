@@ -1,173 +1,106 @@
+{% extends 'doctorAdmin/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor Appointments</title>
-    <!-- Link to your CSS -->
-    <link rel="stylesheet" href="{% static 'css/doctorAdmin/appointments.css' %}">
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
 
-    <!-- 1. Top Navigation Bar (Same as Dashboard) -->
-    <header class="top-navbar">
-        <div class="nav-left">
-            <div class="profile-img">
-                <img src="https://ui-avatars.com/api/?name=Arjun+Sharma&background=random" alt="Doctor">
+{% block title %}Doctor Appointments{% endblock %}
+
+{% block extra_css %}
+<!-- Only load CSS specific to this page -->
+<link rel="stylesheet" href="{% static 'css/doctorAdmin/appointments.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2>All Appointments</h2>
+        <div class="header-actions">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search patients...">
             </div>
-            <div class="profile-info">
-                <h3>Dr. Arjun Sharma</h3>
-                <span>Cardiologist</span>
-            </div>
+            <button class="filter-btn">
+                <i class="fas fa-filter"></i> Filter
+            </button>
         </div>
-        <div class="nav-right">
-            <button class="icon-btn"><i class="far fa-bell"></i><span class="dot"></span></button>
-            <button class="icon-btn"><i class="fas fa-cog"></i></button>
-            <button class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-        </div>
-    </header>
-
-    <div class="dashboard-container">
-        
-        <!-- 2. Sidebar Navigation -->
-        <aside class="sidebar">
-            <nav class="side-nav">
-                <a href="{% url 'doctor_admin_dashboard' %}" class="nav-item">
-                    <i class="fas fa-chart-pie"></i>
-                    <span>Overview</span>
-                </a>
-                <!-- ACTIVE TAB -->
-                <a href="{% url 'doctor_admin_appointments' %}" class="nav-item active">
-                    <i class="far fa-calendar-check"></i>
-                    <span>Appointments</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i class="fas fa-user-injured"></i>
-                    <span>My Patients</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i class="far fa-clock"></i>
-                    <span>Schedule</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i class="far fa-hospital"></i>
-                    <span>Hospitals</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i class="fas fa-dollar-sign"></i>
-                    <span>Earnings</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i class="far fa-star"></i>
-                    <span>Reviews</span>
-                </a>
-            </nav>
-        </aside>
-
-        <!-- 3. Main Content Area -->
-        <main class="main-content">
-            
-            <!-- Page Header with Search & Filter -->
-            <div class="page-header">
-                <h2>All Appointments</h2>
-                <div class="header-actions">
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search patients...">
-                    </div>
-                    <button class="filter-btn">
-                        <i class="fas fa-filter"></i> Filter
-                    </button>
-                </div>
-            </div>
-
-            <!-- Appointments List -->
-            <div class="appointments-list">
-                
-                <!-- Card 1 -->
-                <div class="appointment-card">
-                    <div class="card-left">
-                        <div class="avatar blue">R</div>
-                        <div class="patient-details">
-                            <h3>Rajesh Kumar</h3>
-                            <p class="reason">Routine checkup</p>
-                            <div class="meta-info">
-                                <span><i class="far fa-clock"></i> 10:00 AM</span>
-                                <span class="tag video"><i class="fas fa-video"></i> Video Call</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-right">
-                        <button class="btn-start">Start Consultation</button>
-                        <button class="btn-view"><i class="far fa-eye"></i></button>
-                    </div>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="appointment-card">
-                    <div class="card-left">
-                        <div class="avatar blue">S</div>
-                        <div class="patient-details">
-                            <h3>Sita Sharma</h3>
-                            <p class="reason">Follow-up consultation</p>
-                            <div class="meta-info">
-                                <span><i class="far fa-clock"></i> 11:30 AM</span>
-                                <span class="tag in-person"><i class="fas fa-map-marker-alt"></i> In-Person</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-right">
-                        <button class="btn-start">Start Consultation</button>
-                        <button class="btn-view"><i class="far fa-eye"></i></button>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="appointment-card">
-                    <div class="card-left">
-                        <div class="avatar blue">R</div>
-                        <div class="patient-details">
-                            <h3>Ram Bahadur</h3>
-                            <p class="reason">Lab report review</p>
-                            <div class="meta-info">
-                                <span><i class="far fa-clock"></i> 02:00 PM</span>
-                                <span class="tag video"><i class="fas fa-video"></i> Video Call</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-right">
-                        <button class="btn-start">Start Consultation</button>
-                        <button class="btn-view"><i class="far fa-eye"></i></button>
-                    </div>
-                </div>
-
-                <!-- Card 4 -->
-                <div class="appointment-card">
-                    <div class="card-left">
-                        <div class="avatar blue">M</div>
-                        <div class="patient-details">
-                            <h3>Maya Thapa</h3>
-                            <p class="reason">New patient consultation</p>
-                            <div class="meta-info">
-                                <span><i class="far fa-clock"></i> 03:30 PM</span>
-                                <span class="tag in-person"><i class="fas fa-map-marker-alt"></i> In-Person</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-right">
-                        <button class="btn-start">Start Consultation</button>
-                        <button class="btn-view"><i class="far fa-eye"></i></button>
-                    </div>
-                </div>
-
-            </div>
-        </main>
     </div>
 
-</body>
-</html>
+    <!-- Appointments List -->
+    <div class="appointments-list">
+        
+        <!-- Card 1 -->
+        <div class="appointment-card">
+            <div class="card-left">
+                <div class="avatar blue">R</div>
+                <div class="patient-details">
+                    <h3>Rajesh Kumar</h3>
+                    <p class="reason">Routine checkup</p>
+                    <div class="meta-info">
+                        <span><i class="far fa-clock"></i> 10:00 AM</span>
+                        <span class="tag video"><i class="fas fa-video"></i> Video Call</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-right">
+                <button class="btn-start">Start Consultation</button>
+                <button class="btn-view"><i class="far fa-eye"></i></button>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="appointment-card">
+            <div class="card-left">
+                <div class="avatar blue">S</div>
+                <div class="patient-details">
+                    <h3>Sita Sharma</h3>
+                    <p class="reason">Follow-up consultation</p>
+                    <div class="meta-info">
+                        <span><i class="far fa-clock"></i> 11:30 AM</span>
+                        <span class="tag in-person"><i class="fas fa-map-marker-alt"></i> In-Person</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-right">
+                <button class="btn-start">Start Consultation</button>
+                <button class="btn-view"><i class="far fa-eye"></i></button>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="appointment-card">
+            <div class="card-left">
+                <div class="avatar blue">R</div>
+                <div class="patient-details">
+                    <h3>Ram Bahadur</h3>
+                    <p class="reason">Lab report review</p>
+                    <div class="meta-info">
+                        <span><i class="far fa-clock"></i> 02:00 PM</span>
+                        <span class="tag video"><i class="fas fa-video"></i> Video Call</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-right">
+                <button class="btn-start">Start Consultation</button>
+                <button class="btn-view"><i class="far fa-eye"></i></button>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="appointment-card">
+            <div class="card-left">
+                <div class="avatar blue">M</div>
+                <div class="patient-details">
+                    <h3>Maya Thapa</h3>
+                    <p class="reason">New patient consultation</p>
+                    <div class="meta-info">
+                        <span><i class="far fa-clock"></i> 03:30 PM</span>
+                        <span class="tag in-person"><i class="fas fa-map-marker-alt"></i> In-Person</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-right">
+                <button class="btn-start">Start Consultation</button>
+                <button class="btn-view"><i class="far fa-eye"></i></button>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

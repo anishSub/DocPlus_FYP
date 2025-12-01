@@ -1,0 +1,204 @@
+/* --- Header Section --- */
+.hospitals-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.hospitals-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.header-controls {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search-wrapper { position: relative; width: 300px; }
+.search-wrapper input {
+    width: 100%; padding: 10px 16px 10px 40px;
+    border-radius: 8px; border: 1px solid #e5e7eb;
+    outline: none; font-size: 14px;
+}
+.search-wrapper i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #9ca3af; }
+
+.add-btn {
+    background-color: #0092b8;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: background 0.2s;
+}
+.add-btn:hover { opacity: 0.9; }
+
+/* --- Pending Approvals Section --- */
+.pending-section { margin-bottom: 40px; }
+.pending-section h3 {
+    font-size: 16px; font-weight: 600;
+    color: #1f2937; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+}
+.pending-section h3 i { color: #f59e0b; /* Amber warning icon */ }
+
+.pending-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+}
+
+.pending-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* Yellow Border Style for Pending Cards */
+.pending-card.yellow-border {
+    background-color: #fffbeb; /* Very light yellow bg */
+    border: 2px solid #fcd34d; /* Amber border */
+}
+
+.card-body {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.hospital-icon {
+    width: 64px; height: 64px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; color: white;
+    flex-shrink: 0;
+}
+.hospital-icon.blue-bg { background-color: #0092b8; }
+
+.hospital-details h4 {
+    font-size: 18px; font-weight: 600;
+    color: #1f2937; margin-bottom: 12px;
+}
+
+.detail-row {
+    font-size: 14px; color: #6b7280;
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+}
+.detail-row i { width: 16px; text-align: center; }
+
+.card-actions {
+    display: flex; gap: 12px;
+    border-top: 1px solid #e5e7eb; /* Subtle separator inside card */
+    padding-top: 16px;
+}
+
+.btn {
+    padding: 8px 16px; border-radius: 6px; border: none;
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+    transition: opacity 0.2s;
+    flex: 1; justify-content: center;
+}
+.btn:hover { opacity: 0.9; }
+
+.btn-approve { background-color: #16a34a; color: white; }
+.btn-reject { background-color: #dc2626; color: white; }
+.btn-view { background-color: #f3f4f6; color: #374151; }
+
+/* --- All Hospitals Section --- */
+.all-hospitals-section h3 {
+    font-size: 18px; font-weight: 600;
+    color: #1f2937; margin-bottom: 16px;
+}
+
+.hospitals-list {
+    display: flex; flex-direction: column; gap: 16px;
+}
+
+.hospital-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: box-shadow 0.2s;
+}
+.hospital-card:hover { box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+
+.card-main {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+}
+
+.main-info h4 { font-size: 16px; font-weight: 600; color: #1f2937; margin-bottom: 4px; }
+.main-info .location { font-size: 13px; color: #6b7280; display: block; }
+
+.stats-row {
+    display: flex; gap: 24px;
+    margin-left: auto; /* Push to right */
+    margin-right: 40px; /* Space before action icons */
+}
+
+.stat { font-size: 14px; color: #4b5563; }
+.rating { font-size: 14px; font-weight: 600; color: #1f2937; display: flex; align-items: center; gap: 4px; }
+.rating i { color: #f59e0b; }
+
+.card-tools { display: flex; gap: 12px; }
+.icon-tool {
+    background: none; border: none; cursor: pointer;
+    font-size: 16px; color: #0092b8; transition: color 0.2s;
+}
+.icon-tool:hover { color: #0e5c98; }
+.icon-tool.delete { color: #ef4444; }
+.icon-tool.delete:hover { color: #dc2626; }
+
+/* --- RESPONSIVENESS --- */
+@media (max-width: 768px) {
+    /* Header Stack */
+    .hospitals-header { flex-direction: column; align-items: flex-start; }
+    .header-controls { width: 100%; flex-direction: column; }
+    .search-wrapper, .add-btn { width: 100%; }
+    
+    /* Pending Grid Stack */
+    .pending-grid { grid-template-columns: 1fr; }
+    
+    /* Pending Card Details */
+    .card-body { flex-direction: column; gap: 16px; }
+    .hospital-icon { width: 48px; height: 48px; font-size: 20px; }
+    
+    .card-actions { flex-direction: column; }
+    
+    /* All Hospitals List Mobile View */
+    .hospital-card { flex-direction: column; align-items: flex-start; gap: 16px; position: relative; }
+    .card-main { flex-direction: column; align-items: flex-start; gap: 12px; width: 100%; }
+    
+    .stats-row { 
+        margin: 0; 
+        width: 100%; 
+        justify-content: space-between; 
+        border-top: 1px solid #f3f4f6; 
+        padding-top: 12px; 
+    }
+    
+    .card-tools { 
+        position: absolute; 
+        top: 20px; 
+        right: 20px; 
+    }
+}

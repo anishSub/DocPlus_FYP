@@ -19,3 +19,42 @@ class DoctorAdminAppointments(TemplateView):
         context = super().get_context_data(**kwargs)
         # Add your context data here if needed
         return context
+      
+class PatientsListView(TemplateView):
+    template_name = 'doctorAdmin/patients.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add your context data here if needed
+        return context
+      
+class DoctorScheduleView(TemplateView):
+    template_name = 'doctorAdmin/schedule.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add your context data 
+      
+class HospitalView(TemplateView):
+    template_name = 'doctorAdmin/hospitals.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add your context data here if needed
+        return context
+      
+class DoctorEarningsView(TemplateView):
+    template_name = 'doctorAdmin/earnings.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add your context data here if needed
+        return context
+      
+class DoctorRatingsView(TemplateView):
+    template_name = 'doctorAdmin/ratings.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add your context data here if needed
+        return context

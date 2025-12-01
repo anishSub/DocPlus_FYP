@@ -1,0 +1,165 @@
+/* =========================================
+   1. GLOBAL VARIABLES & RESET
+   ========================================= */
+:root {
+    --primary-blue: #0092b8;
+    --dark-blue: #1c398e;
+    --header-gradient: linear-gradient(90deg, #0092b8, #1c398e);
+    --bg-color: #f3f4f6;
+    --white: #ffffff;
+    --text-dark: #111827;
+    --text-grey: #6b7280;
+    --border-color: #e5e7eb;
+    
+    /* Status Colors */
+    --success-green: #10b981;
+    --warning-orange: #f59e0b;
+    --bg-blue-light: #e0f2fe;
+    --bg-purple-light: #f3e8ff;
+    --bg-green-light: #dcfce7;
+    --bg-orange-light: #fef3c7;
+    
+    /* Font */
+    --font-family: 'Inter', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+}
+
+/* =========================================
+   2. TOP NAVIGATION BAR
+   ========================================= */
+.top-navbar {
+    background: var(--header-gradient);
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    position: fixed;
+    top: 0; left: 0; width: 100%;
+    z-index: 1000;
+    color: var(--white);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-left { display: flex; align-items: center; gap: 12px; }
+
+/* Menu Toggle Button (Mobile Only) */
+.menu-toggle {
+    display: none; /* Hidden on Desktop */
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 10px;
+    z-index: 1001;
+}
+
+.profile-img img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.5); }
+.profile-info h3 { font-size: 16px; font-weight: 600; }
+.profile-info span { font-size: 12px; opacity: 0.9; }
+
+.nav-right { display: flex; align-items: center; gap: 16px; }
+.icon-btn { background: transparent; border: none; color: white; font-size: 20px; cursor: pointer; position: relative; }
+.icon-btn .dot { position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background-color: #ef4444; border-radius: 50%; border: 1px solid var(--primary-blue); }
+.logout-btn { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; transition: all 0.2s; }
+.logout-btn:hover { background: rgba(255,255,255,0.3); }
+
+/* =========================================
+   3. SIDEBAR NAVIGATION (Floating Card)
+   ========================================= */
+.dashboard-container {
+    display: flex;
+    margin-top: 70px;
+    min-height: calc(100vh - 70px);
+    position: relative;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: var(--white);
+    padding: 24px 16px;
+    
+    /* Floating Card Logic */
+    position: fixed;
+    top: 94px; 
+    left: 24px; 
+    height: calc(100vh - 118px);
+    
+    overflow-y: auto;
+    display: flex; flex-direction: column;
+    
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    z-index: 900;
+    transition: transform 0.3s ease-in-out;
+}
+
+.side-nav { display: flex; flex-direction: column; gap: 8px; }
+
+.nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    color: var(--text-grey);
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.nav-item:hover { background-color: #f3f4f6; color: var(--primary-blue); }
+.nav-item.active { background-color: var(--primary-blue); color: var(--white); box-shadow: 0 4px 6px rgba(0, 146, 184, 0.2); }
+.nav-item i { width: 20px; text-align: center; }
+
+/* =========================================
+   4. MAIN CONTENT LAYOUT
+   ========================================= */
+.main-content {
+    /* Margin = Left Gap(24px) + Sidebar(250px) + Inner Gap(26px) */
+    margin-left: 300px;
+    flex: 1;
+    padding: 32px 32px 32px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* =========================================
+   5. RESPONSIVE DESIGN
+   ========================================= */
+@media (max-width: 1024px) {
+    /* Show Menu Button */
+    .menu-toggle { display: block; }
+
+    /* Hide Sidebar (Slide Out) */
+    .sidebar { 
+        transform: translateX(-300px); 
+        left: 0; top: 70px; 
+        height: calc(100vh - 70px); 
+        margin: 0; 
+        border-radius: 0 16px 16px 0; 
+    }
+    
+    /* Show Sidebar (Slide In) */
+    .sidebar.active { transform: translateX(0); }
+
+    /* Reset Main Content Margins */
+    .main-content { margin-left: 0; padding: 24px; }
+}
+
+@media (max-width: 768px) {
+    .top-navbar { padding: 0 16px; }
+    .profile-info { display: none; }
+    
+    /* Shrink Logout Button */
+    .logout-btn { padding: 8px; font-size: 0; }
+    .logout-btn i { font-size: 16px; margin: 0; }
+}
