@@ -14,11 +14,3 @@ class AboutUsView(View):
 class ContactUsView(View):
     def get(self, request):
         return render(request, 'contact_us/contact_us.html')
-    
-class FindDoctorView(View):
-    def get(self, request):
-        return render(request, 'find_doctor/find_doctor.html')
-    
-class FindHospitalView(View):
-    def get(self, request):
-        return render(request, 'find_hospital/find_hospital.html')

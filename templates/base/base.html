@@ -32,10 +32,11 @@
             </nav>
 
             <div class="header-actions" id="nav-actions">
-                <div class="emergency-contact">
-                    <i class="ri-phone-fill"></i>
-                    <span>Emergency</span>
-                </div>
+                {% comment %} i have to redirect the url to appointment if the user is authenticated  {% endcomment %}
+                <a href="{% if user.is_authenticated %}{% url 'personalInfo' %}{% else %}{% url 'register' %}{% endif %}" class="btn btn-yellow">
+                    <i class="ri-calendar-check-fill"></i>
+                    Book Appointment
+                </a>
                 
                 {% if user.is_authenticated %}
                     

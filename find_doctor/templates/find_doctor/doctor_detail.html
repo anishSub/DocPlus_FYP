@@ -1,0 +1,325 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <!-- This ONE CSS file now handles everything -->
+    <link rel="stylesheet" href="{% static 'css/find_doctor/doctor_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="doctor-detail-container">
+    
+    <!-- 1. BACK BUTTON (Static) -->
+    <div class="back-nav container">
+        <a href="{% url 'find_doctor' %}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Doctors
+        </a>
+    </div>
+
+    <!-- 2. PROFILE HEADER (Static - Always Visible) -->
+    <div class="container">
+        <div class="profile-header-card">
+            <div class="profile-content-wrapper">
+                <!-- Image & Rating -->
+                <div class="profile-image-box">
+                    <img src="{% static 'images/photos/doctor_photo.jpeg' %}" alt="Dr. Rajesh Kumar Sharma" class="doc-img">
+                    <div class="rating-tag">
+                        <i class="fas fa-star text-yellow"></i> 4.8 <span>(324 reviews)</span>
+                    </div>
+                    <div class="fee-display">
+                        <span class="fee-label">Consultation Fee</span>
+                        <span class="fee-amount">NPR 1500</span>
+                    </div>
+                    <!-- Mobile Book Button -->
+                    <button class="btn-book-mobile">Book Appointment</button>
+                </div>
+
+                <!-- Info Grid -->
+                <div class="profile-info-box">
+                    <div class="identity-section">
+                        <h1>Dr. Rajesh Kumar Sharma</h1>
+                        <span class="specialist-badge">Cardiologist</span>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="icon-box"><i class="fas fa-graduation-cap"></i></div>
+                            <div><label>Qualifications</label><p>MD, DM (Cardiology)</p></div>
+                        </div>
+                        <div class="info-item">
+                            <div class="icon-box"><i class="fas fa-briefcase"></i></div>
+                            <div><label>Experience</label><p>15 years</p></div>
+                        </div>
+                        <div class="info-item">
+                            <div class="icon-box"><i class="fas fa-hospital"></i></div>
+                            <div><label>Hospital</label><p>Tribhuvan University Teaching Hospital</p></div>
+                        </div>
+                        <div class="info-item">
+                            <div class="icon-box"><i class="fas fa-map-marker-alt"></i></div>
+                            <div><label>Location</label><p>Kathmandu</p></div>
+                        </div>
+                        <div class="info-item">
+                            <div class="icon-box"><i class="fas fa-language"></i></div>
+                            <div><label>Languages</label><p>Nepali, English, Hindi</p></div>
+                        </div>
+                        <div class="info-item">
+                            <div class="icon-box"><i class="far fa-calendar-alt"></i></div>
+                            <div><label>Available Days</label><p>Mon, Wed, Fri</p></div>
+                        </div>
+                    </div>
+                    {% comment %} <div class="header-actions">
+                        <button class="btn-action btn-white"><i class="far fa-comment-alt"></i> Message</button>
+                    </div> {% endcomment %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. TABS (Controls Switching) -->
+    <div class="container">
+        <div class="page-tabs">
+            <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+            <button class="tab-btn" onclick="switchTab('reviews')">Reviews (324)</button>
+        </div>
+    </div>
+
+    <!-- 4. SECTION A: OVERVIEW (Details + Booking Sidebar) -->
+    <div id="overview-section" class="container main-content-grid fade-in">
+        
+        <!-- Left Column: Doctor Details -->
+        <div class="details-column">
+            <div class="content-section">
+                <h3 class="section-title">Dr. Rajesh Kumar</h3>
+                <p class="bio-text">
+                    Dr. Rajesh Kumar Sharma is a highly experienced cardiologist with over 15 years of practice in Nepal. He specializes in interventional cardiology and has treated thousands of patients with heart conditions.
+                </p>
+            </div>
+
+            <!-- Education -->
+            <div class="content-section">
+                <h3 class="section-title"><i class="fas fa-user-graduate"></i> Education</h3>
+                <div class="timeline-list">
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fas fa-graduation-cap"></i></div>
+                        <div class="timeline-content">
+                            <h4>DM in Cardiology</h4>
+                            <p>AIIMS, New Delhi</p>
+                            <span class="year">2008</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fas fa-university"></i></div>
+                        <div class="timeline-content">
+                            <h4>MD in Internal Medicine</h4>
+                            <p>Institute of Medicine, Nepal</p>
+                            <span class="year">2005</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fas fa-book-medical"></i></div>
+                        <div class="timeline-content">
+                            <h4>MBBS</h4>
+                            <p>Tribhuvan University</p>
+                            <span class="year">2002</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Specializations -->
+            <div class="content-section">
+                <h3 class="section-title"><i class="fas fa-stethoscope"></i> Specializations</h3>
+                <div class="tags-grid">
+                    <span class="tag"><i class="fas fa-heartbeat"></i> Coronary Angiography</span>
+                    <span class="tag"><i class="fas fa-procedures"></i> Angioplasty & Stenting</span>
+                    <span class="tag"><i class="fas fa-charging-station"></i> Pacemaker Implantation</span>
+                    <span class="tag"><i class="fas fa-heart-broken"></i> Heart Failure Management</span>
+                </div>
+            </div>
+            
+            <!-- Achievements -->
+            <div class="content-section">
+                <h3 class="section-title"><i class="fas fa-trophy"></i> Achievements & Recognition</h3>
+                <ul class="achievements-list">
+                    <li>Gold Medalist in MD</li>
+                    <li>Published 20+ research papers</li>
+                    <li>Specialized in Interventional Cardiology</li>
+                    <li>Member of Nepal Medical Council</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Column: Booking Sidebar (Sticky) -->
+        <div class="sidebar-column">
+            <div class="booking-card">
+                <h3>Book Appointment</h3>
+                <div class="booking-step">
+                    <label>Select Day</label>
+                    <div class="day-selector">
+                        <button class="day-btn">Monday</button>
+                        <button class="day-btn">Wednesday</button>
+                        <button class="day-btn">Friday</button>
+                    </div>
+                </div>
+                <div class="booking-step">
+                    <label>Select Time</label>
+                    <div class="time-grid">
+                        <button class="time-btn">9:00 AM</button>
+                        <button class="time-btn">10:00 AM</button>
+                        <button class="time-btn">2:00 PM</button>
+                        <button class="time-btn">4:00 PM</button>
+                    </div>
+                </div>
+                <button class="btn-confirm-booking">
+                    <i class="far fa-calendar-check"></i> Confirm Booking
+                </button>
+                <div class="contact-info-box">
+                    <label>Contact Information</label>
+                    <div class="contact-row"><i class="far fa-envelope"></i> contact@docplus.com</div>
+                    <div class="contact-row"><i class="fas fa-phone-alt"></i> +977 984-1234567</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    
+    <!-- 5. SECTION B: REVIEWS (Full Width, No Sidebar) -->
+    <!-- Initially hidden using style="display: none;" -->
+    <div id="reviews-section" class="container fade-in" style="display: none;">
+        <div class="reviews-wrapper">
+            
+            <!-- Review Summary (Bars) -->
+            <div class="review-summary-card">
+                <div class="summary-left">
+                    <div class="big-score">4.8</div>
+                    <div class="stars-row">
+                        <i class="fas fa-star text-yellow"></i>
+                        <i class="fas fa-star text-yellow"></i>
+                        <i class="fas fa-star text-yellow"></i>
+                        <i class="fas fa-star text-yellow"></i>
+                        <i class="fas fa-star text-yellow"></i>
+                    </div>
+                    <p class="total-reviews">Based on 324 reviews</p>
+                </div>
+                <div class="summary-right">
+                    <div class="rating-bar-row">
+                        <span class="star-label">5 star</span>
+                        <div class="progress-track"><div class="progress-fill" style="width: 75%;"></div></div>
+                        <span class="count-label">245</span>
+                    </div>
+                    <div class="rating-bar-row">
+                        <span class="star-label">4 star</span>
+                        <div class="progress-track"><div class="progress-fill" style="width: 18%;"></div></div>
+                        <span class="count-label">58</span>
+                    </div>
+                    <div class="rating-bar-row">
+                        <span class="star-label">3 star</span>
+                        <div class="progress-track"><div class="progress-fill" style="width: 5%;"></div></div>
+                        <span class="count-label">15</span>
+                    </div>
+                    <div class="rating-bar-row">
+                        <span class="star-label">2 star</span>
+                        <div class="progress-track"><div class="progress-fill" style="width: 2%;"></div></div>
+                        <span class="count-label">4</span>
+                    </div>
+                    <div class="rating-bar-row">
+                        <span class="star-label">1 star</span>
+                        <div class="progress-track"><div class="progress-fill" style="width: 1%;"></div></div>
+                        <span class="count-label">2</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews List -->
+            <div class="reviews-list">
+                <!-- Review 1 -->
+                <div class="review-card">
+                    <div class="review-header">
+                        <h4 class="reviewer-name">Ramesh Adhikari</h4>
+                        <div class="review-meta">
+                            <div class="stars">
+                                <i class="fas fa-star text-yellow"></i><i class="fas fa-star text-yellow"></i><i class="fas fa-star text-yellow"></i><i class="fas fa-star text-yellow"></i><i class="fas fa-star text-yellow"></i>
+                            </div>
+                            <span class="review-date">Nov 15, 2024</span>
+                        </div>
+                    </div>
+                    <div class="review-body">
+                        <p>Dr. Sharma is an excellent cardiologist. He explained my heart condition in detail and the treatment has been very effective.</p>
+                    </div>
+                </div>
+                
+                <!-- Review 2 -->
+                <div class="review-card">
+                    <div class="review-header">
+                        <h4 class="reviewer-name">Sunita Thapa</h4>
+                        <div class="review-meta">
+                            <div class="stars">
+                                <i class="fas fa-star text-yellow"></i><i class="fas fa-star text-yellow"></i><i class="fas fa-star text-yellow"></i><i class="fas fa-star text-yellow"></i><i class="fas fa-star text-yellow"></i>
+                            </div>
+                            <span class="review-date">Nov 10, 2024</span>
+                        </div>
+                    </div>
+                    <div class="review-body">
+                        <p>Very professional and caring doctor. He took time to answer all my questions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Include JS Logic -->
+{% block extra_js %}
+    <script>
+    // 1. Tab Switching Logic
+    function switchTab(tabName) {
+        // Get sections
+        const overviewSection = document.getElementById('overview-section');
+        const reviewsSection = document.getElementById('reviews-section');
+        
+        // Get Buttons
+        const buttons = document.querySelectorAll('.tab-btn');
+
+        if (tabName === 'overview') {
+            // Show Overview
+            overviewSection.style.display = 'grid'; // MUST match CSS grid layout
+            reviewsSection.style.display = 'none';
+            
+            // Update Active State (Button 0 is Overview)
+            buttons[0].classList.add('active');
+            buttons[1].classList.remove('active');
+        } 
+        else if (tabName === 'reviews') {
+            // Show Reviews
+            overviewSection.style.display = 'none';
+            reviewsSection.style.display = 'block'; // Reviews are block, not grid
+            
+            // Update Active State (Button 1 is Reviews)
+            buttons[0].classList.remove('active');
+            buttons[1].classList.add('active');
+        }
+    }
+
+    // 2. Booking Button Logic
+    document.addEventListener('DOMContentLoaded', function() {
+        const dayBtns = document.querySelectorAll('.day-btn');
+        dayBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                dayBtns.forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        const timeBtns = document.querySelectorAll('.time-btn');
+        timeBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                timeBtns.forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,284 @@
+/* --- SHARED VARIABLES (Matches Page 2) --- */
+:root {
+    --primary-color: #0092b8;
+    --primary-gradient: linear-gradient(90deg, #0092b8, #1c398e);
+    --bg-gradient-start: #ecfeff;
+    --bg-gradient-end: #eff6ff;
+    --text-dark: #364153;
+    --text-grey: #6a7282;
+    --text-light-grey: #99a1af;
+    --border-color: #d1d5dc;
+    --error-color: #fb2c36;
+    --success-color: #10b981;
+    --white: #ffffff;
+}
+
+/* --- MAIN LAYOUT (UPDATED) --- */
+/* Now acts as the full-page background wrapper */
+.main-container {
+    width: 100%;
+    min-height: calc(100vh - 80px); /* Full height minus header */
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end)), #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers the content cards */
+    padding: 40px 20px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+    box-sizing: border-box;
+}
+
+/* --- CONTENT CONSTRAINTS --- */
+/* These elements now sit inside the flex container and max out at 900px */
+.header-section,
+.stepper-wrapper,
+.form-card {
+    width: 100%;
+    max-width: 900px;
+}
+
+/* --- HEADER --- */
+.header-section {
+    text-align: center;
+    position: relative;
+    margin-bottom: 32px;
+}
+
+.back-link {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: var(--text-dark);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.header-section h1 {
+    color: var(--primary-color);
+    font-size: 24px;
+    margin: 8px 0;
+    font-weight: 600;
+}
+
+.subtitle {
+    color: var(--text-grey);
+    font-size: 16px;
+}
+
+/* --- STEPPER --- */
+.stepper-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--white);
+    padding: 30px 40px;
+    border-radius: 14px;
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 32px;
+    box-sizing: border-box;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-light-grey);
+    position: relative;
+    z-index: 2;
+    flex: 1;
+}
+
+.circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--white);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+/* Active Step */
+.step.active .circle {
+    background: var(--primary-gradient);
+    box-shadow: 0 0 0 4px #a2f4fd;
+    color: white;
+}
+.step.active {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Completed Step */
+.step.completed .circle {
+    background: var(--primary-color); /* Matches Page 2 Style */
+    color: white;
+}
+.step.completed {
+    color: var(--primary-color);
+}
+
+.line {
+    flex: 1;
+    height: 4px;
+    background: #e5e7eb;
+    margin: 0 -10px;
+    position: relative;
+    top: -14px;
+    z-index: 1;
+}
+
+.line.active, .line.completed {
+    background: var(--primary-color);
+}
+
+/* --- FORM CARD --- */
+.form-card {
+    background: var(--white);
+    border-radius: 14px;
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
+    padding: 32px;
+    box-sizing: border-box;
+}
+
+.form-header {
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.form-header h2 {
+    color: var(--primary-color);
+    font-size: 20px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+/* --- INPUTS --- */
+.form-group {
+    margin-bottom: 24px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.required { color: var(--error-color); }
+
+textarea {
+    width: 100%;
+    height: 100px;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text-dark);
+    resize: vertical;
+    box-sizing: border-box;
+    background: #fff;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* --- FILE UPLOAD --- */
+.upload-box {
+    border: 2px dashed var(--border-color);
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #fff;
+}
+
+.upload-box:hover {
+    background-color: #f0f9ff;
+    border-color: var(--primary-color);
+}
+
+.file-input {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.upload-icon {
+    font-size: 32px;
+    color: var(--primary-color);
+    margin-bottom: 12px;
+}
+
+.highlight {
+    color: var(--primary-color);
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.help-text {
+    font-size: 14px;
+    color: var(--text-grey);
+    margin-bottom: 12px;
+}
+
+/* --- BUTTONS --- */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 32px;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 24px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 16px;
+    transition: transform 0.1s;
+    height: 48px;
+    text-decoration: none;
+}
+
+.btn:hover { opacity: 0.9; }
+
+.btn-secondary {
+    background-color: #e5e7eb;
+    color: var(--text-light-grey);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* --- MOBILE RESPONSIVE --- */
+@media (max-width: 600px) {
+    .main-container { padding: 20px 10px; }
+    .form-card { padding: 20px; }
+    .stepper-card { padding: 20px 15px; }
+    .step span { display: none; }
+}

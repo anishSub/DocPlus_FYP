@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - DocPlus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/accounts/register.css' %}">
+</head>
+<body>
+
+    <div class="auth-page-wrapper">
+        <div class="auth-container">
+            
+            <a href="/" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h1>Create Account</h1>
+                    <p>Join DocPlus and start your healthcare journey</p>
+                </div>
+
+                <div class="auth-body">
+                    
+                    {% if messages %}
+                        <div class="messages-container">
+                            {% for message in messages %}
+                                <div class="alert {{ message.tags }}">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    {% if form.errors %}
+                        <div class="messages-container">
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <div class="alert error">
+                                        <strong>{{ field|title }}:</strong> {{ error }}
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <form method="POST" action="{% url 'register' %}" class="auth-form">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label class="field-label">Full Name</label>
+                            <div class="row-input">
+                                <div class="input-wrapper">
+                                    <input type="text" name="first_name" placeholder="First Name" required 
+                                           value="{{ form.first_name.value|default:'' }}">
+                                    <i class="fas fa-user input-icon"></i>
+                                </div>
+                                <div class="input-wrapper">
+                                    <input type="text" name="last_name" placeholder="Last Name" required 
+                                           value="{{ form.last_name.value|default:'' }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="field-label">Username</label>
+                            <div class="input-wrapper">
+                                <input type="text" name="username" placeholder="Choose a username" required 
+                                       value="{{ form.username.value|default:'' }}">
+                                <i class="fas fa-at input-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="field-label">Email Address</label>
+                            <div class="input-wrapper">
+                                <input type="email" name="email" placeholder="email@example.com" required 
+                                       value="{{ form.email.value|default:'' }}">
+                                <i class="fas fa-envelope input-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="field-label">Phone Number</label>
+                            <div class="input-wrapper">
+                                <input type="tel" name="mobile_number" placeholder="+977 9841234567" required 
+                                       value="{{ form.mobile_number.value|default:'' }}">
+                                <i class="fas fa-phone input-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="field-label">Password</label>
+                            <div class="input-wrapper">
+                                <input type="password" name="password1" placeholder="Create a strong password" required>
+                                <i class="fas fa-lock input-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="field-label">Confirm Password</label>
+                            <div class="input-wrapper">
+                                <input type="password" name="password2" placeholder="Re-enter your password" required>
+                                <i class="fas fa-lock input-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="terms-check">
+                            <input type="checkbox" required id="terms">
+                            <label for="terms">I agree to the <a href="#">Terms and Conditions</a> and <a href="#">Privacy Policy</a></label>
+                        </div>
+
+                        <button type="submit" class="btn-submit">Create Account</button>
+                    </form>
+
+                    <div class="divider">
+                        <span>Or sign up with</span>
+                    </div>
+
+                    <div class="social-buttons">
+                        <button class="btn-social google">
+                            <i class="fab fa-google"></i> Google
+                        </button>
+                        <button class="btn-social facebook">
+                            <i class="fab fa-facebook-f"></i> Facebook
+                        </button>
+                    </div>
+
+                    <div class="auth-footer">
+                        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="secure-note">
+                <i class="fas fa-shield-alt"></i> Your information is secure and encrypted
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,109 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/appointment/appointment_success.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="success-wrapper">
+    <div class="success-card">
+        
+        <!-- SUCCESS ICON -->
+        <div class="icon-container">
+            <i class="fas fa-check-circle"></i>
+        </div>
+
+        <!-- MAIN HEADING -->
+        <div class="success-header">
+            <h1>Appointment Confirmed!</h1>
+            <p>Your online video consultation has been successfully booked.</p>
+        </div>
+
+        <!-- DETAILS BOX -->
+        <div class="details-box">
+            <h3>Appointment Details</h3>
+            
+            <div class="details-grid">
+                
+                <!-- Item 1: Patient -->
+                <div class="detail-item">
+                    <div class="item-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="item-content">
+                        <span class="label">Patient Name</span>
+                        <span class="value">Anish Subedi</span> <!-- Replace with {{ user.get_full_name }} -->
+                    </div>
+                </div>
+
+                <!-- Item 2: Doctor -->
+                <div class="detail-item">
+                    <div class="item-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="item-content">
+                        <span class="label">Doctor</span>
+                        <span class="value">Dr. Suman Rai</span>
+                        <span class="sub-value">Gynecologist</span>
+                    </div>
+                </div>
+
+                <!-- Item 3: Date & Time -->
+                <div class="detail-item">
+                    <div class="item-icon">
+                        <i class="far fa-calendar-alt"></i>
+                    </div>
+                    <div class="item-content">
+                        <span class="label">Date & Time</span>
+                        <span class="value">Sunday, March 12, 2025</span>
+                        <span class="value highlight-time">09:00 AM</span>
+                    </div>
+                </div>
+
+                <!-- Item 4: Type -->
+                <div class="detail-item">
+                    <div class="item-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <div class="item-content">
+                        <span class="label">Consultation Type</span>
+                        <span class="value">Online Video Consultation (5 mins)</span>
+                    </div>
+                </div>
+
+                <!-- Item 5: Fee -->
+                <div class="detail-item">
+                    <div class="item-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="item-content">
+                        <span class="label">Consultation Fee</span>
+                        <span class="value fee">NPR 900</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- NOTIFICATION TEXT -->
+        <div class="notification-text">
+            <p>
+                <i class="fas fa-envelope"></i> 
+                A confirmation email has been sent to <span class="email">subedianish937@gmail.com</span>
+            </p>
+            <p>
+                <i class="fas fa-video"></i> 
+                You will receive a video call link 10 minutes before your appointment.
+            </p>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="action-buttons">
+            <a href="/" class="btn btn-primary">Back to Home</a>
+            <a href="#" class="btn btn-outline">View My Appointments</a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

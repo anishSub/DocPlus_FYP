@@ -1,0 +1,344 @@
+/* --- SHARED VARIABLES (Matches Page 2 & 3) --- */
+:root {
+    --primary-color: #0092b8;
+    --primary-gradient: linear-gradient(90deg, #0092b8, #1c398e);
+    --bg-gradient-start: #ecfeff;
+    --bg-gradient-end: #eff6ff;
+    --text-dark: #364153;
+    --text-grey: #6a7282;
+    --text-light-grey: #99a1af;
+    --border-color: #d1d5dc;
+    --error-color: #fb2c36;
+    --success-color: #10b981;
+    --white: #ffffff;
+}
+
+/* --- MAIN LAYOUT (UPDATED) --- */
+/* Now acts as the full-page background wrapper */
+.main-container {
+    width: 100%;
+    min-height: calc(100vh - 80px); /* Full height minus header */
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end)), #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers the content cards */
+    padding: 40px 20px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+    box-sizing: border-box;
+}
+
+/* --- CONTENT CONSTRAINTS --- */
+/* Restrict widths so they align nicely in the center */
+.header-section,
+.stepper-wrapper,
+.form-card {
+    width: 100%;
+    max-width: 900px;
+}
+
+/* --- HEADER (UPDATED POSITIONING) --- */
+.header-section {
+    text-align: center;
+    position: relative;
+    margin-bottom: 40px;
+}
+
+.back-link {
+    /* Absolute positioning moves it to top-left */
+    position: absolute;
+    left: 0;
+    top: 0;
+    
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #4a5565;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.header-section h1 {
+    color: var(--primary-color);
+    font-size: 28px;
+    margin: 8px 0;
+    font-weight: 600;
+}
+
+.subtitle {
+    color: var(--text-grey);
+    font-size: 16px;
+}
+
+/* --- STEPPER --- */
+.stepper-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--white);
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    margin-bottom: 32px;
+    box-sizing: border-box;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-light-grey);
+    position: relative;
+    z-index: 2;
+    flex: 1;
+}
+
+/* Active Step */
+.step.active .circle {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 0 0 4px #d1f4fa;
+}
+.step.active {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Completed Step */
+.step.completed .circle {
+    background: var(--primary-color);
+    color: white;
+}
+.step.completed {
+    color: var(--primary-color);
+}
+
+.circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--text-grey);
+    font-weight: 600;
+}
+
+.line {
+    flex: 1;
+    height: 4px;
+    background: #e5e7eb;
+    margin: 0 -10px;
+    position: relative;
+    top: -14px;
+    z-index: 1;
+}
+
+.line.active, .line.completed {
+    background: var(--primary-gradient);
+}
+
+/* --- FORM CARD --- */
+.form-card {
+    background: var(--white);
+    border-radius: 14px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+.form-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.form-header h2 {
+    color: var(--primary-color);
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+/* --- SUMMARY CARD (Specific to Page 4) --- */
+.summary-card {
+    background: linear-gradient(90deg, #ecfeff, #eff6ff);
+    border: 1px solid #a2f4fd;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 32px;
+}
+
+.summary-card h3 {
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+}
+
+.summary-row .label { color: #4a5565; font-weight: 500; }
+.summary-row .value { color: #1e2939; font-weight: 600; text-align: right; }
+
+.summary-divider {
+    height: 1px;
+    background-color: #a2f4fd;
+    margin: 20px 0;
+}
+
+.total-row .value.highlight {
+    color: var(--primary-color);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* --- PAYMENT METHODS --- */
+.payment-section { margin-bottom: 32px; }
+.section-label { display: block; font-weight: 600; margin-bottom: 12px; }
+.required { color: var(--error-color); }
+
+.payment-options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.payment-option {
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #fff;
+    position: relative;
+}
+
+.payment-option:hover {
+    border-color: var(--primary-color);
+    background-color: #f9fafb;
+}
+
+.payment-option.active {
+    border-color: var(--primary-color);
+    background-color: #ecfeff;
+    box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+.wallet-info { display: flex; flex-direction: column; }
+.wallet-name { font-weight: 600; color: #1e2939; }
+.wallet-type { font-size: 12px; color: var(--text-grey); }
+
+.wallet-icon {
+    /* Fixed size box */
+    width: 80px;
+    height: 60px; /* Slightly reduced height for better aspect ratio */
+    
+    /* Prevent Distortion */
+    object-fit: contain; 
+    flex-shrink: 0; 
+    
+    margin-right: 12px;
+    border-radius: 8px;
+    background-color: transparent; 
+}
+
+/* --- INFO BOX --- */
+.info-box {
+    background-color: #eff6ff;
+    border: 1px solid #bedbff;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 32px;
+}
+
+.info-box h4 { margin: 0 0 10px 0; color: #1c398e; font-size: 16px; }
+.info-box ul { margin: 0; padding-left: 20px; color: #193cb8; font-size: 14px; }
+.info-box li { margin-bottom: 6px; }
+
+/* --- TERMS --- */
+.terms-section {
+    margin-bottom: 30px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: #4a5565;
+}
+
+.terms-text a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.checkbox-container { display: flex; gap: 10px; cursor: pointer; }
+
+/* --- BUTTONS --- */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 24px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 16px;
+    transition: transform 0.1s;
+}
+
+.btn:active { transform: scale(0.98); }
+
+.btn-secondary {
+    background-color: #4a5565;
+    color: white;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+    .main-container { padding: 20px 10px; }
+    .form-card { padding: 20px; }
+    
+    /* Reset header alignment on mobile if needed, or keep centered */
+    .header-section { text-align: center; }
+    
+    .payment-options-grid { grid-template-columns: 1fr; }
+    .summary-grid { grid-template-columns: 1fr; }
+    .form-actions { flex-direction: column-reverse; gap: 16px; }
+    .btn { width: 100%; justify-content: center; }
+    
+    /* Mobile Back Button Handling */
+    .back-link {
+        /* On very small screens, you might want it static, 
+           but absolute usually works fine if margin is sufficient */
+        position: absolute;
+    }
+}

@@ -1,0 +1,307 @@
+:root {
+    --primary-color: #0092b8;
+    --primary-gradient: linear-gradient(90deg, #0092b8, #1c398e);
+    --bg-gradient-start: #ecfeff;
+    --bg-gradient-end: #eff6ff;
+    --text-dark: #364153;
+    --text-grey: #6a7282;
+    --text-light-grey: #99a1af;
+    --border-color: #d1d5dc;
+    --error-color: #fb2c36;
+    --success-color: #10b981;
+    --white: #ffffff;
+}
+
+.appointment-container {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end)), #fff;
+    min-height: calc(100vh - 80px);
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    color: var(--text-dark);
+}
+
+.main-wrapper {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* Header */
+.header-content {
+    text-align: center;
+    position: relative;
+}
+
+.back-btn {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: var(--text-dark);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.header-content h1 {
+    color: var(--primary-color);
+    font-size: 24px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.header-content p {
+    color: var(--text-grey);
+    font-size: 16px;
+}
+
+/* Stepper */
+.stepper-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 30px 40px;
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stepper-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    flex: 1;
+}
+
+.step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #fff;
+    background-color: #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+/* Active Step (Blue) */
+.step.active .step-circle {
+    background: var(--primary-gradient);
+    box-shadow: 0px 0px 0px 4px #a2f4fd;
+}
+.step.active .step-label {
+    color: var(--primary-color);
+}
+
+/* Completed Step (Green) */
+.step.completed .step-circle {
+    background: var(--primary-color); 
+    box-shadow: none;
+    color: white;
+}
+
+.step.completed .step-label {
+    color: var(--primary-color); 
+}
+
+.step-label {
+    font-size: 12px;
+    color: var(--text-light-grey);
+    font-weight: 500;
+}
+
+.stepper-line {
+    flex: 1;
+    height: 4px;
+    background-color: #e5e7eb;
+    margin: 0 10px;
+    position: relative;
+    top: -14px;
+}
+
+.stepper-line.completed {
+    background-color: var(--primary-color); 
+}
+
+/* Form Styles */
+.form-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 32px;
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.form-header h2 {
+    color: var(--primary-color);
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.form-header p {
+    color: var(--text-dark);
+    font-size: 16px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.required {
+    color: var(--error-color);
+    margin-left: 4px;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper input,
+.input-wrapper select {
+    width: 100%;
+    padding: 12px 16px 12px 40px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--text-dark);
+    background: #fff;
+    outline: none;
+    height: 48px;
+    
+    /* EDITED: This hides the default ugly browser arrow */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.input-wrapper input:focus,
+.input-wrapper select:focus {
+    border-color: var(--primary-color);
+}
+
+.field-icon, .select-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light-grey);
+    pointer-events: none;
+}
+
+.field-icon { left: 12px; font-size: 16px; width: 20px; text-align: center; }
+
+/* EDITED: Moved arrow further left (20px) so it's not on the edge */
+.select-arrow { 
+    right: 20px; 
+    font-size: 14px; 
+}
+
+/* --- TIME SLOT GRID --- */
+.time-slot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.time-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: #fff;
+}
+
+.time-slot:hover {
+    border-color: var(--primary-color);
+    background-color: var(--bg-gradient-start);
+}
+
+/* EDITED: Added !important to ensure the blue style is applied */
+.time-slot.selected {
+    background-color: var(--bg-gradient-start) !important; 
+    color: var(--primary-color) !important; 
+    border-color: var(--primary-color) !important; 
+    font-weight: 600;
+}
+
+/* Actions */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.btn {
+    height: 48px;
+    padding: 0 24px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.btn:hover { opacity: 0.9; }
+.btn-secondary { background-color: #e5e7eb; color: var(--text-light-grey); }
+.btn-primary { background-color: var(--primary-color); color: var(--white); }
+
+@media (max-width: 768px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .stepper-card { padding: 20px 15px; }
+    .step-label { display: none; }
+    .time-slot-grid { grid-template-columns: repeat(3, 1fr); }
+}

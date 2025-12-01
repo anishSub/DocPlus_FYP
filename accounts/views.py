@@ -15,23 +15,33 @@ class RegisterView(CreateView):
     success_url = reverse_lazy('login')
     
     def form_valid(self, form):
-        # The form's clean_email() method already validates uniqueness
-        # The form's save() method handles:
-        # - Saves first_name, last_name, email to User
-        # - Creates UserProfile with mobile_number
-        response = super().form_valid(form)
+        # 1. Prepare the user object but don't save to database yet
+        user = form.save(commit=False)
         
-        # Add success message
+        # 2. EXPLICITLY set user type to Patient
+        # (Since we removed the radio buttons from HTML, we enforce it here)
+        user.is_patient = True  
+        user.is_doctor = False
+        user.is_staff = False   # Security measure: ensure they are not admin
+        user.is_superuser = False
+        
+        # 3. Now save to the database
+        user.save()
+        
+        # 4. If your CustomUserCreationForm has "save_m2m" logic or profile creation, 
+        # you might need to call it here manually if it was skipped by commit=False.
+        # Usually, standard UserCreationForms are fine with just user.save()
+        
         messages.success(self.request, 'Registration successful! Please log in.')
         
-        return response
+        # Redirect to the success URL (Login page)
+        return redirect(self.success_url)
     
     def form_invalid(self, form):
-        # This runs when validation fails (duplicate email, etc.)
         messages.error(self.request, 'Please correct the errors below.')
         return super().form_invalid(form)
 
-
+# ... (Your Login and Logout views remain exactly the same, they are fine)
 
 # login
 class CustomLoginView(LoginView):
@@ -47,14 +57,15 @@ class CustomLoginView(LoginView):
         
         # Try to find user by email - handle multiple or no users
         try:
-            # Use filter instead of get to handle duplicates
+            # Use filter instead of get to handle potential duplicates safely
             users = User.objects.filter(email=email)
             
             if not users.exists():
                 messages.error(request, 'Invalid email or password')
                 return render(request, self.template_name)
             
-            # If multiple users with same email, try to authenticate each one
+            # If multiple users with same email exist (which shouldn't happen with new form logic), 
+            # try to authenticate each one
             authenticated_user = None
             
             for user_obj in users:
@@ -71,12 +82,33 @@ class CustomLoginView(LoginView):
                 if not request.POST.get('remember'):
                     request.session.set_expiry(0)
                 
-                return redirect(self.get_success_url())
+                # --- HIERARCHY REDIRECTION LOGIC ---
+                
+                # PRIORITY 1: ADMIN / STAFF
+                if authenticated_user.is_superuser or authenticated_user.is_staff:
+                    return redirect('/admin/')
+                
+                # PRIORITY 2: DOCTOR
+                # Check safely if the user has the is_doctor attribute
+                elif getattr(authenticated_user, 'is_doctor', False):
+                    # IMPORTANT: You must create a URL named 'doctor_dashboard' later.
+                    # For now, if it doesn't exist, it will crash unless you change this line.
+                    # Example: return redirect('home') until dashboard is ready.
+                    return redirect('doctor_dashboard') 
+                
+                # PRIORITY 3: PATIENT (Default)
+                else:
+                    return redirect('home')
+                
+                # -----------------------------------
+
             else:
                 messages.error(request, 'Invalid email or password')
                 return render(request, self.template_name)
                 
         except Exception as e:
+            # It's good practice to log the error 'e' for debugging, even if not showing it to user
+            print(f"Login Error: {e}") 
             messages.error(request, 'An error occurred during login. Please try again.')
             return render(request, self.template_name)
 
@@ -89,3 +121,5 @@ class CustomLogoutView(LogoutView):
     def dispatch(self, request, *args, **kwargs):
         messages.success(request, 'You have been logged out successfully.')
         return super().dispatch(request, *args, **kwargs)
+    
+

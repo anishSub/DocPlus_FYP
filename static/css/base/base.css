@@ -11,9 +11,11 @@
     --text-gray: #4A5565;
     --bg-light: #F9FAFB;
     --white: #ffffff;
+    --yellow: #F59E0B;
+    --yellow-hover: #D97706;
 }
 
-body { background: var(--white); color: var(--text-dark); padding-top: 80px; /* Space for fixed header */ }
+body { background: var(--white); color: var(--text-dark); padding-top: 80px; }
 a { text-decoration: none; color: inherit; transition: 0.3s; }
 ul { list-style: none; }
 
@@ -56,17 +58,53 @@ ul { list-style: none; }
     display: block;
 }
 
-/* Navigation */
+/* --- NAVIGATION (MODERN HOVER) --- */
 .nav-links { display: flex; gap: 30px; }
-.nav-item { color: var(--text-gray); font-weight: 500; font-size: 16px; }
-.nav-item:hover, .nav-item.active { color: var(--primary); }
 
-/* Right Actions */
+.nav-item {
+    color: var(--text-gray);
+    font-weight: 500;
+    font-size: 16px;
+    position: relative; /* Needed for the pseudo-element */
+    padding: 4px 0; /* Adds slight breathing room */
+    transition: color 0.3s ease, transform 0.2s ease; /* Added transform for zoom */
+}
+
+/* The Animated Line */
+.nav-item::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background-color: var(--primary);
+    transform: translateX(-50%); /* Centers the line */
+    transition: width 0.3s ease-in-out; /* Smooth expansion */
+}
+
+/* Hover State */
+.nav-item:hover {
+    color: var(--primary);
+    transform: scale(1.1); /* Zoom in effect */
+}
+
+.nav-item:hover::after {
+    width: 100%; /* Expands to full width */
+}
+
+/* Active State (Keep line visible) */
+.nav-item.active {
+    color: var(--primary);
+}
+
+.nav-item.active::after {
+    width: 100%;
+}
+
+/* --- RIGHT ACTIONS --- */
 .header-actions { display: flex; align-items: center; gap: 20px; }
-.emergency-contact { display: flex; align-items: center; gap: 8px; color: var(--text-gray); font-size: 14px; }
-.emergency-contact i { color: #E53E3E; font-size: 18px; }
 
-/* Menu Toggle (Hidden on Desktop) */
 .menu-toggle {
     display: none;
     font-size: 28px;
@@ -78,14 +116,19 @@ ul { list-style: none; }
 .btn {
     padding: 10px 24px;
     border-radius: 10px;
-    font-weight: 500;
-    font-size: 16px;
+    font-weight: 600;
+    font-size: 15px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 8px;
     text-decoration: none;
-    transition: opacity 0.2s;
+    transition: opacity 0.2s, background 0.2s, transform 0.1s;
+    white-space: nowrap;
+}
+
+.btn:active {
+    transform: scale(0.98); /* Click effect */
 }
 
 .btn-primary {
@@ -93,38 +136,54 @@ ul { list-style: none; }
     color: white;
     border: none;
 }
+.btn-primary:hover { opacity: 0.9; }
 
-.btn-primary:hover {
-    opacity: 0.9;
+.btn-yellow {
+    background-color: var(--yellow);
+    color: white;
+    border: none;
 }
+.btn-yellow:hover {
+    background-color: var(--yellow-hover);
+}
+
+/* --- USER PROFILE STYLES --- */
+.user-profile-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 10px;
+}
+
+.profile-circle {
+    width: 40px; height: 40px;
+    background: #E0F2FE; color: var(--primary);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 18px; border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.user-name-text {
+    font-weight: 500; color: var(--text-dark); font-size: 15px;
+}
+
+.logout-form { margin: 0; padding: 0; }
+.logout-form button { font-family: 'Inter', sans-serif; }
 
 /* --- FOOTER --- */
-.footer-logo-img {
-    height: 80px;
-    width: auto;
-    object-fit: contain;
-}
+.footer-logo-img { height: 80px; width: auto; object-fit: contain; }
 
 .footer {
     background: linear-gradient(135deg, #101828 0%, #1C398E 50%, #101828 100%);
-    color: white;
-    padding-top: 48px;
-    width: 100%;
+    color: white; padding-top: 48px; width: 100%;
 }
 
 .footer-container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding-bottom: 20px;
+    width: 90%; max-width: 1200px; margin: 0 auto; padding-bottom: 20px;
 }
 
 .footer-top {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 40px;
-    margin-bottom: 40px;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; margin-bottom: 40px;
 }
 
 .footer-brand { flex: 1.5; min-width: 250px; }
@@ -157,119 +216,58 @@ ul { list-style: none; }
    RESPONSIVE HEADER (TABLET & MOBILE)
    ========================================= */
 @media (max-width: 1024px) {
-    /* Show Hamburger */
-    .menu-toggle {
-        display: block;
-    }
+    .menu-toggle { display: block; }
 
-    /* Hide Links and Actions by default */
-    .nav-links,
-    .header-actions {
+    .nav-links, .header-actions {
         position: absolute;
-        top: 80px; /* Height of header */
-        left: 0;
-        width: 100%;
+        top: 80px; left: 0; width: 100%;
         background: white;
         flex-direction: column;
         align-items: center;
         gap: 0;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         overflow: hidden;
-        max-height: 0; /* Hidden state */
+        max-height: 0; 
         transition: max-height 0.3s ease-out;
-        display: none; /* Completely hide to prevent clicking */
+        display: none;
     }
 
-    /* Stack Links vertically */
     .nav-item {
-        width: 100%;
-        text-align: center;
-        padding: 15px 0;
-        border-bottom: 1px solid #f0f0f0;
+        width: 100%; text-align: center; padding: 15px 0; border-bottom: 1px solid #f0f0f0;
     }
 
-    /* Adjust Buttons container */
+    /* Remove the underline effect on mobile as it looks odd on full-width items */
+    .nav-item::after { display: none; }
+    
+    .nav-item:hover, .nav-item.active {
+        background-color: #f9fafb; /* Subtle background change instead */
+        color: var(--primary);
+        transform: none; /* Disable zoom on mobile */
+    }
+
+    /* Header Actions Mobile Style */
     .header-actions {
-        top: auto; /* Position below links */
-        box-shadow: none;
+        top: auto; box-shadow: none;
         background: white;
         padding: 20px;
-        gap: 15px;
+        gap: 15px; 
         border-top: 1px solid #f0f0f0;
     }
 
-    /* Active State (Added by JS) */
-    .nav-links.active,
-    .header-actions.active {
-        display: flex;
-        max-height: 500px; /* Open state */
+    .nav-links.active, .header-actions.active {
+        display: flex; max-height: 500px;
     }
 
-    /* Stack header actions properly when open */
     .header-actions.active {
-        position: absolute;
-        top: 290px; /* Pushes below the nav links (approx calculation) */
+        position: absolute; top: 290px;
         box-shadow: 0 10px 10px rgba(0,0,0,0.05);
     }
     
-    /* Footer Stacking */
+    .user-profile-display {
+        flex-direction: column; margin-right: 0; margin-bottom: 10px;
+    }
+    .user-name-text { color: var(--text-dark); font-size: 16px; }
+    
     .footer-top { flex-direction: column; gap: 30px; }
     .footer-bottom { flex-direction: column; gap: 15px; text-align: center; align-items: center; }
-}
-
-/* --- USER PROFILE STYLES (Added) --- */
-
-/* Container for the profile pic and name */
-.user-profile-display {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-right: 10px;
-}
-
-/* The Profile Circle (Placeholder for Image) */
-.profile-circle {
-    width: 40px;
-    height: 40px;
-    background: #E0F2FE; /* Light Blue Background */
-    color: var(--primary);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 18px;
-    border: 2px solid white;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.user-name-text {
-    font-weight: 500;
-    color: var(--text-dark);
-    font-size: 15px;
-}
-
-/* Logout Form Styling */
-.logout-form {
-    margin: 0;
-    padding: 0;
-}
-
-/* Make the form button look exactly like the link buttons */
-.logout-form button {
-    font-family: 'Inter', sans-serif; /* Ensure font matches */
-}
-
-/* Responsive Adjustment for User Profile */
-@media (max-width: 1024px) {
-    .user-profile-display {
-        flex-direction: column;
-        margin-right: 0;
-        margin-bottom: 10px;
-    }
-    
-    .user-name-text {
-        color: var(--text-dark);
-        font-size: 16px;
-    }
 }

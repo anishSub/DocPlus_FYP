@@ -1,0 +1,143 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<!-- Specific CSS for Appointment Details Page -->
+<link rel="stylesheet" href="{% static 'css/appointment/appointment_appointment_info.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="appointment-container">
+    <div class="main-wrapper">
+        
+        <!-- Header -->
+        <div class="header-content">
+            <!-- Back button goes to Step 1 -->
+            <a href="{% url 'personalInfo' %}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back
+            </a>
+            <h1>Book Online Video Consultation</h1>
+            <p>Complete the form to schedule your 5-minute video appointment</p>
+        </div>
+
+        <!-- Stepper -->
+        <div class="stepper-card">
+            <div class="stepper-container">
+                <!-- Step 1: Completed -->
+                <div class="step completed">
+                    <div class="step-circle"><i class="fas fa-check"></i></div>
+                    <div class="step-label">Personal Info</div>
+                </div>
+                <div class="stepper-line completed"></div>
+                
+                <!-- Step 2: Active -->
+                <div class="step active">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">Appointment</div>
+                </div>
+                <div class="stepper-line"></div>
+                
+                <!-- Step 3 -->
+                <div class="step">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Medical Info</div>
+                </div>
+                <div class="stepper-line"></div>
+                
+                <!-- Step 4 -->
+                <div class="step">
+                    <div class="step-circle">4</div>
+                    <div class="step-label">Payment</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="form-card">
+            <div class="form-header">
+                <h2>Appointment Details</h2>
+                <p>Select doctor, date, and time for your consultation</p>
+            </div>
+
+            <form method="POST" action="">
+                {% csrf_token %}
+                <div class="form-grid">
+                    
+                    <!-- Select Doctor -->
+                    <div class="form-group full-width">
+                        <label class="label">Select Doctor <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <select name="doctor" required>
+                                <option value="choose a doctor" disabled selected>Choose a doctor</option>
+                                <option value="rajesh"  >Dr. Rajesh Sharma - Cardiologist (NPR 800)</option>
+                                <option value="priya" >Dr. Priya Thapa - Dermatologist (NPR 700)</option>
+                                <option value="amit" >Dr. Amit Kumar - Pediatrician (NPR 750)</option>
+                                <option value="suman" >Dr. Suman Rai - Gynecologist (NPR 900)</option>
+                                <option value="ramesh">Dr. Ramesh Gurung - Orthopedic (NPR 850)</option>
+                            </select>
+                            <i class="fas fa-chevron-down select-arrow"></i>
+                        </div>
+                    </div>
+
+                    <!-- Appointment Date -->
+                    <div class="form-group">
+                        <label class="label">Appointment Date <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <input type="date" name="appointment_date" required>
+                            <i class="far fa-calendar field-icon"></i>
+                        </div>
+                    </div>
+
+                    <!-- Consultation Type -->
+                    <div class="form-group">
+                        <label class="label">Consultation Type <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <input type="text" value="Online Video Consultation (5 minutes)" readonly style="background-color: #f9fafb;">
+                            <i class="fas fa-video field-icon"></i>
+                        </div>
+                    </div>
+
+                    <!-- Time Slot Grid -->
+                    <div class="form-group full-width">
+                        <label class="label">Select Time Slot <span class="required">*</span></label>
+                        <!-- Hidden Input to store the value -->
+                        <input type="hidden" name="time_slot" id="selectedTimeSlot" required>
+                        
+                        <div class="time-slot-grid">
+                            <div class="time-slot" data-value="09:00 AM">09:00 AM</div>
+                            <div class="time-slot" data-value="09:30 AM">09:30 AM</div>
+                            <div class="time-slot" data-value="10:00 AM">10:00 AM</div>
+                            <div class="time-slot" data-value="10:30 AM">10:30 AM</div>
+                            <div class="time-slot" data-value="11:00 AM">11:00 AM</div>
+                            <div class="time-slot" data-value="11:30 AM">11:30 AM</div>
+                            <div class="time-slot" data-value="12:00 PM">12:00 PM</div>
+                            <div class="time-slot" data-value="02:00 PM">02:00 PM</div>
+                            <div class="time-slot" data-value="02:30 PM">02:30 PM</div>
+                            <div class="time-slot" data-value="03:00 PM">03:00 PM</div>
+                            <div class="time-slot" data-value="03:30 PM">03:30 PM</div>
+                            <div class="time-slot" data-value="04:00 PM">04:00 PM</div>
+                            <div class="time-slot" data-value="04:30 PM">04:30 PM</div>
+                            <div class="time-slot" data-value="05:00 PM">05:00 PM</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <!-- Previous button links back to Step 1 URL -->
+                    <a href="{% url 'personalInfo' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/appointment/appointmant.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,266 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard</title>
+    
+    <!-- Link to your CSS -->
+    <link rel="stylesheet" href="{% static 'css/doctorAdmin/overview.css' %}">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- 1. Top Navigation Bar -->
+    <header class="top-navbar">
+        <div class="nav-left">
+            <div class="profile-img">
+                <img src="https://ui-avatars.com/api/?name=Arjun+Sharma&background=random" alt="Doctor">
+            </div>
+            <div class="profile-info">
+                <h3>Dr. Arjun Sharma</h3>
+                <span>Cardiologist</span>
+            </div>
+        </div>
+        <div class="nav-right">
+            <button class="icon-btn"><i class="far fa-bell"></i><span class="dot"></span></button>
+            <button class="icon-btn"><i class="fas fa-cog"></i></button>
+            <button class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        
+        <!-- 2. Sidebar Navigation -->
+        <aside class="sidebar">
+            <nav class="side-nav">
+                <!-- Ensure these URL names match your urls.py -->
+                <a href="{% url 'doctor_admin_dashboard' %}" class="nav-item active">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="{% url 'doctor_admin_appointments' %}" class="nav-item">
+                    <i class="far fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-user-injured"></i>
+                    <span>My Patients</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="far fa-clock"></i>
+                    <span>Schedule</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="far fa-hospital"></i>
+                    <span>Hospitals</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>Earnings</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="far fa-star"></i>
+                    <span>Reviews</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 3. Main Content Area -->
+        <main class="main-content">
+            
+            <!-- A. Stats Grid -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="icon-box blue-bg"><i class="fas fa-user-friends"></i></div>
+                        <span class="trend positive"><i class="fas fa-arrow-up"></i> +12%</span>
+                    </div>
+                    <div class="stat-value">1,247</div>
+                    <div class="stat-label">Total Patients</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="icon-box purple-bg"><i class="far fa-calendar-alt"></i></div>
+                        <span class="trend positive"><i class="fas fa-arrow-up"></i> +3</span>
+                    </div>
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">Appointments Today</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="icon-box green-bg"><i class="fas fa-rupee-sign"></i></div>
+                        <span class="trend positive"><i class="fas fa-arrow-up"></i> +8%</span>
+                    </div>
+                    <div class="stat-value">₹ 1,45,000</div>
+                    <div class="stat-label">Monthly Earnings</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="icon-box orange-bg"><i class="fas fa-star"></i></div>
+                        <span class="trend positive"><i class="fas fa-arrow-up"></i> +0.2</span>
+                    </div>
+                    <div class="stat-value">4.8</div>
+                    <div class="stat-label">Average Rating</div>
+                </div>
+            </section>
+
+            <!-- B. Quick Actions -->
+            <section class="quick-actions">
+                <h3>Quick Actions</h3>
+                <div class="action-buttons">
+                    <button class="action-btn blue-btn">
+                        <i class="far fa-clock"></i> Set Availability
+                    </button>
+                    <button class="action-btn dark-blue-btn">
+                        <i class="far fa-hospital"></i> Add Hospital
+                    </button>
+                    <button class="action-btn green-btn">
+                        <i class="fas fa-video"></i> Start Consultation
+                    </button>
+                </div>
+            </section>
+
+            <!-- C. Today's Appointments -->
+            <!-- This section matches the design in your image -->
+            <section class="appointments-section">
+                <div class="section-header">
+                    <h3>Today's Appointments</h3>
+                    <a href="#" class="view-all">View All <i class="fas fa-chevron-right"></i></a>
+                </div>
+                
+                <div class="appointment-list">
+                    <!-- Item 1: Video Call -->
+                    <div class="appointment-card">
+                        <div class="patient-info">
+                            <div class="avatar blue">R</div>
+                            <div class="details">
+                                <h4>Rajesh Kumar</h4>
+                                <p class="reason">Routine checkup</p>
+                                <div class="meta">
+                                    <span><i class="far fa-clock"></i> 10:00 AM</span>
+                                    <span class="tag video"><i class="fas fa-video"></i> Video Call</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="start-btn">Start</button>
+                    </div>
+
+                    <!-- Item 2: In-Person -->
+                    <div class="appointment-card">
+                        <div class="patient-info">
+                            <div class="avatar purple">S</div>
+                            <div class="details">
+                                <h4>Sita Sharma</h4>
+                                <p class="reason">Follow-up consultation</p>
+                                <div class="meta">
+                                    <span><i class="far fa-clock"></i> 11:30 AM</span>
+                                    <span class="tag in-person"><i class="fas fa-map-marker-alt"></i> In-Person</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="start-btn">Start</button>
+                    </div>
+
+                    <!-- Item 3: Video Call -->
+                    <div class="appointment-card">
+                        <div class="patient-info">
+                            <div class="avatar blue">R</div>
+                            <div class="details">
+                                <h4>Ram Bahadur</h4>
+                                <p class="reason">Lab report review</p>
+                                <div class="meta">
+                                    <span><i class="far fa-clock"></i> 02:00 PM</span>
+                                    <span class="tag video"><i class="fas fa-video"></i> Video Call</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="start-btn">Start</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- D. Bottom Grid (Recent Patients & Reviews) -->
+            <div class="bottom-grid">
+                
+                <!-- Recent Patients -->
+                <section class="panel-card">
+                    <div class="section-header">
+                        <h3>Recent Patients</h3>
+                        <i class="fas fa-ellipsis-h"></i>
+                    </div>
+                    <div class="patient-list-simple">
+                        <div class="simple-item">
+                            <div>
+                                <h4>Rajesh Kumar</h4>
+                                <span class="sub-text">Hypertension</span>
+                            </div>
+                            <button class="icon-only-btn"><i class="far fa-eye"></i></button>
+                        </div>
+                        <div class="simple-item">
+                            <div>
+                                <h4>Sita Sharma</h4>
+                                <span class="sub-text">Diabetes Type 2</span>
+                            </div>
+                            <button class="icon-only-btn"><i class="far fa-eye"></i></button>
+                        </div>
+                        <div class="simple-item">
+                            <div>
+                                <h4>Ram Bahadur</h4>
+                                <span class="sub-text">Common Cold</span>
+                            </div>
+                            <button class="icon-only-btn"><i class="far fa-eye"></i></button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Latest Reviews -->
+                <section class="panel-card">
+                    <div class="section-header">
+                        <h3>Latest Reviews</h3>
+                        <i class="fas fa-ellipsis-h"></i>
+                    </div>
+                    <div class="review-list">
+                        <div class="review-item">
+                            <div class="review-top">
+                                <h4>Rajesh Kumar</h4>
+                                <div class="stars">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                            <p>Excellent doctor! Very professional and caring.</p>
+                        </div>
+                        <div class="review-item">
+                            <div class="review-top">
+                                <h4>Sita Sharma</h4>
+                                <div class="stars">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                                </div>
+                            </div>
+                            <p>Best cardiologist in Kathmandu. Highly recommended!</p>
+                        </div>
+                        <div class="review-item">
+                            <div class="review-top">
+                                <h4>Ram Bahadur</h4>
+                                <div class="stars">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                                </div>
+                            </div>
+                            <p>Good experience. Very knowledgeable doctor.</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

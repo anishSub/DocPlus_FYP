@@ -1,0 +1,144 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/appointment/appointment_payment.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    
+    <div class="header-section">
+        <a href="javascript:history.back()" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <h1>Book Online Video Consultation</h1>
+        <p class="subtitle">Complete the form to schedule your 5-minute video appointment</p>
+    </div>
+
+    <div class="stepper-wrapper">
+        <div class="step completed"><div class="circle"><i class="fas fa-check"></i></div><span>Personal</span></div>
+        <div class="line completed"></div>
+        <div class="step completed"><div class="circle"><i class="fas fa-check"></i></div><span>Appointment</span></div>
+        <div class="line completed"></div>
+        <div class="step completed"><div class="circle"><i class="fas fa-check"></i></div><span>Medical Info</span></div>
+        <div class="line active"></div>
+        <div class="step active"><div class="circle">4</div><span>Payment</span></div>
+    </div>
+
+    <div class="form-card">
+        <div class="form-header">
+            <h2>Payment & Confirmation</h2>
+            <p>Review your appointment and complete payment</p>
+        </div>
+
+        <form method="POST" action="" id="paymentForm">
+            {% csrf_token %}
+
+            <div class="summary-card">
+                <h3>Appointment Summary</h3>
+                
+                <div class="summary-grid">
+                    <div class="summary-row">
+                        <span class="label">Patient:</span>
+                        <span class="value">{{ data.full_name|default:"Guest Patient" }}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Doctor:</span>
+                        <span class="value">Dr. Suman Rai</span> </div>
+                    <div class="summary-row">
+                        <span class="label">Specialty:</span>
+                        <span class="value">Gynecologist</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Date:</span>
+                        <span class="value">{{ data.dob|default:"Pending" }}</span> </div>
+                    <div class="summary-row">
+                        <span class="label">Time:</span>
+                        <span class="value">{{ data.time_slot|default:"09:00 AM" }}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Type:</span>
+                        <span class="value">Online Video Consultation (5 min)</span>
+                    </div>
+                </div>
+
+                <div class="summary-divider"></div>
+
+                <div class="summary-row total-row">
+                    <span class="label">Consultation Fee:</span>
+                    <span class="value highlight">NPR 900</span>
+                </div>
+            </div>
+
+            <div class="payment-section">
+                <label class="section-label">Payment Method <span class="required">*</span></label>
+                
+                <input type="hidden" name="payment_method" id="selectedPaymentMethod" required>
+
+                <div class="payment-options-grid">
+                    <div class="payment-option" onclick="selectPayment(this, 'esewa')">
+                        <div class="radio-circle"></div>
+                        <img src="{% static 'images/photos/eSewa.png' %}" alt="eSewa" class="wallet-icon"> <div class="wallet-info">
+                            <span class="wallet-name">eSewa</span>
+                            <span class="wallet-type">Digital Wallet</span>
+                        </div>
+                    </div>
+
+                    <div class="payment-option" onclick="selectPayment(this, 'khalti')">
+                        <div class="radio-circle"></div>
+                        <img src="{% static 'images/photos/khalti.png' %}" alt="Khalti" class="wallet-icon"> <div class="wallet-info">
+                            <span class="wallet-name">Khalti</span>
+                            <span class="wallet-type">Digital Wallet</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h4>Important Information</h4>
+                <ul>
+                    <li>Video consultation will last for 5 minutes</li>
+                    <li>You will receive a video link via email 10 minutes before the appointment</li>
+                    <li>Please ensure stable internet connection for video call</li>
+                    <li>Refunds available only if cancelled 24 hours before appointment</li>
+                </ul>
+            </div>
+
+            <div class="terms-section">
+                <label class="checkbox-container">
+                    <input type="checkbox" name="terms_agreed" required>
+                    <span class="checkmark"></span>
+                    <span class="terms-text">
+                        I agree to the <a href="#">Terms and Conditions</a> and <a href="#">Privacy Policy</a>. 
+                        I understand that my personal health information will be kept confidential.
+                    </span>
+                </label>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="history.back()">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    Confirm & Book Appointment <i class="fas fa-check"></i>
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+function selectPayment(element, value) {
+    // 1. Remove active class from all options
+    document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('active'));
+    
+    // 2. Add active class to clicked option
+    element.classList.add('active');
+    
+    // 3. Update hidden input
+    document.getElementById('selectedPaymentMethod').value = value;
+}
+</script>
+{% endblock %}

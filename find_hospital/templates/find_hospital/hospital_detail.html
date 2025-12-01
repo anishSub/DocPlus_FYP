@@ -1,0 +1,397 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static/find_hospital 'css/find_hospital/hospital_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="hospital-detail-container">
+    
+    <!-- 1. BACK BUTTON -->
+    <div class="back-nav container">
+        <a href="{% url 'find_hospital' %}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Hospitals
+        </a>
+    </div>
+
+    <!-- 2. HOSPITAL HEADER (Blue Gradient Section) -->
+    <div class="container header-container">
+        <div class="hospital-header-card">
+            
+            <!-- Left: Hospital Image Card -->
+            <div class="hospital-profile-card">
+                <div class="img-wrapper">
+                    <img src="{% static 'images/photos/hospital.jpg' %}" alt="TUTH" class="hospital-img">
+                </div>
+                <div class="profile-stats">
+                    <div class="rating-row">
+                        <span class="rating-badge"><i class="fas fa-star"></i> 4.7</span>
+                        <span class="review-text">(856 reviews)</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label"><i class="fas fa-bed"></i> Beds</span>
+                        <span class="stat-value">450</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label"><i class="fas fa-user-md"></i> Doctors</span>
+                        <span class="stat-value">120+</span>
+                    </div>
+                    <button class="btn-book-header">
+                        <i class="far fa-calendar-check"></i> Book Appointment
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right: Hospital Info -->
+            <div class="hospital-info-content">
+                <h1>Tribhuvan University Teaching Hospital</h1>
+                <p class="subtitle">Government Teaching Hospital</p>
+
+                <!-- Info Grid (4 Boxes) -->
+                <div class="header-info-grid">
+                    <div class="info-box">
+                        <i class="far fa-building"></i>
+                        <div><label>Established</label><span>1983</span></div>
+                    </div>
+                    <div class="info-box">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div><label>Location</label><span>Kathmandu</span></div>
+                    </div>
+                    <div class="info-box">
+                        <i class="fas fa-clock"></i>
+                        <div><label>Emergency</label><span>24/7 Available</span></div>
+                    </div>
+                    <div class="info-box">
+                        <i class="fas fa-phone-alt"></i>
+                        <div><label>Contact</label><span>+977-1-4412303</span></div>
+                    </div>
+                </div>
+
+                <!-- Address Bar -->
+                <div class="address-bar">
+                    <i class="fas fa-map-pin"></i>
+                    <span>Full Address: Maharajgunj, Kathmandu 44600</span>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="header-actions">
+                    <button class="btn-header btn-white"><i class="fas fa-phone"></i> Call Now</button>
+                    <button class="btn-header btn-outline"><i class="far fa-envelope"></i> Email</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. TABS NAVIGATION -->
+    <div class="tabs-container container">
+        <div class="tabs-scroll">
+            <button class="tab-btn active" onclick="openTab(event, 'overview')">Overview</button>
+            <button class="tab-btn" onclick="openTab(event, 'departments')">Departments & Specialties</button>
+            <button class="tab-btn" onclick="openTab(event, 'facilities')">Facilities & Services</button>
+            <button class="tab-btn" onclick="openTab(event, 'reviews')">Reviews (856)</button>
+        </div>
+        <div class="tab-line"></div>
+    </div>
+
+    <!-- 4. TAB CONTENTS -->
+    <div class="container content-area">
+
+        <!-- TAB 1: OVERVIEW -->
+        <div id="overview" class="tab-content active fade-in">
+            
+            <div class="section-card">
+                <h3 class="card-title"><i class="far fa-hospital"></i> About Tribhuvan University Teaching Hospital</h3>
+                <p class="text-body">
+                    Tribhuvan University Teaching Hospital (TUTH) is one of the premier medical institutions in Nepal, providing comprehensive healthcare services with state-of-the-art facilities. Established in 1983, the hospital serves as a major teaching hospital for medical students and offers specialized care across multiple departments.
+                </p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="icon-circle"><i class="fas fa-bed"></i></div>
+                    <h4>450</h4>
+                    <p>Total Beds</p>
+                </div>
+                <div class="stat-card">
+                    <div class="icon-circle"><i class="fas fa-user-md"></i></div>
+                    <h4>120</h4>
+                    <p>Expert Doctors</p>
+                </div>
+                <div class="stat-card">
+                    <div class="icon-circle"><i class="fas fa-stethoscope"></i></div>
+                    <h4>6</h4>
+                    <p>Specialties</p>
+                </div>
+                <div class="stat-card">
+                    <div class="icon-circle"><i class="fas fa-certificate"></i></div>
+                    <h4>1983</h4>
+                    <p>Year Established</p>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <h3 class="card-title"><i class="fas fa-heartbeat"></i> Services Offered</h3>
+                <div class="check-list-grid">
+                    <div class="check-item"><i class="fas fa-check-circle"></i> OPD Services (Mon-Fri: 9 AM - 5 PM)</div>
+                    <div class="check-item"><i class="fas fa-check-circle"></i> 24/7 Emergency Services</div>
+                    <div class="check-item"><i class="fas fa-check-circle"></i> Inpatient Services with 450 beds</div>
+                    <div class="check-item"><i class="fas fa-check-circle"></i> Operation Theater Services</div>
+                    <div class="check-item"><i class="fas fa-check-circle"></i> Diagnostic Services (Lab & Imaging)</div>
+                    <div class="check-item"><i class="fas fa-check-circle"></i> Pharmacy Services</div>
+                    <div class="check-item"><i class="fas fa-check-circle"></i> Ambulance Services</div>
+                    <div class="check-item"><i class="fas fa-check-circle"></i> Health Check-up Packages</div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <h3 class="card-title"><i class="fas fa-trophy"></i> Achievements & Recognition</h3>
+                <ul class="bullet-list">
+                    <li class="check-item"><i class="fas fa-check"></i> First government hospital in Nepal to perform heart transplant</li>
+                    <li class="check-item"><i class="fas fa-check"></i> ISO 9001:2015 certified for quality management</li>
+                    <li class="check-item"><i class="fas fa-check"></i> Recognized by WHO as a center of excellence</li>
+                    <li class="check-item"><i class="fas fa-check"></i> Over 500,000 patients treated annually</li>
+                    <li class="check-item"><i class="fas fa-check"></i> Advanced research center for tropical diseases</li>
+                    <li class="check-item"><i class="fas fa-check"></i> Member of International Hospital Federation</li>
+                </ul>
+
+
+            </div>
+        </div>
+
+        <!-- TAB 2: DEPARTMENTS -->
+        <div id="departments" class="tab-content fade-in" style="display: none;">
+            <div class="section-header">
+                <h2>Departments & Specialties</h2>
+                <p>Comprehensive healthcare services across multiple specializations</p>
+            </div>
+
+            <div class="departments-grid">
+                <!-- Dept 1 -->
+                <div class="dept-card">
+                    <div class="dept-header">
+                        <div class="dept-icon"><i class="fas fa-heartbeat"></i></div>
+                        <div>
+                            <h4>Cardiology</h4>
+                            <p class="dept-sub">Advanced cardiac care with interventional procedures</p>
+                        </div>
+                    </div>
+                    <div class="doc-count"><i class="fas fa-user-md"></i> 12 specialist doctors</div>
+                    <div class="tags-row">
+                        <span class="tag">ECG</span>
+                        <span class="tag">Echocardiography</span>
+                        <span class="tag">Angiography</span>
+                    </div>
+                </div>
+
+                <!-- Dept 2 -->
+                <div class="dept-card">
+                    <div class="dept-header">
+                        <div class="dept-icon"><i class="fas fa-brain"></i></div>
+                        <div>
+                            <h4>Neurology</h4>
+                            <p class="dept-sub">Comprehensive neurological diagnosis and treatment</p>
+                        </div>
+                    </div>
+                    <div class="doc-count"><i class="fas fa-user-md"></i> 10 specialist doctors</div>
+                    <div class="tags-row">
+                        <span class="tag">CT Scan</span>
+                        <span class="tag">MRI</span>
+                        <span class="tag">EEG</span>
+                    </div>
+                </div>
+
+                <!-- Dept 3 -->
+                <div class="dept-card">
+                    <div class="dept-header">
+                        <div class="dept-icon"><i class="fas fa-bone"></i></div>
+                        <div>
+                            <h4>Orthopedics</h4>
+                            <p class="dept-sub">Joint replacement and trauma care</p>
+                        </div>
+                    </div>
+                    <div class="doc-count"><i class="fas fa-user-md"></i> 15 specialist doctors</div>
+                    <div class="tags-row">
+                        <span class="tag">Joint Replacement</span>
+                        <span class="tag">Fracture Care</span>
+                    </div>
+                </div>
+
+                <!-- Dept 4 -->
+                <div class="dept-card">
+                    <div class="dept-header">
+                        <div class="dept-icon"><i class="fas fa-baby"></i></div>
+                        <div>
+                            <h4>Pediatrics</h4>
+                            <p class="dept-sub">Specialized child healthcare services</p>
+                        </div>
+                    </div>
+                    <div class="doc-count"><i class="fas fa-user-md"></i> 18 specialist doctors</div>
+                    <div class="tags-row">
+                        <span class="tag">Neonatal ICU</span>
+                        <span class="tag">Vaccination</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: FACILITIES -->
+        <div id="facilities" class="tab-content fade-in" style="display: none;">
+            <div class="section-header">
+                <h2>Facilities & Amenities</h2>
+                <p>State-of-the-art facilities for comprehensive patient care</p>
+            </div>
+
+            <div class="facilities-grid">
+                <!-- Facility Items -->
+                <div class="facility-card">
+                    <div class="fac-icon"><i class="fas fa-ambulance"></i></div>
+                    <h4>24/7 Emergency Services</h4>
+                    <p>Round-the-clock emergency care with trauma center</p>
+                </div>
+                <div class="facility-card">
+                    <div class="fac-icon"><i class="fas fa-procedures"></i></div>
+                    <h4>ICU & CCU</h4>
+                    <p>Intensive Care Units with advanced monitoring</p>
+                </div>
+                <div class="facility-card">
+                    <div class="fac-icon"><i class="fas fa-heartbeat"></i></div>
+                    <h4>Modern Operation Theaters</h4>
+                    <p>12 fully equipped operation theaters</p>
+                </div>
+                <div class="facility-card">
+                    <div class="fac-icon"><i class="fas fa-microscope"></i></div>
+                    <h4>Diagnostic Lab</h4>
+                    <p>Complete pathology and diagnostic services</p>
+                </div>
+                <div class="facility-card">
+                    <div class="fac-icon"><i class="fas fa-x-ray"></i></div>
+                    <h4>Radiology & Imaging</h4>
+                    <p>CT, MRI, X-Ray, Ultrasound facilities</p>
+                </div>
+                <div class="facility-card">
+                    <div class="fac-icon"><i class="fas fa-tint"></i></div>
+                    <h4>Blood Bank</h4>
+                    <p>24/7 blood bank with all blood types</p>
+                </div>
+            </div>
+
+            <!-- Operating Hours -->
+            <div class="hours-card">
+                <h3><i class="far fa-clock"></i> Operating Hours</h3>
+                <div class="hours-grid">
+                    <div class="hours-col">
+                        <h4>OPD Services</h4>
+                        <div class="time-row"><span>Monday - Friday</span> <span>9:00 AM - 5:00 PM</span></div>
+                        <div class="time-row"><span>Saturday</span> <span>9:00 AM - 1:00 PM</span></div>
+                        <div class="time-row closed"><span>Sunday</span> <span>Closed</span></div>
+                    </div>
+                    <div class="hours-col">
+                        <h4>Emergency Services</h4>
+                        <div class="time-row highlight">
+                            <i class="fas fa-ambulance"></i> <span>24/7 Available</span>
+                        </div>
+                        <p class="small-text">Emergency department is open round the clock for critical cases</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: REVIEWS -->
+        <div id="reviews" class="tab-content fade-in" style="display: none;">
+            <div class="review-summary-card">
+                <div class="summary-left">
+                    <div class="big-score">4.7</div>
+                    <div class="stars-row">
+                        <i class="fas fa-star text-yellow"></i>
+                        <i class="fas fa-star text-yellow"></i>
+                        <i class="fas fa-star text-yellow"></i>
+                        <i class="fas fa-star text-yellow"></i>
+                        <i class="fas fa-star-half-alt text-yellow"></i>
+                    </div>
+                    <p class="total-reviews">856 reviews</p>
+                </div>
+                <div class="summary-right">
+                    <div class="rating-bar-row">
+                        <span class="star-label">5 star</span>
+                        <div class="progress-track"><div class="progress-fill" style="width: 65%;"></div></div>
+                        <span class="count-label">512</span>
+                    </div>
+                    <div class="rating-bar-row">
+                        <span class="star-label">4 star</span>
+                        <div class="progress-track"><div class="progress-fill" style="width: 25%;"></div></div>
+                        <span class="count-label">240</span>
+                    </div>
+                    <div class="rating-bar-row">
+                        <span class="star-label">3 star</span>
+                        <div class="progress-track"><div class="progress-fill" style="width: 8%;"></div></div>
+                        <span class="count-label">68</span>
+                    </div>
+                    <div class="rating-bar-row">
+                        <span class="star-label">2 star</span>
+                        <div class="progress-track"><div class="progress-fill" style="width: 2%;"></div></div>
+                        <span class="count-label">20</span>
+                    </div>
+                    <div class="rating-bar-row">
+                        <span class="star-label">1 star</span>
+                        <div class="progress-track"><div class="progress-fill" style="width: 1%;"></div></div>
+                        <span class="count-label">10</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reviews-list">
+                <div class="review-card">
+                    <div class="review-header">
+                        <h4 class="reviewer-name">Ramesh Adhikari</h4>
+                        <div class="review-meta">
+                            <div class="stars"><i class="fas fa-star text-yellow"></i><i class="fas fa-star text-yellow"></i><i class="fas fa-star text-yellow"></i><i class="fas fa-star text-yellow"></i><i class="fas fa-star text-yellow"></i></div>
+                            <span class="review-date">Nov 18, 2024</span>
+                            <span class="dept-tag">Cardiology</span>
+                        </div>
+                    </div>
+                    <p class="review-text">Excellent hospital with highly skilled doctors. The cardiology department saved my life with timely intervention.</p>
+                    <button class="btn-helpful"><i class="far fa-thumbs-up"></i> Helpful (89)</button>
+                </div>
+                
+                <div class="review-card">
+                    <div class="review-header">
+                        <h4 class="reviewer-name">Sunita Thapa</h4>
+                        <div class="review-meta">
+                            <div class="stars"><i class="fas fa-star text-yellow"></i><i class="fas fa-star text-yellow"></i><i class="fas fa-star text-yellow"></i><i class="fas fa-star text-yellow"></i><i class="far fa-star text-yellow"></i></div>
+                            <span class="review-date">Nov 12, 2024</span>
+                            <span class="dept-tag">Pediatrics</span>
+                        </div>
+                    </div>
+                    <p class="review-text">Very good pediatric care. The doctors are experienced and friendly with children. However, the waiting line in OPD can be quite long.</p>
+                    <button class="btn-helpful"><i class="far fa-thumbs-up"></i> Helpful (55)</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    function openTab(evt, tabName) {
+        // 1. Hide all tab contents
+        var tabContent = document.getElementsByClassName("tab-content");
+        for (var i = 0; i < tabContent.length; i++) {
+            tabContent[i].style.display = "none";
+        }
+
+        // 2. Remove 'active' class from all buttons
+        var tabBtn = document.getElementsByClassName("tab-btn");
+        for (var i = 0; i < tabBtn.length; i++) {
+            tabBtn[i].className = tabBtn[i].className.replace(" active", "");
+        }
+
+        // 3. Show current tab and add active class
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+</script>
+{% endblock %}
+{% endblock %}
