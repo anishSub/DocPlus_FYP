@@ -14,3 +14,11 @@ class AboutUsView(View):
 class ContactUsView(View):
     def get(self, request):
         return render(request, 'contact_us/contact_us.html')
+
+class ProfileView(View):
+    def get(self, request):
+        return render(request, 'profile_view/profile_view.html')
+    
+class ProfileEditView(View):
+    def get(self, request):
+        return render(request, 'profile_view/edit_profile.html')

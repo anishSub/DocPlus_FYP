@@ -1,0 +1,91 @@
+{% extends 'superAdmin/base.html' %}
+{% load static %}
+
+{% block title %}Platform Settings{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/superAdmin/settings.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="settings-container">
+        <!-- Header -->
+        <div class="settings-header">
+            <h2>Platform Settings</h2>
+        </div>
+
+        <!-- 1. General Settings -->
+        <div class="settings-section">
+            <h3>General Settings</h3>
+            
+            <div class="setting-item">
+                <div class="info">
+                    <h4>Maintenance Mode</h4>
+                    <p>Enable platform maintenance mode (users cannot login)</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="info">
+                    <h4>New User Registration</h4>
+                    <p>Allow new users (patients) to register</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked> <!-- Checked = Blue -->
+                    <span class="slider round"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="info">
+                    <h4>Auto-Approve Reviews</h4>
+                    <p>Automatically approve patient reviews without moderation</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- 2. Notification Settings -->
+        <div class="settings-section">
+            <h3>Notification Settings</h3>
+            
+            <div class="setting-item">
+                <div class="info">
+                    <h4>Email Notifications</h4>
+                    <p>Send email notifications to admins for critical alerts</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- 3. Security Settings (Links) -->
+        <div class="settings-section">
+            <h3>Security Settings</h3>
+            
+            <a href="#" class="security-link">
+                <span>Change Admin Password</span>
+                <i class="fas fa-chevron-right"></i>
+            </a>
+
+            <a href="#" class="security-link">
+                <span>Two-Factor Authentication</span>
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        </div>
+
+        <!-- Save Button -->
+        <div class="settings-footer">
+            <button class="save-btn">Save All Settings</button>
+        </div>
+    </div>
+{% endblock %}

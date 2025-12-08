@@ -2,13 +2,12 @@
 {% load static %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/find_doctor/doctor_registration.css' %}">
+    <link rel="stylesheet" href="{% static 'find_doctor/css/doctor_registration.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="registration-wrapper">
     
-    <!-- 1. HEADER SECTION -->
     <div class="registration-header">
         <div class="container">
             <a href="/" class="back-link"><i class="fas fa-chevron-left"></i> Back to Home</a>
@@ -24,10 +23,8 @@
         </div>
     </div>
 
-    <!-- 2. MAIN CARD -->
     <div class="container main-container">
         
-        <!-- STEPPER -->
         <div class="stepper-wrapper">
             <div class="step-indicator">
                 <div class="step active" id="step-indicator-0">
@@ -61,11 +58,9 @@
             </div>
         </div>
 
-        <!-- FORM CONTAINER -->
-        <form id="regForm" action="" method="POST" enctype="multipart/form-data">
+        <form id="regForm" action="{% url 'doctor_registration' %}" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
 
-            <!-- STEP 1: PERSONAL INFO -->
             <div class="form-step active" id="step-0">
                 <h2 class="step-title">Personal Information</h2>
                 <p class="step-desc">Please provide your basic personal details</p>
@@ -73,20 +68,59 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Full Name *</label>
-                        <input type="text" name="full_name" id="full_name" placeholder="Anish Subedi" required>
+                        <input type="text" name="full_name" id="full_name" placeholder="Full Name" required>
                     </div>
+
                     <div class="form-group">
                         <label>Email Address *</label>
-                        <input type="email" name="email" id="email" placeholder="subedianish937@gmail.com" required>
+                        <input type="email" name="email" id="email" value="{{ form.email.value|default:'' }}" required>
+                        <small id="emailError" style="color: red; display: none; margin-top: 5px;"></small>
+                        
+                        {% if form.email.errors %}
+                            <div class="field-error">
+                                <i class="fas fa-exclamation-circle"></i> {{ form.email.errors.0 }}
+                            </div>
+                        {% endif %}
                     </div>
+
+                    <div class="form-group">
+                        <label>Password *</label>
+                        <div class="password-container">
+                            <input type="password" name="password" id="password" required>
+                            <i class="fas fa-eye toggle-eye" onclick="togglePassword('password', this)"></i>
+                        </div>
+                        
+                        {% if form.password.errors %}
+                            <div class="field-error">
+                                <i class="fas fa-exclamation-circle"></i> {{ form.password.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label>Confirm Password *</label>
+                        <div class="password-container">
+                            <input type="password" name="password2" id="password2" placeholder="Re-enter your password" required>
+                            <i class="fas fa-eye toggle-eye" onclick="togglePassword('password2', this)"></i>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label>Phone Number *</label>
-                        <input type="tel" name="phone" id="phone" placeholder="+977 9861067059" required>
+                        <input type="tel" name="phone" id="phone" placeholder="+977 " required>
                     </div>
+
                     <div class="form-group">
                         <label>Date of Birth *</label>
-                        <input type="date" name="dob" id="dob" required>
+                        <input type="date" name="dob" id="dob" required max="{% now 'Y-m-d' %}" value="{{ form.dob.value|default:'' }}">
+                        
+                        {% if form.dob.errors %}
+                            <div class="field-error">
+                                <i class="fas fa-exclamation-circle"></i> {{ form.dob.errors.0 }}
+                            </div>
+                        {% endif %}
                     </div>
+
                     <div class="form-group">
                         <label>Gender *</label>
                         <select name="gender" id="gender" required>
@@ -96,18 +130,18 @@
                             <option value="Other">Other</option>
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label>City *</label>
                         <input type="text" name="city" id="city" placeholder="Pokhara" required>
                     </div>
+
                     <div class="form-group full-width">
                         <label>Full Address *</label>
                         <input type="text" name="address" id="address" placeholder="Enter your complete address" required>
                     </div>
                 </div>
             </div>
-
-            <!-- STEP 2: PROFESSIONAL INFO -->
             <div class="form-step" id="step-1">
                 <h2 class="step-title">Professional Information</h2>
                 <p class="step-desc">Your medical credentials and experience</p>
@@ -115,12 +149,23 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Primary Specialty *</label>
-                        <select name="specialty" id="specialty" required>
+                        <select name="specialty" id="specialty" required onchange="toggleSpecialty(this)">
                             <option value="">Select Specialty</option>
+                            <option value="General Medicine">General Medicine</option>
                             <option value="Cardiology">Cardiology</option>
                             <option value="Neurology">Neurology</option>
-                            <option value="General Medicine">General Medicine</option>
+                            <option value="Orthopedics">Orthopedics</option>
+                            <option value="Pediatrics">Pediatrics</option>
+                            <option value="Gynecology">Gynecology</option>
+                            <option value="Dermatology">Dermatology</option>
+                            <option value="Psychiatry">Psychiatry</option>
+                            <option value="ENT">ENT</option>
+                            <option value="Dental">Dental</option>
+                            <option value="Ophthalmology">Ophthalmology</option>
+                            <option value="Other">Other (Specify below)</option>
                         </select>
+                        <input type="text" id="specialty_other" placeholder="Please specify your specialty" 
+                                style="display: none; margin-top: 10px;" class="form-control">
                     </div>
                     <div class="form-group">
                         <label>Sub-Specialty</label>
@@ -157,7 +202,6 @@
                 </div>
             </div>
 
-            <!-- STEP 3: EDUCATION -->
             <div class="form-step" id="step-2">
                 <h2 class="step-title">Education & Qualifications</h2>
                 <p class="step-desc">Your academic background and certifications</p>
@@ -186,7 +230,6 @@
                 </div>
             </div>
 
-            <!-- STEP 4: DOCUMENTS -->
             <div class="form-step" id="step-3">
                 <h2 class="step-title">Upload Documents</h2>
                 <p class="step-desc">Please upload the required documents for verification</p>
@@ -210,6 +253,22 @@
                             <input type="file" name="cv" id="cv" class="file-input" hidden onchange="updateFileName(this)">
                             <button type="button" class="btn-upload" onclick="document.getElementById('cv').click()">
                                 <i class="fas fa-upload"></i> Upload
+                            </button>
+                            <span class="file-name"></span>
+                        </div>
+                    </div>
+
+                <!-- NEW: Profile Photo Upload -->
+                    <div class="upload-item">
+                        <div class="icon-sq"><i class="fas fa-user-md"></i></div>
+                        <div class="upload-info">
+                            <label>Profile Photo</label>
+                            <span>Upload a professional photo</span>
+                        </div>
+                        <div class="upload-action">
+                            <input type="file" name="profile_photo" id="profile_photo" class="file-input" hidden onchange="updateFileName(this)">
+                            <button type="button" class="btn-upload" onclick="document.getElementById('profile_photo').click()">
+                                <i class="fas fa-camera"></i> Upload
                             </button>
                             <span class="file-name"></span>
                         </div>
@@ -247,12 +306,10 @@
                 </div>
             </div>
 
-            <!-- STEP 5: REVIEW -->
             <div class="form-step" id="step-4">
                 <h2 class="step-title">Review Your Application</h2>
                 <p class="step-desc">Please review all information before submitting</p>
 
-                <!-- Review Section: Personal -->
                 <div class="review-block">
                     <h3 class="review-heading"><i class="far fa-user"></i> Personal Information</h3>
                     <div class="review-grid">
@@ -263,25 +320,35 @@
                     </div>
                 </div>
 
-                <!-- Review Section: Professional -->
                 <div class="review-block">
                     <h3 class="review-heading"><i class="fas fa-stethoscope"></i> Professional Information</h3>
                     <div class="review-grid">
                         <div><label>Specialty</label><p id="rev_specialty">-</p></div>
                         <div><label>License No</label><p id="rev_license">-</p></div>
                         <div><label>Experience</label><p id="rev_exp">-</p></div>
-                        <div><label>Current Hospital</label><p id="rev_hospital">-</p></div>
+                        <div class="form-group">
+                                <label>Select Registered Hospital</label>
+                                <div class="select-wrapper">
+                                    {{ form.hospital_affiliation }} 
+                                </div>
+                                <small style="color: #666; font-size: 0.8rem;">Select from list if applicable</small>
+                        </div>
+
+                        <div style="text-align: center; margin: 10px 0; font-weight: bold; color: #888;">- OR -</div>
+
+                        <div class="form-group">
+                                <label>If not listed, type Name</label>
+                                <input type="text" name="hospital_name_manual" id="hospital_name_manual" placeholder="e.g. City Dental Clinic">
+                        </div>
                     </div>
                 </div>
 
-                <!-- Terms -->
                 <div class="terms-box">
                     <h3 class="terms-title">I agree to the Terms & Conditions</h3>
                     <p class="terms-text">I certify that all information provided is accurate and true. I understand that my application will be reviewed by DocPlus administrators.</p>
                 </div>
             </div>
 
-            <!-- BUTTONS -->
             <div class="form-actions">
                 <button type="button" id="prevBtn" class="btn btn-secondary" onclick="nextPrev(-1)">
                     <i class="fas fa-chevron-left"></i> Previous
@@ -291,35 +358,36 @@
                 </button>
             </div>
 
-        </form>
-    </div>
+        </form> </div>
 </div>
-
+{% endblock %}
 {% block extra_js %}
 <script>
-    var currentTab = 0; // Current tab is set to be the first tab (0)
-    showTab(currentTab); // Display the current tab
+    var currentTab = 0; 
+    showTab(currentTab); 
 
     function showTab(n) {
         var x = document.getElementsByClassName("form-step");
         
-        // Hide all steps first
         for(let i=0; i<x.length; i++) {
             x[i].style.display = "none";
             x[i].classList.remove('active');
         }
         
-        // Show current step
         x[n].style.display = "block";
-        setTimeout(() => x[n].classList.add('active'), 10); // Slight delay for fade-in
+        setTimeout(() => x[n].classList.add('active'), 10);
 
-        // Handle Buttons
+        // Logic for Previous Button
+        let prevBtn = document.getElementById("prevBtn");
         if (n == 0) {
-            document.getElementById("prevBtn").style.display = "none";
+            prevBtn.style.display = "inline-flex";
+            prevBtn.onclick = function (e) { e.preventDefault(); window.location.href = "/"; };
         } else {
-            document.getElementById("prevBtn").style.display = "inline-flex";
+            prevBtn.style.display = "inline-flex";
+            prevBtn.onclick = function (e) { e.preventDefault(); nextPrev(-1); };
         }
 
+        // Logic for Next/Submit Button
         if (n == (x.length - 1)) {
             document.getElementById("nextBtn").innerHTML = '<i class="fas fa-check-circle"></i> Submit Application';
         } else {
@@ -327,25 +395,81 @@
         }
 
         updateStepper(n);
-        
-        // If on Review Step, Populate Data
-        if(n == 4) {
-            populateReview();
-        }
+        if(n == 4) populateReview();
     }
 
-    function nextPrev(n) {
+    // --- MAIN LOGIC TO BLOCK USER IF EMAIL IS WRONG ---
+    async function nextPrev(n) {
         var x = document.getElementsByClassName("form-step");
         
-        // Validate if pressing Next
+        // 1. Basic Empty Field Validation
         if (n == 1 && !validateForm()) return false;
         
-        // If submitting (on last step)
+        // 2. SPECIAL CHECK: Email Validation on Step 0
+        if (currentTab == 0 && n == 1) {
+            let emailInput = document.getElementById('email');
+            let errorMsg = document.getElementById('emailError'); // Ensure you have <small id="emailError"> in HTML
+            let nextBtn = document.getElementById('nextBtn');
+            
+            // A. Check Format (e.g., must contain @, .com)
+            // checkValidity() uses the HTML type="email" rules
+            if (!emailInput.checkValidity()) {
+                emailInput.classList.add("invalid");
+                if(errorMsg) {
+                    errorMsg.style.display = "block";
+                    errorMsg.innerText = "Please enter a valid email address (e.g. name@example.com).";
+                    errorMsg.style.color = "red";
+                }
+                return false; // STOP HERE
+            }
+
+            // B. Check Database for Duplicates (AJAX)
+            nextBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+            nextBtn.disabled = true;
+
+            try {
+                // Ensure this URL matches your urls.py
+                let response = await fetch(`{% url 'check_email' %}?email=${emailInput.value}`);
+                let data = await response.json();
+
+                if (data.exists) {
+                    // STOP! Email exists in database
+                    emailInput.classList.add("invalid");
+                    if(errorMsg) {
+                        errorMsg.style.display = "block";
+                        errorMsg.innerText = "This email is already registered. Please use another.";
+                        errorMsg.style.color = "red";
+                    }
+                    nextBtn.innerHTML = 'Next <i class="fas fa-chevron-right"></i>';
+                    nextBtn.disabled = false;
+                    return false; // BLOCK THE USER
+                } else {
+                    // SUCCESS! Email is valid and unique
+                    emailInput.classList.remove("invalid");
+                    if(errorMsg) errorMsg.style.display = "none";
+                }
+            } catch (error) {
+                console.error('Error checking email:', error);
+                // If checking fails, decide if you want to block or let them pass. 
+                // Usually safer to alert and block.
+                alert("Could not verify email. Please checks connection.");
+                nextBtn.innerHTML = 'Next <i class="fas fa-chevron-right"></i>';
+                nextBtn.disabled = false;
+                return false; 
+            }
+            
+            // Reset button
+            nextBtn.innerHTML = 'Next <i class="fas fa-chevron-right"></i>';
+            nextBtn.disabled = false;
+        }
+
+        // 3. Submit if on last step
         if (currentTab + n >= x.length) {
             document.getElementById("regForm").submit();
             return false;
         }
         
+        // 4. Go to next step
         currentTab = currentTab + n;
         showTab(currentTab);
     }
@@ -356,14 +480,12 @@
         y = x[currentTab].getElementsByTagName("input");
         z = x[currentTab].getElementsByTagName("select");
         
-        // Check inputs
         for (i = 0; i < y.length; i++) {
             if (y[i].hasAttribute('required') && y[i].value == "") {
                 y[i].className += " invalid";
                 valid = false;
             }
         }
-        // Check selects
         for (i = 0; i < z.length; i++) {
             if (z[i].hasAttribute('required') && z[i].value == "") {
                 z[i].className += " invalid";
@@ -376,8 +498,6 @@
     function updateStepper(n) {
         var steps = document.getElementsByClassName("step");
         var lines = document.getElementsByClassName("line");
-        
-        // Icons array matching the HTML
         const icons = [
             '<i class="far fa-user"></i>',
             '<i class="fas fa-stethoscope"></i>',
@@ -388,20 +508,15 @@
 
         for (var i = 0; i < steps.length; i++) {
             let circle = steps[i].querySelector('.circle');
-            
-            // RESET to default
             steps[i].classList.remove("active", "completed");
-            circle.innerHTML = icons[i]; // Restore original icon
+            circle.innerHTML = icons[i]; 
             if(i < lines.length) lines[i].classList.remove("completed");
 
-            // ACTIVE Step
             if (i == n) {
                 steps[i].classList.add("active");
-            }
-            // COMPLETED Step
-            else if (i < n) {
+            } else if (i < n) {
                 steps[i].classList.add("completed");
-                circle.innerHTML = '<i class="fas fa-check"></i>'; // Change to checkmark
+                circle.innerHTML = '<i class="fas fa-check"></i>'; 
                 if(i < lines.length) lines[i].classList.add("completed");
             }
         }
@@ -409,9 +524,7 @@
 
     function updateFileName(input) {
         if(input.files && input.files[0]) {
-            // Find the sibling span to display name
             input.parentElement.querySelector('.file-name').innerText = input.files[0].name;
-            // Change button style to indicate success
             let btn = input.parentElement.querySelector('.btn-upload');
             btn.innerHTML = '<i class="fas fa-check"></i> Selected';
             btn.style.background = '#10B981';
@@ -421,17 +534,85 @@
     }
 
     function populateReview() {
-        // Simple mapping of ID -> Review ID
-        document.getElementById('rev_name').innerText = document.getElementById('full_name').value || '-';
-        document.getElementById('rev_email').innerText = document.getElementById('email').value || '-';
-        document.getElementById('rev_phone').innerText = document.getElementById('phone').value || '-';
-        document.getElementById('rev_city').innerText = document.getElementById('city').value || '-';
+        document.getElementById('rev_name').innerText = (document.getElementById('full_name').value) || '-';
+        document.getElementById('rev_email').innerText = (document.getElementById('email').value) || '-';
+        document.getElementById('rev_phone').innerText = (document.getElementById('phone').value) || '-';
+        document.getElementById('rev_city').innerText = (document.getElementById('city').value) || '-';
+        document.getElementById('rev_specialty').innerText = (document.getElementById('specialty').value) || '-';
+        document.getElementById('rev_license').innerText = (document.getElementById('license_no').value) || '-';
+        document.getElementById('rev_exp').innerText = (document.getElementById('experience').value + ' Years') || '-';
+
+        // --- NEW LOGIC FOR HOSPITAL ---
+        // 1. Get the Dropdown element (Django usually names it 'id_hospital_affiliation')
+        let drop = document.querySelector('[name="hospital_affiliation"]'); 
+        let manual = document.getElementById('hospital_name_manual');
         
-        document.getElementById('rev_specialty').innerText = document.getElementById('specialty').value || '-';
-        document.getElementById('rev_license').innerText = document.getElementById('license_no').value || '-';
-        document.getElementById('rev_exp').innerText = document.getElementById('experience').value + ' Years' || '-';
-        document.getElementById('rev_hospital').innerText = document.getElementById('hospital').value || '-';
+        let hospitalName = "-";
+
+        // If a dropdown option is selected (value is not empty)
+        if (drop && drop.value) {
+            // Get the TEXT of the selected option, not the ID
+            hospitalName = drop.options[drop.selectedIndex].text;
+        } 
+        // If dropdown is empty, check the manual text box
+        else if (manual && manual.value) {
+            hospitalName = manual.value;
+        }
+
+        document.getElementById('rev_hospital').innerText = hospitalName;
+    }   
+
+    // Auto-Jump to Error Step (This is the code you pasted in your prompt)
+    document.addEventListener("DOMContentLoaded", function() {
+        let errors = document.getElementsByClassName("field-error");
+        if (errors.length > 0) {
+            let firstError = errors[0];
+            let stepDiv = firstError.closest(".form-step");
+            if (stepDiv) {
+                let stepId = stepDiv.id; 
+                let stepIndex = parseInt(stepId.split("-")[1]);
+                currentTab = stepIndex;
+                showTab(currentTab);
+            }
+        }
+    });
+    {% comment %} To show the text box when "Other" is picked and send the correct value to your backend. {% endcomment %}
+    function toggleSpecialty(selectObj) {
+    var otherInput = document.getElementById('specialty_other');
+
+    if (selectObj.value === 'Other') {
+        // 1. Show the text box
+        otherInput.style.display = 'block';
+        otherInput.required = true;
+        
+        // 2. SWAP NAMES: Make the text box the "real" field
+        otherInput.name = "specialty"; 
+        selectObj.name = "specialty_select"; // Rename dropdown so it doesn't conflict
+    } else {
+        // 1. Hide the text box
+        otherInput.style.display = 'none';
+        otherInput.required = false;
+        
+        // 2. SWAP BACK: Make the dropdown the "real" field
+        otherInput.name = "specialty_other_unused";
+        selectObj.name = "specialty";
     }
+}
+
+    function togglePassword(fieldId, icon) {
+            const input = document.getElementById(fieldId);
+            
+            if (input.type === "password") {
+                // Show Password
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash"); // Change icon to "crossed out eye"
+            } else {
+                // Hide Password
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye"); // Change icon back to normal eye
+            }
+        }
 </script>
-{% endblock %}
 {% endblock %}

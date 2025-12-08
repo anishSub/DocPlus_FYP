@@ -1,0 +1,87 @@
+/* Global & Reset */
+:root {
+    --primary-blue: #0092b8;
+    --header-gradient: linear-gradient(90deg, #0e5c98, #0092b8);
+    --bg-color: #f3f4f6;
+    --white: #ffffff;
+    --text-dark: #1f2937;
+    --text-grey: #6b7280;
+    --border-color: #e5e7eb;
+    --font-family: 'Inter', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--font-family); background-color: var(--bg-color); color: var(--text-dark); padding-top: 80px; }
+
+/* Fixed Header */
+.edit-header {
+    position: fixed; top: 0; left: 0; width: 100%; height: 80px;
+    background: var(--header-gradient);
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 32px; z-index: 1000; color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header-left { display: flex; align-items: center; gap: 20px; }
+.close-btn { color: white; font-size: 24px; opacity: 0.8; transition: 0.2s; }
+.close-btn:hover { opacity: 1; }
+.header-title h2 { font-size: 20px; margin-bottom: 2px; }
+.header-title p { font-size: 13px; opacity: 0.8; }
+
+.save-btn {
+    background: white; color: var(--primary-blue); border: none;
+    padding: 10px 24px; border-radius: 8px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; gap: 8px;
+    transition: transform 0.1s;
+}
+.save-btn:hover { transform: scale(1.02); }
+
+/* Main Layout */
+.main-container { max-width: 800px; margin: 0 auto; padding: 32px 20px; }
+
+/* Photo Section */
+.photo-section {
+    background: white; border-radius: 16px; padding: 32px;
+    text-align: center; margin-bottom: 24px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.photo-wrapper { position: relative; width: 120px; height: 120px; margin: 0 auto 16px; }
+.photo-wrapper img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid #e0f2fe; }
+.camera-btn {
+    position: absolute; bottom: 0; right: 0;
+    width: 36px; height: 36px; background: var(--primary-blue);
+    color: white; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; cursor: pointer; border: 3px solid white;
+}
+.camera-btn input { display: none; }
+.photo-section h3 { font-size: 20px; margin-bottom: 4px; }
+.photo-section .patient-id { font-size: 14px; color: var(--text-grey); }
+
+/* Form Card */
+.form-card { background: white; border-radius: 16px; padding: 32px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.section-header { border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 24px; }
+.section-header h3 { font-size: 20px; margin-bottom: 4px; }
+
+.sub-title {
+    font-size: 16px; color: var(--primary-blue);
+    margin: 32px 0 20px; display: flex; align-items: center; gap: 10px;
+}
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+.full-width { grid-column: 1 / -1; }
+
+label { font-size: 14px; font-weight: 500; color: var(--text-dark); }
+input, select, textarea {
+    padding: 12px 16px; border: 1px solid var(--border-color);
+    border-radius: 8px; font-size: 14px; outline: none;
+    font-family: var(--font-family);
+}
+input:focus, select:focus, textarea:focus { border-color: var(--primary-blue); }
+.readonly-input { background-color: #f9fafb; cursor: not-allowed; }
+
+@media (max-width: 768px) {
+    .edit-header { padding: 0 16px; }
+    .header-title p { display: none; }
+    .form-grid { grid-template-columns: 1fr; }
+}

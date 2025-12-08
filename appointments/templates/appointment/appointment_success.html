@@ -2,108 +2,76 @@
 {% load static %}
 
 {% block extra_css %}
+<!-- Reusing the same CSS file because it handles layout well, 
+     or you can create a specific success.css -->
 <link rel="stylesheet" href="{% static 'css/appointment/appointment_success.css' %}">
+
 {% endblock %}
 
 {% block content %}
-<div class="success-wrapper">
-    <div class="success-card">
-        
-        <!-- SUCCESS ICON -->
-        <div class="icon-container">
-            <i class="fas fa-check-circle"></i>
-        </div>
-
-        <!-- MAIN HEADING -->
-        <div class="success-header">
-            <h1>Appointment Confirmed!</h1>
-            <p>Your online video consultation has been successfully booked.</p>
-        </div>
-
-        <!-- DETAILS BOX -->
-        <div class="details-box">
-            <h3>Appointment Details</h3>
+<div class="appointment-container">
+    <div class="success-wrapper">
+        <div class="success-card">
             
-            <div class="details-grid">
+            <!-- SUCCESS ICON -->
+            <div class="icon-container">
+                <i class="fas fa-check-circle"></i>
+            </div>
+
+            <!-- MAIN HEADING -->
+            <div class="success-header">
+                <h1>Appointment Confirmed!</h1>
+                <p>Your online video consultation has been successfully booked.</p>
+            </div>
+
+            <!-- DETAILS BOX -->
+            <div class="details-box">
+                <h3 style="margin-top:0; color:#0092b8;">Appointment Details</h3>
                 
-                <!-- Item 1: Patient -->
                 <div class="detail-item">
-                    <div class="item-icon">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="item-content">
-                        <span class="label">Patient Name</span>
-                        <span class="value">Anish Subedi</span> <!-- Replace with {{ user.get_full_name }} -->
-                    </div>
+                    <span class="label">Patient Name</span>
+                    <span class="value">{{ patient_name }}</span>
                 </div>
 
-                <!-- Item 2: Doctor -->
                 <div class="detail-item">
-                    <div class="item-icon">
-                        <i class="fas fa-user-md"></i>
-                    </div>
-                    <div class="item-content">
-                        <span class="label">Doctor</span>
-                        <span class="value">Dr. Suman Rai</span>
-                        <span class="sub-value">Gynecologist</span>
-                    </div>
+                    <span class="label">Doctor</span>
+                    <span class="value">{{ doctor_name }}</span>
                 </div>
 
-                <!-- Item 3: Date & Time -->
                 <div class="detail-item">
-                    <div class="item-icon">
-                        <i class="far fa-calendar-alt"></i>
-                    </div>
-                    <div class="item-content">
-                        <span class="label">Date & Time</span>
-                        <span class="value">Sunday, March 12, 2025</span>
-                        <span class="value highlight-time">09:00 AM</span>
-                    </div>
+                    <span class="label">Date</span>
+                    <span class="value">{{ date }}</span>
                 </div>
 
-                <!-- Item 4: Type -->
                 <div class="detail-item">
-                    <div class="item-icon">
-                        <i class="fas fa-video"></i>
-                    </div>
-                    <div class="item-content">
-                        <span class="label">Consultation Type</span>
-                        <span class="value">Online Video Consultation (5 mins)</span>
-                    </div>
+                    <span class="label">Time</span>
+                    <span class="value" style="color:#0092b8;">{{ time }}</span>
+                </div>
+                
+                <div class="detail-item">
+                    <span class="label">Payment Method</span>
+                    <span class="value" style="text-transform: capitalize;">{{ payment_method }}</span>
                 </div>
 
-                <!-- Item 5: Fee -->
                 <div class="detail-item">
-                    <div class="item-icon">
-                        <i class="fas fa-wallet"></i>
-                    </div>
-                    <div class="item-content">
-                        <span class="label">Consultation Fee</span>
-                        <span class="value fee">NPR 900</span>
-                    </div>
+                    <span class="label">Consultation Fee</span>
+                    <span class="value">{{ fee }}</span>
                 </div>
 
             </div>
-        </div>
 
-        <!-- NOTIFICATION TEXT -->
-        <div class="notification-text">
-            <p>
-                <i class="fas fa-envelope"></i> 
-                A confirmation email has been sent to <span class="email">subedianish937@gmail.com</span>
-            </p>
-            <p>
-                <i class="fas fa-video"></i> 
-                You will receive a video call link 10 minutes before your appointment.
-            </p>
-        </div>
+            <!-- NOTIFICATION TEXT -->
+            <div class="notification-text" style="background:#ecfeff; padding:15px; border-radius:8px; color:#4a5565; margin-bottom:24px;">
+                <p><i class="fas fa-envelope"></i> Confirmation sent to <strong>{{ email }}</strong></p>
+                <p><i class="fas fa-video"></i> Video link will arrive 10 mins before time.</p>
+            </div>
 
-        <!-- ACTION BUTTONS -->
-        <div class="action-buttons">
-            <a href="/" class="btn btn-primary">Back to Home</a>
-            <a href="#" class="btn btn-outline">View My Appointments</a>
-        </div>
+            <!-- ACTION BUTTONS -->
+            <div class="action-buttons" style="display:flex; gap:10px;">
+                <a href="{% url 'home' %}" class="btn btn-primary" style="flex:1; justify-content:center;">Back to Home</a>
+            </div>
 
+        </div>
     </div>
 </div>
 {% endblock %}

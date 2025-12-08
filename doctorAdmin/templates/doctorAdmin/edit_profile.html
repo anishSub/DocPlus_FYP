@@ -1,0 +1,136 @@
+{% extends 'doctorAdmin/baseAppointment.html' %} 
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/doctorAdmin/edit_profile.css' %}">
+
+<div class="dashboard-container">
+
+    <div class="profile-edit-card">
+        
+        <!-- Header moved inside card as requested -->
+        <div class="header-box">
+            <h2>Edit Profile</h2>
+            <p>Update your professional details, qualifications, and contact information</p>
+        </div>
+        
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- 1. Profile Photo Section -->
+            <div class="photo-upload-section">
+                <div class="current-photo">
+                    {% if doctor.profile_photo %}
+                        <img src="{{ doctor.profile_photo.url }}" alt="Profile">
+                    {% else %}
+                        <div class="photo-placeholder">
+                            {{ doctor.user.first_name|first }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="upload-controls">
+                    <label class="section-label">Profile Photo</label>
+                    
+                    <!-- Restored the nice button styling for file upload -->
+                    <div class="file-input-wrapper">
+                        {{ form.profile_photo }}
+                        <span class="file-custom-label"><i class="fas fa-camera"></i> Change Photo</span>
+                    </div>
+                    
+                    <p class="upload-hint">Recommended: Square JPG or PNG, at least 400x400px</p>
+                </div>
+            </div>
+
+            <!-- 2. Professional Information -->
+            <h3 class="section-title">Professional Information</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Specialization</label>
+                    {{ form.specialization }}
+                </div>
+                <div class="form-group">
+                    <label>Sub Specialty (Optional)</label>
+                    {{ form.sub_specialty }}
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Current Hospital</label>
+                    {{ form.current_hospital }}
+                </div>
+                <div class="form-group">
+                    <label>Current Position</label>
+                    {{ form.current_position }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Years of Experience</label>
+                {{ form.years_of_experience }}
+            </div>
+
+            <!-- 3. Education -->
+            <h3 class="section-title">Education</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Medical Degree</label>
+                    {{ form.medical_degree }}
+                </div>
+                <div class="form-group">
+                    <label>Medical School</label>
+                    {{ form.medical_school }}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Graduation Year</label>
+                {{ form.graduation_year }}
+            </div>
+
+            <!-- 4. Contact & Details -->
+            <h3 class="section-title">Contact & Details</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Mobile Number</label>
+                    {{ form.mobile_number }}
+                </div>
+                <div class="form-group">
+                    <label>City</label>
+                    {{ form.city }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Detailed Address</label>
+                {{ form.address }}
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Consultation Fee (NPR)</label>
+                    {{ form.consultation_fee }}
+                </div>
+                <div class="form-group">
+                    <label>Languages Spoken</label>
+                    {{ form.languages_spoken }}
+                </div>
+            </div>
+
+            <!-- 5. Bio -->
+            <h3 class="section-title">About Me</h3>
+            <div class="form-group">
+                <label>Professional Bio</label>
+                {{ form.bio }}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-save">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

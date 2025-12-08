@@ -1,0 +1,146 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Doctor Dashboard{% endblock %}</title>
+    
+    <!-- GLOBAL CSS (Base) -->
+    <link rel="stylesheet" href="{% static 'css/doctorAdmin/baseAppointment.css' %}">
+    
+    <!-- PAGE SPECIFIC CSS -->
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS SAFEGUARD for Icons -->
+    <style>
+        .fas, .fa-solid { font-family: "Font Awesome 6 Free" !important; font-weight: 900; }
+        .far, .fa-regular { font-family: "Font Awesome 6 Free" !important; font-weight: 400; }
+        .fab, .fa-brands { font-family: "Font Awesome 6 Brands" !important; font-weight: 400; }
+        
+        /* Basic Layout defaults */
+        body { margin: 0; font-family: 'Inter', sans-serif; background-color: #f3f4f6; display: flex; flex-direction: column; min-height: 100vh; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. TOP NAVBAR -->
+    <header class="top-navbar">
+        <div class="nav-left">
+            <button class="icon-btn menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <!-- DYNAMIC PROFILE IMAGE -->
+            <div class="profile-img">
+                {% if request.user.doctor_profile.profile_photo %}
+                    <img src="{{ request.user.doctor_profile.profile_photo.url }}" alt="Doctor Photo" style="object-fit: cover;">
+                {% else %}
+                    <!-- Fallback Avatar with Doctor's Name -->
+                    <img src="https://ui-avatars.com/api/?name={{ request.user.first_name }}+{{ request.user.last_name }}&background=random&color=fff" alt="Doctor Avatar">
+                {% endif %}
+            </div>
+            
+            <!-- DYNAMIC NAME & SPECIALTY -->
+            <div class="profile-info">
+                <h3>Dr. {{ request.user.first_name }} {{ request.user.last_name }}</h3>
+                <!-- Safely access specialization; default to 'General' if missing -->
+                <span>{{ request.user.doctor_profile.specialization|default:"General Physician" }}</span>
+            </div>
+        </div>
+        
+        <div class="nav-right">
+            <button class="icon-btn"><i class="far fa-bell"></i><span class="dot"></span></button>
+            <button class="icon-btn"><i class="fas fa-cog"></i></button>
+            <a href="{% url 'logout' %}" class="logout-btn" style="text-decoration: none;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </header>
+
+    <!-- 2. LAYOUT CONTAINER -->
+    <div class="dashboard-container">
+        
+        <!-- 3. SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <nav class="side-nav">
+                <!-- Dashboard -->
+                <a href="{% url 'doctor_admin_dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'doctor_admin_dashboard' %}active{% endif %}">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Overview</span>
+                </a>
+                
+                <!-- Appointments -->
+                <a href="{% url 'doctor_admin_appointments' %}" class="nav-item {% if request.resolver_match.url_name == 'doctor_admin_appointments' %}active{% endif %}">
+                    <i class="far fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+                
+                <!-- Patients -->
+                <a href="{% url 'patients_list' %}" class="nav-item {% if request.resolver_match.url_name == 'patients_list' %}active{% endif %}">
+                    <i class="fas fa-user-injured"></i>
+                    <span>My Patients</span>
+                </a>
+                
+                <!-- Schedule -->
+                <a href="{% url 'doctor_schedule' %}" class="nav-item {% if request.resolver_match.url_name == 'doctor_schedule' %}active{% endif %}">
+                    <i class="far fa-clock"></i>
+                    <span>Schedule</span>
+                </a>
+                
+                <!-- Hospitals -->
+                <a href="{% url 'hospital_info' %}" class="nav-item {% if request.resolver_match.url_name == 'hospital_info' %}active{% endif %}">
+                    <i class="far fa-hospital"></i>
+                    <span>Hospitals</span>
+                </a>
+
+                <!-- Earnings -->
+                <a href="{% url 'doctor_earnings' %}" class="nav-item {% if request.resolver_match.url_name == 'doctor_earnings' %}active{% endif %}">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>Earnings</span>
+                </a>
+
+                <!-- Reviews -->
+                <a href="{% url 'doctor_ratings' %}" class="nav-item {% if request.resolver_match.url_name == 'doctor_ratings' %}active{% endif %}">
+                    <i class="far fa-star"></i>
+                    <span>Reviews</span>
+                </a>
+
+                <!-- Edit Profile -->
+                <a href="{% url 'edit_profile' %}" class="nav-item {% if request.resolver_match.url_name == 'edit_doctor_profile' %}active{% endif %}">
+                    <i class="fas fa-user-edit"></i>
+                    <span>Edit Profile</span>
+                </a>
+
+            </nav>
+        </aside>
+
+        <!-- 4. MAIN CONTENT -->
+        <main class="main-content">
+            <!-- Alert Messages -->
+            {% if messages %}
+                <div style="margin-bottom: 20px;">
+                    {% for message in messages %}
+                        <div style="padding: 10px 15px; border-radius: 6px; margin-bottom: 5px; {% if message.tags == 'error' %}background:#fee2e2; color:#b91c1c;{% else %}background:#dcfce7; color:#15803d;{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+
+    <!-- GLOBAL SCRIPTS -->
+    <script src="{% static 'js/doctorAdmin/doctor_admin.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

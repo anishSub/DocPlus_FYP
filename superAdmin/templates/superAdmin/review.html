@@ -1,0 +1,93 @@
+{% extends 'superAdmin/base.html' %}
+{% load static %}
+
+{% block title %}Review Moderation{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/superAdmin/review.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Header -->
+    <div class="reviews-header">
+        <h2>Review Moderation</h2>
+        <span class="badge-flagged">1 Flagged</span>
+    </div>
+
+    <!-- Reviews List -->
+    <div class="reviews-list">
+        
+        <!-- Card 1: Approved -->
+        <div class="review-card">
+            <div class="card-body">
+                <div class="reviewer-profile">
+                    <div class="avatar blue">R</div>
+                    <div class="info">
+                        <h3>Rajesh Kumar</h3>
+                        <span class="sub-text">Review for Dr. Arjun Sharma</span>
+                    </div>
+                </div>
+                <div class="review-meta">
+                    <div class="stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <span class="date">2024-11-20</span>
+                </div>
+            </div>
+            <p class="review-text">Excellent doctor! Very professional and caring.</p>
+            <div class="status-row approved">
+                <i class="fas fa-check-circle"></i> Approved
+            </div>
+        </div>
+
+        <!-- Card 2: Flagged / Pending (Yellow Style) -->
+        <div class="review-card flagged">
+            <div class="card-body">
+                <div class="reviewer-profile">
+                    <div class="avatar blue">S</div>
+                    <div class="info">
+                        <h3>Sita Sharma</h3>
+                        <span class="sub-text">Review for Dr. Priya Singh</span>
+                    </div>
+                </div>
+                <div class="review-meta">
+                    <div class="stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <span class="date">2024-11-19</span>
+                </div>
+            </div>
+            <p class="review-text">Good experience. Long waiting time though.</p>
+            
+            <!-- Action Buttons for Flagged Review -->
+            <div class="action-buttons">
+                <button class="btn btn-approve"><i class="fas fa-check"></i> Approve</button>
+                <button class="btn btn-reject"><i class="fas fa-times"></i> Reject</button>
+            </div>
+        </div>
+
+        <!-- Card 3: Approved -->
+        <div class="review-card">
+            <div class="card-body">
+                <div class="reviewer-profile">
+                    <div class="avatar blue">R</div>
+                    <div class="info">
+                        <h3>Ram Bahadur</h3>
+                        <span class="sub-text">Review for Dr. Amit Thapa</span>
+                    </div>
+                </div>
+                <div class="review-meta">
+                    <div class="stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <span class="date">2024-11-18</span>
+                </div>
+            </div>
+            <p class="review-text">Very knowledgeable and friendly doctor.</p>
+            <div class="status-row approved">
+                <i class="fas fa-check-circle"></i> Approved
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

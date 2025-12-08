@@ -1,0 +1,101 @@
+{% extends 'superAdmin/base.html' %}
+{% load static %}
+
+{% block title %}All Appointments{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/superAdmin/appointment.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Controls & Search -->
+    <div class="controls-section">
+        <h2>All Appointments</h2>
+        
+        <div class="actions-wrapper">
+            <!-- Search Form -->
+            <form method="GET" class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" name="q" placeholder="Search by patient, doctor..." value="{{ request.GET.q|default:'' }}">
+            </form>
+            
+            <div class="btn-group">
+                <button class="btn-outline">
+                    <i class="fas fa-filter"></i> Filter
+                </button>
+                <button class="btn-primary">
+                    <i class="fas fa-download"></i> Export
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appointments Table -->
+    <div class="table-container">
+        <table class="appointments-table">
+            <thead>
+                <tr>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Payment</th> <!-- Changed from Hospital to Payment -->
+                    <th>Date & Time</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Amount</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments %}
+                <tr>
+                    <td>
+                        <span class="patient-name">{{ appointment.full_name }}</span>
+                    </td>
+                    <td>
+                        <div class="doctor-info">
+                            <span>{{ appointment.doctor_name }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <!-- Display Payment Method with capitalization -->
+                        <span style="text-transform: capitalize; font-weight: 500; color: #4b5563;">
+                            {{ appointment.payment_method }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="datetime">
+                            {{ appointment.date|date:"M d, Y" }}
+                            <span class="time">{{ appointment.time_slot }}</span>
+                        </div>
+                    </td>
+                    <td>Video Call</td>
+                    
+                    <!-- Dynamic Status Badge -->
+                    <td>
+                        {% if appointment.status == 'completed' %}
+                            <span class="status-badge completed">Completed</span>
+                        {% elif appointment.status == 'cancelled' %}
+                            <span class="status-badge cancelled">Cancelled</span>
+                        {% else %}
+                            <span class="status-badge scheduled">Scheduled</span>
+                        {% endif %}
+                    </td>
+                    
+                    <td class="amount">Rs {{ appointment.amount }}</td>
+                    
+                    <td>
+                        <button class="icon-btn view" title="View Details"><i class="far fa-eye"></i></button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 40px; color: #666;">
+                        <i class="far fa-calendar-times" style="font-size: 32px; margin-bottom: 10px; display: block;"></i>
+                        No appointments found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

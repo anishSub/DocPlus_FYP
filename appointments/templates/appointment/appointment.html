@@ -1,0 +1,455 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/appointment/appointment.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="appointment-container">
+    <div class="main-wrapper">
+        
+        <!-- Header Content -->
+        <div class="header-content">
+            <a href="javascript:void(0)" class="back-btn" onclick="handleHeaderBack()">
+                <i class="fas fa-arrow-left"></i>
+                Back
+            </a>
+            <h1>Book Online Video Consultation</h1>
+            <p>Complete the form to schedule your 5-minute video appointment</p>
+        </div>
+
+        <!-- Stepper -->
+        <div class="stepper-card">
+            <div class="stepper-container">
+                <div class="step active" id="step-indicator-1">
+                    <div class="step-circle"><span class="num">1</span><i class="fas fa-check hidden icon"></i></div>
+                    <div class="step-label">Personal Info</div>
+                </div>
+                <div class="stepper-line" id="line-1"></div>
+                
+                <div class="step" id="step-indicator-2">
+                    <div class="step-circle"><span class="num">2</span><i class="fas fa-check hidden icon"></i></div>
+                    <div class="step-label">Appointment</div>
+                </div>
+                <div class="stepper-line" id="line-2"></div>
+                
+                <div class="step" id="step-indicator-3">
+                    <div class="step-circle"><span class="num">3</span><i class="fas fa-check hidden icon"></i></div>
+                    <div class="step-label">Medical Info</div>
+                </div>
+                <div class="stepper-line" id="line-3"></div>
+                
+                <div class="step" id="step-indicator-4">
+                    <div class="step-circle"><span class="num">4</span></div>
+                    <div class="step-label">Payment</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Form Card -->
+        <div class="form-card">
+            <form id="bookingForm" method="POST" action="{% url 'save_appointment' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- STEP 1: PERSONAL INFORMATION (PRE-FILLED) -->
+                <div class="form-section" id="step-content-1">
+                    <div class="form-header">
+                        <h2>Personal Information</h2>
+                        <p>Please confirm your personal details</p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="label">Full Name <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <!-- Pre-filled from User Model -->
+                                <input type="text" name="full_name" value="{{ user.get_full_name }}" placeholder="Enter your full name" required>
+                                <i class="fas fa-user field-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label">Email Address <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <!-- Pre-filled from User Model -->
+                                <input type="email" name="email" value="{{ user.email }}" placeholder="your.email@example.com" required>
+                                <i class="fas fa-envelope field-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label">Phone Number <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <!-- Pre-filled from PatientProfile -->
+                                <input type="tel" name="phone" value="{{ user.patient_profile.mobile_number|default:'' }}" placeholder="+977 98XXXXXXXX" required>
+                                <i class="fas fa-phone field-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label">Date of Birth <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <!-- Pre-filled from PatientProfile (formatted as YYYY-MM-DD for date inputs) -->
+                                <input type="text" name="dob" value="{{ user.patient_profile.date_of_birth|date:'Y-m-d'|default:'' }}" placeholder="Select date" onfocus="(this.type='date')" onblur="(this.type='text')" required>
+                                <i class="far fa-calendar field-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label">Gender <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <select name="gender" required>
+                                    <option value="" disabled selected>Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                                <i class="fas fa-chevron-down select-arrow"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label">City <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <input type="text" name="city" value="Kathmandu">
+                                <i class="fas fa-map-marker-alt field-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="label">Address <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <!-- Pre-filled from PatientProfile inside textarea -->
+                                <textarea name="address" placeholder="Enter your complete address" required>{{ user.patient_profile.address|default:'' }}</textarea>
+                                <i class="fas fa-map-marker-alt field-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='{% url 'home' %}'">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="nextStep(2)">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: APPOINTMENT DETAILS -->
+                <div class="form-section hidden" id="step-content-2">
+                    <div class="form-header">
+                        <h2>Appointment Details</h2>
+                        <p>Select doctor, date, and time for your consultation</p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label class="label">Select Doctor <span class="required">*</span></label>
+
+                            <div class="input-wrapper">
+                        <!-- CRITICAL FIX IS HERE -->
+                        <!-- We loop through the 'doctors' passed from the view -->
+                                <select name="doctor" id="doctorSelect" required onchange="updateSummary()">
+                                    <option value="" disabled selected>Choose a doctor</option>
+                                    
+                                    {% for doctor in doctors %}
+                                        <!-- value is the ID (Number) -->
+                                        <!-- data-fee is used by JS to update price -->
+                                        <option 
+                                            value="{{ doctor.id }}" 
+                                            data-fee="{{ doctor.consultation_fee }}"
+                                            data-specialty="{{ doctor.specialization }}"
+                                        >
+                                            Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }} - {{ doctor.specialization }} (NPR {{ doctor.consultation_fee }})
+                                        </option>
+                                    {% empty %}
+                                        <option value="" disabled>No doctors available</option>
+                                    {% endfor %}
+                                    
+                                </select>
+                                <i class="fas fa-chevron-down select-arrow"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label">Appointment Date <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <input type="date" name="appointment_date" id="dateInput" required onchange="updateSummary()">
+                                <i class="far fa-calendar field-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label">Consultation Type</label>
+                            <div class="input-wrapper">
+                                <input type="text" value="Online Video Consultation (5 minutes)" readonly style="background-color: #f9fafb;">
+                                <i class="fas fa-video field-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="label">Select Time Slot <span class="required">*</span></label>
+                            <input type="hidden" name="time_slot" id="selectedTimeSlot">
+                            
+                            <div class="time-slot-grid">
+                                <div class="time-slot" onclick="selectTime(this, '09:00 AM')">09:00 AM</div>
+                                <div class="time-slot" onclick="selectTime(this, '10:00 AM')">10:00 AM</div>
+                                <div class="time-slot" onclick="selectTime(this, '11:00 AM')">11:00 AM</div>
+                                <div class="time-slot" onclick="selectTime(this, '02:00 PM')">02:00 PM</div>
+                                <div class="time-slot" onclick="selectTime(this, '03:00 PM')">03:00 PM</div>
+                                <div class="time-slot" onclick="selectTime(this, '04:00 PM')">04:00 PM</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="prevStep(1)">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="nextStep(3)">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: MEDICAL INFO -->
+                <div class="form-section hidden" id="step-content-3">
+                    <div class="form-header">
+                        <h2>Medical Information</h2>
+                        <p>Help us understand your health concerns</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label">Reason for Visit <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <textarea name="reason" placeholder="Briefly describe why you need this consultation" required></textarea>
+                            <i class="fas fa-notes-medical field-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label">Current Symptoms</label>
+                        <div class="input-wrapper">
+                            <textarea name="symptoms" placeholder="Fever, headache, etc."></textarea>
+                            <i class="fas fa-thermometer-half field-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label">Upload Medical Reports (Optional)</label>
+                        <div class="upload-box">
+                            <input type="file" name="medical_reports" class="file-input" accept=".pdf,.jpg,.png">
+                            <div class="upload-content">
+                                <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                <div class="upload-text">
+                                    <span class="highlight">Click to upload</span> or drag and drop<br>
+                                    <small>PDF, JPG, PNG (Max 10MB)</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="prevStep(2)">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="nextStep(4)">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 4: PAYMENT -->
+                <div class="form-section hidden" id="step-content-4">
+                    <div class="form-header">
+                        <h2>Payment & Confirmation</h2>
+                        <p>Review your appointment and complete payment</p>
+                    </div>
+
+                    <!-- Summary Card -->
+                    <div class="summary-card">
+                        <h3>Appointment Summary</h3>
+                        <div class="summary-row">
+                            <span class="label">Doctor:</span>
+                            <span class="value" id="summaryDoctor">Not Selected</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Date:</span>
+                            <span class="value" id="summaryDate">Not Selected</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Time:</span>
+                            <span class="value" id="summaryTime">Not Selected</span>
+                        </div>
+                        <div class="summary-divider"></div>
+                        <div class="summary-row total-row">
+                            <span class="label">Total Fee:</span>
+                            <span class="value">NPR 900</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label">Payment Method <span class="required">*</span></label>
+                        <input type="hidden" name="payment_method" id="selectedPaymentMethod" required>
+                        
+                        <div class="payment-options-grid">
+                            <div class="payment-option" onclick="selectPayment(this, 'esewa')">
+                                <img src="{% static 'images/photos/eSewa.png' %}" alt="eSewa" class="wallet-icon">
+                                <div class="wallet-info">
+                                    <span class="wallet-name">eSewa</span>
+                                    <span class="wallet-type">Digital Wallet</span>
+                                </div>
+                            </div>
+
+                            <div class="payment-option" onclick="selectPayment(this, 'khalti')">
+                                <img src="{% static 'images/photos/khalti.png' %}" alt="Khalti" class="wallet-icon">
+                                <div class="wallet-info">
+                                    <span class="wallet-name">Khalti</span>
+                                    <span class="wallet-type">Digital Wallet</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checkbox-container">
+                        <input type="checkbox" name="terms" required>
+                        <span>I agree to the <a href="#">Terms and Conditions</a></span>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="prevStep(3)">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Confirm & Pay <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let currentStep = 1;
+
+    // --- NAVIGATION LOGIC ---
+    function showStep(step) {
+        document.querySelectorAll('.form-section').forEach(el => el.classList.add('hidden'));
+        document.getElementById(`step-content-${step}`).classList.remove('hidden');
+        updateStepperUI(step);
+        currentStep = step;
+    }
+
+    function nextStep(step) {
+        if(validateStep(currentStep)) {
+            showStep(step);
+        }
+    }
+
+    function prevStep(step) {
+        showStep(step);
+    }
+
+    function handleHeaderBack() {
+        if (currentStep === 1) {
+            window.location.href = "{% url 'home' %}";
+        } else {
+            prevStep(currentStep - 1);
+        }
+    }
+
+    // --- STEPPER UI ---
+    function updateStepperUI(activeStep) {
+        for (let i = 1; i <= 4; i++) {
+            const stepEl = document.getElementById(`step-indicator-${i}`);
+            const lineEl = document.getElementById(`line-${i-1}`);
+            
+            stepEl.classList.remove('active', 'completed');
+            if (lineEl) lineEl.classList.remove('completed');
+            
+            if (i < activeStep) {
+                stepEl.classList.add('completed');
+                stepEl.querySelector('.num').classList.add('hidden');
+                stepEl.querySelector('.icon').classList.remove('hidden');
+                if (lineEl) lineEl.classList.add('completed');
+            } else if (i === activeStep) {
+                stepEl.classList.add('active');
+                stepEl.querySelector('.num').classList.remove('hidden');
+                stepEl.querySelector('.icon').classList.add('hidden');
+                if (lineEl) lineEl.classList.add('completed');
+            } else {
+                stepEl.querySelector('.num').classList.remove('hidden');
+                stepEl.querySelector('.icon').classList.add('hidden');
+            }
+        }
+    }
+
+    // --- VALIDATION ---
+    function validateStep(step) {
+        const section = document.getElementById(`step-content-${step}`);
+        const inputs = section.querySelectorAll('input[required], select[required], textarea[required]');
+        let isValid = true;
+
+        inputs.forEach(input => {
+            if (!input.value) {
+                isValid = false;
+                input.style.borderColor = 'var(--error-color)';
+            } else {
+                input.style.borderColor = 'var(--border-color)';
+            }
+        });
+
+        if (!isValid) {
+            alert('Please fill in all required fields.');
+        }
+        return isValid;
+    }
+
+    // --- SELECTION LOGIC ---
+    function selectTime(element, time) {
+        document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+        document.getElementById('selectedTimeSlot').value = time;
+        updateSummary();
+    }
+
+    function selectPayment(element, method) {
+        document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+        document.getElementById('selectedPaymentMethod').value = method;
+    }
+
+    // --- FIXED SUMMARY LOGIC ---
+    function updateSummary() {
+        const doctorSelect = document.getElementById('doctorSelect');
+        const date = document.getElementById('dateInput').value;
+        const time = document.getElementById('selectedTimeSlot').value;
+
+        // 1. Get Doctor Name (Not ID)
+        if (doctorSelect.selectedIndex > 0) { // Check if a doctor is actually selected
+            const selectedOption = doctorSelect.options[doctorSelect.selectedIndex];
+            
+            // Get the text inside the option (e.g., "Dr. Ram - Cardiology...")
+            const doctorNameText = selectedOption.text; 
+            document.getElementById('summaryDoctor').innerText = doctorNameText;
+
+            // 2. Get Dynamic Fee
+            const fee = selectedOption.getAttribute('data-fee');
+            if(fee) {
+                // Update the Total Fee display (You need to add ID="summaryFee" to your HTML, see below)
+                const feeDisplay = document.querySelector('.total-row .value');
+                if(feeDisplay) feeDisplay.innerText = "NPR " + fee;
+            }
+        }
+
+        if(date) document.getElementById('summaryDate').innerText = date;
+        if(time) document.getElementById('summaryTime').innerText = time;
+    }
+</script>
+{% endblock %}

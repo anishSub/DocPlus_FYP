@@ -72,7 +72,7 @@
         </div>
     </a>    
 
-    <a href="{% url 'personalInfo' %}" class="card-link">  
+    <a href="{% url 'appointment_page' %}" class="card-link">  
         <div class="service-card">
             <div class="icon-circle icon-cyan">
                 <i class="ri-calendar-check-line"></i>
@@ -82,7 +82,7 @@
         </div>
     </a>    
 
-    <a href="{% url 'personalInfo' %}" class="card-link">
+    <a href="{% url 'appointment_page' %}" class="card-link">
         <div class="service-card">
             <div class="icon-circle icon-dark">
                 <i class="ri-customer-service-2-line"></i>
@@ -233,55 +233,61 @@
 </section>
 
 <section class="doctor-cta-section">
-    <div class="doctor-container">
-        
-        <div class="doctor-content">
-            <h2>Are You a Doctor?</h2>
-            <p class="doctor-subtitle">Join DocPlus and expand your practice across Nepal</p>
+    <div class="container"> <div class="doctor-glass-card">
             
-            <ul class="doctor-benefits">
-                <li><i class="ri-checkbox-circle-line"></i> Reach thousands of patients</li>
-                <li><i class="ri-checkbox-circle-line"></i> Manage appointments digitally</li>
-                <li><i class="ri-checkbox-circle-line"></i> Offer online consultations</li>
-                <li><i class="ri-checkbox-circle-line"></i> Build your professional profile</li>
-                <li><i class="ri-checkbox-circle-line"></i> Increase your visibility</li>
-            </ul>
+            <div class="doctor-content-wrapper">
+                
+                <div class="doctor-text-content">
+                    <h2>Are You a Doctor?</h2>
+                    <p class="doctor-subtitle">Join DocPlus and expand your practice across Nepal.</p>
+                    
+                    <ul class="doctor-benefits">
+                        <li><i class="ri-checkbox-circle-line"></i> Reach thousands of patients</li>
+                        <li><i class="ri-checkbox-circle-line"></i> Manage appointments digitally</li>
+                        <li><i class="ri-checkbox-circle-line"></i> Offer online consultations</li>
+                        <li><i class="ri-checkbox-circle-line"></i> Build your professional profile</li>
+                        <li><i class="ri-checkbox-circle-line"></i> Increase your visibility</li>
+                    </ul>
 
-            <a href="{% url 'doctor_registration' %}" class="btn-doctor-reg">Register as a Doctor</a>
+                    <a href="{% url 'doctor_registration' %}" class="btn-doctor-reg">
+                        Register as a Doctor
+                    </a>
+                </div>
+
+                <div class="doctor-features-glass-box">
+                    
+                    <div class="doc-feature-row">
+                        <div class="doc-icon-box icon-box-cyan">
+                            <i class="ri-shield-check-line"></i>
+                        </div>
+                        <div class="doc-feature-text">
+                            <h4>Quick Verification</h4>
+                            <p>Admin reviews applications within 2-3 business days</p>
+                        </div>
+                    </div>
+
+                    <div class="doc-feature-row">
+                        <div class="doc-icon-box icon-box-blue">
+                            <i class="ri-time-line"></i>
+                        </div>
+                        <div class="doc-feature-text">
+                            <h4>Flexible Schedule</h4>
+                            <p>Set your own availability and consultation fees</p>
+                        </div>
+                    </div>
+
+                    <div class="doc-feature-row">
+                        <div class="doc-icon-box icon-box-cyan">
+                            <i class="ri-star-smile-line"></i>
+                        </div>
+                        <div class="doc-feature-text">
+                            <h4>Build Reputation</h4>
+                            <p>Get verified reviews and ratings from patients</p>
+                        </div>
+                    </div>
+
+                </div> </div>
         </div>
-
-        <div class="doctor-features-box">
-            <div class="doc-feature-item">
-                <div class="doc-icon-box" style="background: #00D3F3;">
-                    <i class="ri-shield-check-line"></i>
-                </div>
-                <div>
-                    <h4>Quick Verification</h4>
-                    <p>Admin reviews applications within 2-3 business days</p>
-                </div>
-            </div>
-
-            <div class="doc-feature-item">
-                <div class="doc-icon-box" style="background: #51A2FF;">
-                    <i class="ri-time-line"></i>
-                </div>
-                <div>
-                    <h4>Flexible Schedule</h4>
-                    <p>Set your own availability and consultation fees</p>
-                </div>
-            </div>
-
-            <div class="doc-feature-item">
-                <div class="doc-icon-box" style="background: #00D3F3;">
-                    <i class="ri-star-smile-line"></i>
-                </div>
-                <div>
-                    <h4>Build Reputation</h4>
-                    <p>Get verified reviews and ratings from patients</p>
-                </div>
-            </div>
-        </div>
-
     </div>
 </section>
 
@@ -296,7 +302,7 @@
                 
                 {% comment %} <a href="#" class="btn-cta btn-dark-blue">Book Appointment</a> {% endcomment %}
 
-                <a href="{% if user.is_authenticated %}{% url 'personalInfo' %}{% else %}{% url 'register' %}{% endif %}" class="btn-cta btn-dark-blue">
+                <a href="{% if user.is_authenticated %}{% url 'appointment_page' %}{% else %}{% url 'register' %}{% endif %}" class="btn-cta btn-dark-blue">
                     <i class="ri-calendar-check-fill"></i>
                     Book Appointment
                 </a>
@@ -304,6 +310,66 @@
                 {% comment %} <a href="#" class="btn-cta btn-gradient">
                     <i class="ri-stethoscope-line"></i> Register as a Doctor
                 </a> {% endcomment %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="hospital-partner-section">
+    <div class="container">
+        <div class="hospital-glass-card">
+            
+            <div class="hospital-content-wrapper">
+                <div class="hospital-text-content">
+                    <div class="partner-title-box">
+                        <div class="partner-icon-box">
+                            <i class="ri-hospital-line"></i>
+                        </div>
+                        <h3>Partner with DocPlus</h3>
+                    </div>
+                    
+                    <h2>Join Nepal's fastest-growing digital healthcare network.</h2>
+                    
+                    <p class="partner-description">Are you a hospital administrator? Register your facility to get a dedicated Hospital Dashboard. Manage your doctors, showcase your specialties, offer exclusive discounts, and connect with thousands of patients searching for quality care.</p>
+                    
+                    <a href="{% url 'hospital_registration' %}" class="btn-hospital-reg">
+                        <i class="ri-building-2-line"></i>
+                        Register Your Hospital
+                    </a>
+                </div>
+
+                <div class="hospital-features-list">
+                    <div class="hosp-feature-item">
+                        <div class="hosp-icon-box icon-box-cyan">
+                            <i class="ri-dashboard-line"></i>
+                        </div>
+                        <div class="hosp-feature-text">
+                            <h4>Dashboard Access</h4>
+                            <p>Manage your hospital profile. </p>
+                        </div>
+                    </div>
+
+                    <div class="hosp-feature-item">
+                        <div class="hosp-icon-box icon-box-blue">
+                            <i class="ri-time-line"></i>
+                        </div>
+                        <div class="hosp-feature-text">
+                            <h4>Patient Reach</h4>
+                            <p>Connect with thousands of patients looking for care.</p>
+                        </div>
+                    </div>
+
+                    <div class="hosp-feature-item">
+                        <div class="hosp-icon-box icon-box-purple">
+                            <i class="ri-pulse-line"></i>
+                        </div>
+                        <div class="hosp-feature-text">
+                            <h4>Network Benefits</h4>
+                            <p>Join a network helping patients.</p>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </div>

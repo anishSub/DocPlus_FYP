@@ -1,212 +1,42 @@
-/* PAGE LAYOUT */
 
-.success-wrapper {
-    min-height: 80vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 20px;
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #ecfeff, #eff6ff);
-}
+    /* Specific overrides for success card centering */
+    .success-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 60vh;
+        width: 100%;
+    }
 
-/* MAIN CARD */
-.success-card {
-    background: white;
-    width: 100%;
-    max-width: 600px;
-    border-radius: 20px;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-    padding: 40px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-}
-
-/* ICON */
-.icon-container {
-    margin-bottom: 24px;
-}
-
-.icon-container i {
-    font-size: 64px;
-    color: #0092b8; /* Brand Blue */
-    background: #ecfeff;
-    border-radius: 50%;
-    padding: 10px; /* Optional: adds spacing around circle if you want a background circle */
-}
-
-/* HEADINGS */
-.success-header h1 {
-    color: #0092b8;
-    font-size: 28px;
-    margin: 0 0 12px 0;
-    font-weight: 700;
-}
-
-.success-header p {
-    color: #4a5565;
-    font-size: 16px;
-    margin: 0 0 32px 0;
-}
-
-/* DETAILS BOX */
-.details-box {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 24px;
-    text-align: left;
-    margin-bottom: 32px;
-}
-
-.details-box h3 {
-    margin: 0 0 20px 0;
-    color: #1e2939;
-    font-size: 18px;
-    border-bottom: 1px solid #e2e8f0;
-    padding-bottom: 12px;
-}
-
-.details-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-}
-
-/* DETAIL ITEMS */
-.detail-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-}
-
-.item-icon {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #e0f2fe;
-    border-radius: 8px;
-    color: #0092b8;
-    flex-shrink: 0;
-}
-
-.item-content {
-    display: flex;
-    flex-direction: column;
-}
-
-.label {
-    font-size: 13px;
-    color: #64748b;
-    margin-bottom: 4px;
-}
-
-.value {
-    font-size: 16px;
-    color: #0f172a;
-    font-weight: 500;
-}
-
-.sub-value {
-    font-size: 14px;
-    color: #64748b;
-}
-
-.highlight-time {
-    color: #0092b8;
-    font-weight: 600;
-}
-
-.fee {
-    color: #0092b8;
-    font-weight: 700;
-    font-size: 18px;
-}
-
-/* NOTIFICATION TEXT */
-.notification-text {
-    background: #ecfeff;
-    border: 1px solid #cffafe;
-    border-radius: 10px;
-    padding: 16px;
-    margin-bottom: 32px;
-    font-size: 14px;
-    color: #4a5565;
-    text-align: left;
-}
-
-.notification-text p {
-    margin: 8px 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.notification-text i {
-    color: #0092b8;
-}
-
-.email {
-    font-weight: 600;
-    color: #0092b8;
-}
-
-/* BUTTONS */
-.action-buttons {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-}
-
-.btn {
-    padding: 12px 24px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 16px;
-    transition: all 0.2s;
-    flex: 1; /* Make buttons equal width */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-primary {
-    background: linear-gradient(90deg, #0092b8, #1c398e);
-    color: white;
-    border: none;
-}
-
-.btn-primary:hover {
-    box-shadow: 0 4px 12px rgba(0, 146, 184, 0.3);
-    transform: translateY(-1px);
-}
-
-.btn-outline {
-    background: transparent;
-    border: 2px solid #0092b8;
-    color: #0092b8;
-}
-
-.btn-outline:hover {
-    background: #ecfeff;
-}
-
-/* RESPONSIVE */
-@media (max-width: 600px) {
     .success-card {
-        padding: 24px;
+        background: white;
+        max-width: 600px;
+        width: 100%;
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
     }
     
-    .action-buttons {
-        flex-direction: column;
+    .icon-container i {
+        font-size: 64px;
+        color: #10b981; /* Success Green */
+        margin-bottom: 20px;
     }
-
-    .btn {
-        width: 100%; /* Full width buttons on mobile */
-        box-sizing: border-box;
+    .details-box {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 20px;
+        margin: 24px 0;
+        text-align: left;
     }
-}
+    .detail-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 12px;
+    }
+    .detail-item:last-child { border-bottom: none; margin-bottom: 0; }
+    .label { color: #64748b; font-weight: 500; }
+    .value { color: #1e2939; font-weight: 600; }

@@ -198,6 +198,33 @@ body {
     font-size: 16px;
 }
 
+/* Wrapper to hold input + icon */
+.password-container {
+    position: relative;
+    width: 100%;
+}
+
+/* Ensure the input has space on the right so text doesn't hit the icon */
+.password-container input {
+    width: 100%;
+    padding-right: 40px; /* Space for the icon */
+}
+
+/* The Eye Icon Styling */
+.toggle-eye {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%); /* Centers icon vertically */
+    cursor: pointer;
+    color: #888;
+    z-index: 2;
+}
+
+.toggle-eye:hover {
+    color: #333;
+}
+
 /* --- INPUTS GRID --- */
 .form-grid {
     display: grid;
@@ -362,10 +389,48 @@ input.invalid, select.invalid {
 .btn-primary { background: var(--accent); color: white; }
 .btn-primary:hover { background-color: #0C7A99; }
 
+
+
+/* Error Message Styling */
+.field-error {
+    color: #dc2626;      /* Red Text */
+    background: #fef2f2; /* Light Red Background */
+    border: 1px solid #fecaca;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+/* Shake animation to grab attention */
+.field-error {
+    animation: shake 0.4s ease-in-out;
+}
+select[name="hospital_affiliation"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px; /* Adjust to match your theme */
+    background-color: white;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    50% { transform: translateX(4px); }
+    75% { transform: translateX(-4px); }
+    100% { transform: translateX(0); }
+}
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
 
 /* RESPONSIVE */
 @media (max-width: 768px) {

@@ -1,0 +1,148 @@
+/* --- Controls Section --- */
+.controls-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.controls-section h2 { font-size: 24px; font-weight: 600; color: #1f2937; }
+
+.actions-wrapper {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search-box { position: relative; width: 300px; }
+.search-box input {
+    width: 100%; padding: 10px 16px 10px 40px;
+    border-radius: 8px; border: 1px solid #e5e7eb;
+    outline: none; font-size: 14px;
+}
+.search-box i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #9ca3af; }
+
+.btn-group { display: flex; gap: 12px; }
+
+.btn-outline, .btn-primary {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s;
+}
+
+.btn-outline { background: white; border: 1px solid #e5e7eb; color: #374151; }
+.btn-outline:hover { background: #f9fafb; }
+
+.btn-primary { background: #0092b8; border: none; color: white; }
+.btn-primary:hover { opacity: 0.9; }
+
+/* --- Appointments Table --- */
+.table-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.appointments-table { width: 100%; border-collapse: collapse; }
+
+.appointments-table th {
+    text-align: left;
+    padding: 16px 24px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.appointments-table td {
+    padding: 16px 24px;
+    font-size: 14px;
+    color: #1f2937;
+    border-bottom: 1px solid #f3f4f6;
+    vertical-align: middle;
+}
+
+.appointments-table tr:last-child td { border-bottom: none; }
+
+/* Column Styling */
+.patient-name { font-weight: 500; color: #1f2937; }
+.doctor-info { font-weight: 500; color: #4b5563; }
+.datetime { display: flex; flex-direction: column; font-size: 14px; }
+.datetime .time { font-size: 12px; color: #6b7280; margin-top: 2px; }
+.amount { font-weight: 600; color: #1f2937; }
+
+/* Status Badges */
+.status-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; display: inline-block; }
+.status-badge.completed { background: #dcfce7; color: #166534; }
+.status-badge.scheduled { background: #dbeafe; color: #1e40af; }
+.status-badge.cancelled { background: #fee2e2; color: #991b1b; }
+
+/* Actions */
+.icon-btn {
+    width: 32px; height: 32px; border-radius: 6px;
+    border: none; background: transparent;
+    color: #0092b8; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    font-size: 16px;
+}
+.icon-btn:hover { background: #e0f2fe; }
+
+/* --- RESPONSIVENESS (Mobile) --- */
+@media (max-width: 768px) {
+    /* Stack Controls */
+    .controls-section { flex-direction: column; align-items: flex-start; }
+    .actions-wrapper { width: 100%; flex-direction: column; }
+    .search-box { width: 100%; }
+    .btn-group { width: 100%; }
+    .btn-outline, .btn-primary { flex: 1; justify-content: center; }
+
+    /* Vertical Card Table Transformation */
+    .appointments-table, .appointments-table tbody, .appointments-table tr, .appointments-table td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .appointments-table thead { display: none; }
+
+    .appointments-table tr {
+        margin-bottom: 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 16px;
+        background: white;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .appointments-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: right;
+        padding: 10px 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .appointments-table td:last-child { border-bottom: none; }
+
+    /* Add Labels via CSS */
+    .appointments-table td:nth-of-type(1)::before { content: "Patient"; font-weight: 600; color: #6b7280; font-size: 13px; }
+    .appointments-table td:nth-of-type(2)::before { content: "Doctor"; font-weight: 600; color: #6b7280; font-size: 13px; }
+    .appointments-table td:nth-of-type(3)::before { content: "Hospital"; font-weight: 600; color: #6b7280; font-size: 13px; }
+    .appointments-table td:nth-of-type(4)::before { content: "Date & Time"; font-weight: 600; color: #6b7280; font-size: 13px; }
+    .appointments-table td:nth-of-type(5)::before { content: "Type"; font-weight: 600; color: #6b7280; font-size: 13px; }
+    .appointments-table td:nth-of-type(6)::before { content: "Status"; font-weight: 600; color: #6b7280; font-size: 13px; }
+    .appointments-table td:nth-of-type(7)::before { content: "Amount"; font-weight: 600; color: #6b7280; font-size: 13px; }
+    .appointments-table td:nth-of-type(8)::before { content: "Actions"; font-weight: 600; color: #6b7280; font-size: 13px; }
+}

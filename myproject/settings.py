@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
     'accounts',
     'pages',
     'find_doctor',
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'appointments',
     'doctorAdmin',
     'superAdmin',
+    'hospitalAdmin'
 ]
 
 MIDDLEWARE = [
@@ -77,13 +79,28 @@ TEMPLATES = [
 WSGI_APPLICATION = 'myproject.wsgi.application'
 
 
+
+
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'docplus_db',  
+        'USER': 'macm2',    
+        'PASSWORD': '',        
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -91,19 +108,20 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
+#*uncomment this after testing for strong password in production
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    # },
 ]
 
 
@@ -132,3 +150,27 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'accounts.User'
+
+import os
+
+# Base URL to access files in browser
+MEDIA_URL = '/media/'
+
+# Where files are physically stored on your machine
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+
+# 30 minutes * 60 seconds = 1800
+SESSION_COOKIE_AGE = 86400 #one day 
+SESSION_SAVE_EVERY_REQUEST = True # Resets the timer if they click a link
+
+
+
+
+LOGIN_REDIRECT_URL = 'home' 
+
+# Redirect to login page after logout
+LOGOUT_REDIRECT_URL = 'login'

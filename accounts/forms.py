@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
-from accounts.models import UserProfile
+from .models import User, PatientProfile
 
 class CustomUserCreationForm(UserCreationForm):
     first_name = forms.CharField(
@@ -26,7 +25,7 @@ class CustomUserCreationForm(UserCreationForm):
     
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'mobile_number', 'password1', 'password2')
+        fields = ('first_name', 'last_name', 'email', 'mobile_number')
     
     def clean_email(self):
         """
@@ -45,7 +44,7 @@ class CustomUserCreationForm(UserCreationForm):
     
     def clean_username(self):
         """
-        Validate that the username is unique (Django handles this by default, but being explicit)
+        Validate that the username is unique
         """
         username = self.cleaned_data.get('username')
         
@@ -65,9 +64,9 @@ class CustomUserCreationForm(UserCreationForm):
         
         if commit:
             user.save()
-            
-            # Create UserProfile with mobile number
-            UserProfile.objects.create(
+            # We create the profile in the view to handle roles, 
+            # but if this form is used elsewhere with commit=True, this handles it:
+            PatientProfile.objects.create(
                 user=user,
                 mobile_number=self.cleaned_data['mobile_number']
             )

@@ -14,7 +14,7 @@
     <div class="auth-page-wrapper">
         <div class="auth-container login-mode">
             
-            <a href="/" class="back-btn">
+            <a href="{% url 'home' %}" class="back-btn">
                 <i class="fas fa-arrow-left"></i> Back to Home
             </a>
 
@@ -33,34 +33,58 @@
                         </div>
                     {% endif %}
 
+
+
                     <form method="POST" action="{% url 'login' %}" class="auth-form">
                         {% csrf_token %}
+                        {% if form.errors %}
+                            <div class="form-errors">
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
 
                         <div class="form-group">
                             <label class="field-label">Email Address</label>
                             <div class="input-wrapper">
-                                <input type="email" name="email" placeholder="Enter your email" required value="{{ request.POST.email }}">
+                                <input type="email" name="username" placeholder="Enter your email" required value="{{ request.POST.username }}">
                                 <i class="fas fa-envelope input-icon"></i>
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        {% comment %} <div class="form-group">
                             <label class="field-label">Password</label>
                             <div class="input-wrapper">
                                 <input type="password" name="password" placeholder="Enter your password" required>
                                 <i class="fas fa-lock input-icon"></i>
                             </div>
-                        </div>
+                        </div> {% endcomment %}
 
-                        <div class="form-options">
-                            <label class="remember-check">
-                                <input type="checkbox" name="remember"> Remember me
-                            </label>
-                            <a href="#" class="forgot-link">Forgot Password?</a>
+                        <div class="form-group">
+                            <label class="field-label">Password</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock input-icon"></i>
+                                
+                                <input type="password" name="password" id="login_password" placeholder="Enter your password" required>
+                                
+                                <i class="fas fa-eye toggle-password-btn" onclick="togglePassword('login_password', this)"></i>
+                            </div>
                         </div>
 
                         <button type="submit" class="btn-submit">Sign In</button>
                     </form>
+
+
+
+
+
+
 
                     <div class="divider">
                         <span>Or continue with</span>
@@ -86,6 +110,8 @@
             </div>
         </div>
     </div>
+
+    <script src="{% static 'js/accounts/password_view.js' %}"></script>
 
 </body>
 </html>

@@ -8,131 +8,89 @@
 {% endblock %}
 
 {% block content %}
-    <!-- Header Section -->
+    {% if messages %}
+        <div class="messages-container" style="margin-bottom: 20px;">
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}" style="padding: 10px; background: #fff; border-left: 4px solid #333;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <div class="verification-header">
         <h2>Doctor Verification</h2>
-        <span class="pending-badge">Pending: 3</span>
+        <span class="pending-badge">Pending: {{ pending_count }}</span>
     </div>
 
-    <!-- Doctor Verification List -->
     <div class="verification-list">
         
-        <!-- Doctor Card 1 -->
+        {% for doctor in doctors %}
         <div class="doctor-card">
             <div class="card-top">
                 <div class="doctor-profile">
-                    <div class="avatar blue">A</div>
+                    <div class="avatar blue">{{ doctor.user.first_name|first }}</div>
                     <div class="info">
-                        <h3>Dr. Amit Thapa</h3>
-                        <span class="specialty">Cardiology</span>
+                        <h3>Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h3>
+                        <span class="specialty">{{ doctor.specialization }}</span>
                         
                         <div class="meta-info">
-                            <span><i class="far fa-envelope"></i> amit.thapa@email.com</span>
-                            <span><i class="fas fa-phone-alt"></i> +977 9841234567</span>
+                            <span><i class="far fa-envelope"></i> {{ doctor.user.email }}</span>
+                            <span><i class="fas fa-phone-alt"></i> {{ doctor.mobile_number }}</span>
                         </div>
                         
                         <div class="meta-info">
-                            <span><i class="far fa-building"></i> Grande Hospital</span>
-                            <span><i class="far fa-clock"></i> 12 years</span>
+                            <span><i class="far fa-building"></i> {{ doctor.current_hospital }}</span>
+                            <span><i class="far fa-clock"></i> {{ doctor.years_of_experience }} years</span>
                         </div>
                     </div>
                 </div>
-                <i class="far fa-clock time-icon"></i>
+                <i class="far fa-clock time-icon" title="Registered: {{ doctor.created_at|date:'M d, Y' }}"></i>
             </div>
 
             <div class="documents-section">
                 <h4>Documents Submitted:</h4>
                 <div class="doc-list">
-                    <a href="#" class="doc-btn"><i class="far fa-file-alt"></i> Medical License</a>
-                    <a href="#" class="doc-btn"><i class="far fa-file-alt"></i> Education Certificate</a>
-                    <a href="#" class="doc-btn"><i class="far fa-id-card"></i> ID Proof</a>
+                    {% if doctor.medical_license_doc %}
+                        <a href="{{ doctor.medical_license_doc.url }}" target="_blank" class="doc-btn">
+                            <i class="far fa-file-alt"></i> Medical License
+                        </a>
+                    {% endif %}
+
+                    {% if doctor.degree_certificate %}
+                        <a href="{{ doctor.degree_certificate.url }}" target="_blank" class="doc-btn">
+                            <i class="far fa-file-alt"></i> Education Cert.
+                        </a>
+                    {% endif %}
+
+                    {% if doctor.cv %}
+                        <a href="{{ doctor.cv.url }}" target="_blank" class="doc-btn">
+                            <i class="far fa-id-card"></i> CV / Resume
+                        </a>
+                    {% endif %}
                 </div>
             </div>
 
             <div class="actions-footer">
-                <button class="btn btn-approve"><i class="fas fa-check-circle"></i> Approve & Activate</button>
-                <button class="btn btn-reject"><i class="fas fa-times-circle"></i> Reject Application</button>
+                <a href="{% url 'approve_doctor' doctor.pk %}" class="btn btn-approve" onclick="return confirm('Are you sure you want to approve this doctor?');">
+                    <i class="fas fa-check-circle"></i> Approve & Activate
+                </a>
+
+                <a href="{% url 'reject_doctor' doctor.pk %}" class="btn btn-reject" onclick="return confirm('Are you sure you want to REJECT and DELETE this application?');">
+                    <i class="fas fa-times-circle"></i> Reject Application
+                </a>
+
                 <button class="btn btn-info">Request More Info</button>
             </div>
         </div>
-
-        <!-- Doctor Card 2 -->
-        <div class="doctor-card">
-            <div class="card-top">
-                <div class="doctor-profile">
-                    <div class="avatar blue">P</div>
-                    <div class="info">
-                        <h3>Dr. Priya Sharma</h3>
-                        <span class="specialty">Neurology</span>
-                        
-                        <div class="meta-info">
-                            <span><i class="far fa-envelope"></i> priya.sharma@email.com</span>
-                            <span><i class="fas fa-phone-alt"></i> +977 9847654321</span>
-                        </div>
-                        
-                        <div class="meta-info">
-                            <span><i class="far fa-building"></i> Nepal Mediciti</span>
-                            <span><i class="far fa-clock"></i> 8 years</span>
-                        </div>
-                    </div>
-                </div>
-                <i class="far fa-clock time-icon"></i>
-            </div>
-
-            <div class="documents-section">
-                <h4>Documents Submitted:</h4>
-                <div class="doc-list">
-                    <a href="#" class="doc-btn"><i class="far fa-file-alt"></i> Medical License</a>
-                    <a href="#" class="doc-btn"><i class="far fa-file-alt"></i> Education Certificate</a>
-                    <a href="#" class="doc-btn"><i class="far fa-id-card"></i> ID Proof</a>
-                </div>
-            </div>
-
-            <div class="actions-footer">
-                <button class="btn btn-approve"><i class="fas fa-check-circle"></i> Approve & Activate</button>
-                <button class="btn btn-reject"><i class="fas fa-times-circle"></i> Reject Application</button>
-                <button class="btn btn-info">Request More Info</button>
-            </div>
+        
+        {% empty %}
+        <div class="no-data" style="text-align: center; padding: 40px; color: #666;">
+            <i class="fas fa-check-circle" style="font-size: 40px; color: #10B981; margin-bottom: 15px;"></i>
+            <h3>All Caught Up!</h3>
+            <p>There are no pending doctor applications at the moment.</p>
         </div>
-
-        <!-- Doctor Card 3 -->
-        <div class="doctor-card">
-            <div class="card-top">
-                <div class="doctor-profile">
-                    <div class="avatar blue">B</div>
-                    <div class="info">
-                        <h3>Dr. Bikash Rai</h3>
-                        <span class="specialty">Orthopedics</span>
-                        
-                        <div class="meta-info">
-                            <span><i class="far fa-envelope"></i> bikash.rai@email.com</span>
-                            <span><i class="fas fa-phone-alt"></i> +977 9843216789</span>
-                        </div>
-                        
-                        <div class="meta-info">
-                            <span><i class="far fa-building"></i> Teaching Hospital</span>
-                            <span><i class="far fa-clock"></i> 15 years</span>
-                        </div>
-                    </div>
-                </div>
-                <i class="far fa-clock time-icon"></i>
-            </div>
-
-            <div class="documents-section">
-                <h4>Documents Submitted:</h4>
-                <div class="doc-list">
-                    <a href="#" class="doc-btn"><i class="far fa-file-alt"></i> Medical License</a>
-                    <a href="#" class="doc-btn"><i class="far fa-file-alt"></i> Education Certificate</a>
-                    <a href="#" class="doc-btn"><i class="far fa-id-card"></i> ID Proof</a>
-                </div>
-            </div>
-
-            <div class="actions-footer">
-                <button class="btn btn-approve"><i class="fas fa-check-circle"></i> Approve & Activate</button>
-                <button class="btn btn-reject"><i class="fas fa-times-circle"></i> Reject Application</button>
-                <button class="btn btn-info">Request More Info</button>
-            </div>
-        </div>
+        {% endfor %}
 
     </div>
 {% endblock %}

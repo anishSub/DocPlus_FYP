@@ -1,0 +1,225 @@
+/* --- Global Layout Fixes --- */
+/* This pushes the main content down so messages aren't hidden behind the navbar */
+.main-content {
+    padding-top: 90px !important; /* Adjust based on your navbar height */
+}
+
+/* --- Container & Card --- */
+.dashboard-container {
+    padding: 0 30px 40px 30px;
+    max-width: 1400px; /* Allow container to be wider */
+    margin: 0 auto;
+}
+
+.profile-edit-card {
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    max-width: 1100px; /* INCREASED WIDTH as requested */
+    width: 100%;
+}
+
+/* --- Header Box (Now inside card) --- */
+.header-box {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f3f4f6;
+}
+.header-box h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #0d86dd;
+    margin-bottom: 8px;
+    margin-top: 0;
+}
+.header-box p { 
+    color: #6b7280;
+    margin: 0;
+}
+
+/* --- Inputs General Styling --- */
+.form-group input, 
+.form-group textarea, 
+.form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #374151;
+    background-color: #fff;
+    box-sizing: border-box;
+    display: block;
+    min-height: 45px;
+}
+
+.form-group input:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.form-group { margin-bottom: 24px; }
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+/* --- Section Titles --- */
+.section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+    margin: 30px 0 20px 0;
+}
+
+/* --- Photo Upload Styling --- */
+.photo-upload-section {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding-bottom: 30px;
+    margin-bottom: 20px;
+    /* Removed border bottom here since header has it now */
+}
+
+.current-photo img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #f3f4f6;
+}
+
+.photo-placeholder {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #eff6ff;
+    color: #3b82f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: bold;
+}
+
+/* File Input Button Wrapper */
+.file-input-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.file-input-wrapper input[type=file] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.file-custom-label {
+    display: inline-block;
+    background-color: #fff;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.file-input-wrapper:hover .file-custom-label {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.upload-hint {
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 6px;
+}
+
+/* --- Save Button --- */
+.form-actions {
+    margin-top: 30px;
+    text-align: right;
+    border-top: 1px solid #f3f4f6;
+    padding-top: 20px;
+}
+
+.btn-save {
+    background-color: #2563eb;
+    color: white;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-save:hover {
+    background-color: #1d4ed8;
+}
+
+/* static/css/doctorAdmin/edit_profile.css */
+
+/* This replicates 'w-full px-4 py-2 border rounded-lg' */
+.form-control {
+    width: 100%;
+    padding: 10px 15px; /* Top/Bottom 10px, Left/Right 15px */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 8px;     /* Rounded corners */
+    font-size: 16px;
+    box-sizing: border-box; /* IMPORTANT: Keeps padding inside the width */
+    margin-bottom: 10px;
+    transition: border-color 0.3s ease;
+}
+
+/* This replicates 'focus:outline-none focus:border-blue-500' */
+.form-control:focus {
+    outline: none;
+    border-color: #3b82f6; /* Blue color */
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); /* Subtle glow */
+}
+
+/* Styling for the File Input */
+.file-input-control {
+    width: 100%;
+    padding: 10px;
+    background-color: #f9fafb;
+    border: 1px dashed #ccc;
+    border-radius: 8px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    .photo-upload-section {
+        flex-direction: column;
+        text-align: center;
+    }
+}

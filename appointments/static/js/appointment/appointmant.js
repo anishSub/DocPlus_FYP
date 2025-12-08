@@ -40,3 +40,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+function updateSummary() {
+    const doctorSelect = document.getElementById('doctorSelect');
+    const feeDisplay = document.getElementById('feeDisplay');
+        
+        // Get the selected option
+    const selectedOption = doctorSelect.options[doctorSelect.selectedIndex];
+        
+        // Read the custom data-fee attribute
+    const fee = selectedOption.getAttribute('data-fee');
+        
+    if (fee) {
+            feeDisplay.textContent = "NPR " + fee;
+    } else {
+            feeDisplay.textContent = "NPR 0";
+        }
+    }

@@ -1,0 +1,207 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Profile - DocPlus</title>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/profile_view/profile_view.css' %}">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header class="patient-navbar">
+        <div class="nav-left">
+            <!-- NEW: Back Button -->
+            <a href="/" class="icon-btn back-home" title="Back to Home">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+
+            {% comment %} <div class="avatar-small">
+                <img src="https://ui-avatars.com/api/?name=Rajesh+Kumar&background=random" alt="User">
+            </div> {% endcomment %}
+                    <div class="avatar-small">
+                        <img src="https://ui-avatars.com/api/?name={{ user.username }}&size=128&background=0e5c98&color=fff" alt="{{ user.username}}">
+                    </div>
+            <div class="nav-greeting">
+                <h3>Welcome back,</h3>
+                <span>{{ user.username }}</span>
+            </div>
+        </div>
+        <div class="nav-right">
+            <button class="icon-btn"><i class="far fa-bell"></i><span class="dot"></span></button>
+            <button class="icon-btn"><i class="fas fa-cog"></i></button>
+            <button class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </header>
+
+    <div class="profile-container">
+        
+        <!-- Left Column: Profile Card -->
+        <aside class="profile-sidebar">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-img-large">
+                        <img src="https://ui-avatars.com/api/?name={{ user.username }}&size=128&background=0e5c98&color=fff" alt="{{ user.username}}">
+                    </div>
+                    <h2>{{ user.username }}</h2>
+                    <span class="patient-id">Patient ID:{{ user.profile.id }}</span>
+                </div>
+
+                <div class="contact-info">
+                    <div class="info-row">
+                        <i class="far fa-envelope"></i>
+                        <span>{{ user.email }}</span>
+                    </div>
+                    <div class="info-row">
+                        <i class="fas fa-phone-alt"></i>
+                        <span>{{ user.profile.mobile_number }}</span>
+                    </div>
+                    <div class="info-row">
+                        <i class="far fa-user"></i>
+                        <span>Age: 35 years</span>
+                    </div>
+                    <div class="info-row">
+                        <i class="fas fa-heartbeat"></i>
+                        <span>Blood Group: B+</span>
+                    </div>
+                </div>
+
+                <div class="profile-stats">
+                    <div class="p-stat">
+                        <strong>12</strong>
+                        <span>Appointments</span>
+                    </div>
+                    <div class="p-stat">
+                        <strong>8</strong>
+                        <span>Prescriptions</span>
+                    </div>
+                </div>
+
+                <!-- Edit Profile Button -->
+              <a href="{% url 'profile_edit' %}">
+                <button class="edit-profile-btn">
+                    <i class="far fa-edit"></i> Edit Profile
+                </button>
+              </a>
+            </div>
+        </aside>
+
+        <!-- Right Column: Main Content -->
+        <main class="main-content">
+            
+            <!-- 1. Health Stats -->
+            <section class="health-stats-section">
+                <h3><i class="fas fa-heartbeat"></i> Health Stats</h3>
+                <div class="stats-grid">
+                    <div class="stat-box heart">
+                        <div class="icon-circle"><i class="far fa-heart"></i></div>
+                        <span class="stat-label">Heart Rate</span>
+                        <strong class="stat-value">72 bpm</strong>
+                        <span class="stat-status normal"><i class="fas fa-check-circle"></i> normal</span>
+                    </div>
+                    <div class="stat-box temp">
+                        <div class="icon-circle"><i class="fas fa-thermometer-half"></i></div>
+                        <span class="stat-label">Temperature</span>
+                        <strong class="stat-value">98.6°F</strong>
+                        <span class="stat-status normal"><i class="fas fa-check-circle"></i> normal</span>
+                    </div>
+                    <div class="stat-box bp">
+                        <div class="icon-circle"><i class="fas fa-chart-line"></i></div>
+                        <span class="stat-label">Blood Pressure</span>
+                        <strong class="stat-value">120/80</strong>
+                        <span class="stat-status normal"><i class="fas fa-check-circle"></i> normal</span>
+                    </div>
+                    <div class="stat-box weight">
+                        <div class="icon-circle"><i class="fas fa-weight"></i></div>
+                        <span class="stat-label">Weight</span>
+                        <strong class="stat-value">75 kg</strong>
+                        <span class="stat-status stable"><i class="fas fa-check-circle"></i> stable</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Tabs Navigation -->
+            <div class="tabs-nav">
+                <button class="tab-btn active"><i class="fas fa-chart-pie"></i> Overview</button>
+                <button class="tab-btn"><i class="far fa-calendar-alt"></i> Appointments</button>
+                <button class="tab-btn"><i class="fas fa-prescription"></i> Prescriptions</button>
+                <button class="tab-btn"><i class="far fa-file-alt"></i> Records</button>
+            </div>
+
+            <!-- 3. Next Appointment Banner -->
+            <div class="next-appointment-banner">
+                <div class="banner-icon"><i class="fas fa-exclamation-circle"></i></div>
+                <div class="banner-content">
+                    <h4>Next Appointment</h4>
+                    <p>You have an appointment with <strong>Dr. Amita Sharma</strong> on 28 Nov 2024</p>
+                </div>
+            </div>
+
+            <!-- 4. Recent Consultations -->
+            <section class="recent-consultations">
+                <h3>Recent Consultations</h3>
+                
+                <div class="consultation-card">
+                    <div class="doctor-img">
+                        <img src="https://ui-avatars.com/api/?name=Sunita+Maharjan&background=random" alt="Doctor">
+                    </div>
+                    <div class="consultation-info">
+                        <div class="info-header">
+                            <h4>Dr. Sunita Maharjan</h4>
+                            <span class="date">Nov 15, 2024</span>
+                        </div>
+                        <span class="specialty">Dermatologist</span>
+                        <p class="diagnosis">Diagnosis: <span>Seasonal Allergies</span></p>
+                        <a href="#" class="view-details">View Details <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="consultation-card">
+                    <div class="doctor-img">
+                        <img src="https://ui-avatars.com/api/?name=Prakash+Adhikari&background=random" alt="Doctor">
+                    </div>
+                    <div class="consultation-info">
+                        <div class="info-header">
+                            <h4>Dr. Prakash Adhikari</h4>
+                            <span class="date">Oct 28, 2024</span>
+                        </div>
+                        <span class="specialty">Orthopedist</span>
+                        <p class="diagnosis">Diagnosis: <span>Mild Back Pain</span></p>
+                        <a href="#" class="view-details">View Details <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Quick Actions -->
+            <section class="quick-actions">
+                <h3>Quick Actions</h3>
+                <div class="actions-grid">
+                    <button class="action-btn">
+                        <div class="icon-box"><i class="far fa-calendar-plus"></i></div>
+                        <span>Book Appointment</span>
+                    </button>
+                    <button class="action-btn">
+                        <div class="icon-box"><i class="fas fa-video"></i></div>
+                        <span>Start Consultation</span>
+                    </button>
+                    <button class="action-btn">
+                        <div class="icon-box"><i class="far fa-comments"></i></div>
+                        <span>Chat with Doctor</span>
+                    </button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+</body>
+</html>

@@ -10,8 +10,34 @@
 {% block content %}
     <!-- 1. Welcome Banner -->
     <div class="welcome-banner">
-        <h2>Welcome, Administrator</h2>
-        <p>Here's what's happening with DocPlus today</p>
+        <div class="banner-text">
+            <h2>Welcome, Administrator</h2>
+            <p>Here's what's happening with DocPlus today</p>
+        </div>
+
+        <!-- Admin Avatar with Hover Info -->
+        <div class="admin-profile-header">
+            <div class="admin-avatar-circle">
+                {% if user.first_name and user.last_name %}
+                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                {% elif user.first_name %}
+                    {{ user.first_name|first|upper }}
+                {% else %}
+                    {{ user.email|first|upper }}
+                {% endif %}
+            </div>
+            
+            <div class="admin-info-tooltip">
+                <span class="tooltip-name">
+                    {% if user.first_name %}
+                        {{ user.first_name|title }} {{ user.last_name|title }}
+                    {% else %}
+                        Admin User
+                    {% endif %}
+                </span>
+                <span class="tooltip-email">{{ user.email }}</span>
+            </div>
+        </div>
     </div>
 
     <!-- 2. Stats Grid -->
@@ -22,9 +48,9 @@
                 <span class="trend positive"><i class="fas fa-arrow-up"></i> +15%</span>
             </div>
             <div class="stat-data">
-                <h3>12,543</h3>
+                <h3>{{ total_users }}</h3>
                 <p>Total Users</p>
-                <small>8,234 Patients, 4,309 Doctors</small>
+                <small>{{ total_patients }} Patients, {{ total_doctors }} Doctors</small>
             </div>
         </div>
 
@@ -34,9 +60,9 @@
                 <span class="trend positive"><i class="fas fa-arrow-up"></i> +8</span>
             </div>
             <div class="stat-data">
-                <h3>147</h3>
+                <h3>{{ total_hospitals|default:"0" }}</h3>
                 <p>Total Hospitals</p>
-                <small>23 Pending Approval</small>
+                <small>{{ pending_hospitals_count|default:"0" }} Pending Approval</small>
             </div>
         </div>
 
@@ -46,9 +72,9 @@
                 <span class="trend positive"><i class="fas fa-arrow-up"></i> +23%</span>
             </div>
             <div class="stat-data">
-                <h3>856</h3>
+                <h3>{{ total_appointments_today|default:"0" }}</h3>
                 <p>Appointments Today</p>
-                <small>524 Completed</small>
+                <small>{{ completed_appointments_count|default:"0" }} Completed</small>
             </div>
         </div>
 
@@ -58,7 +84,7 @@
                 <span class="trend positive"><i class="fas fa-arrow-up"></i> +18%</span>
             </div>
             <div class="stat-data">
-                <h3>Rs 24.5L</h3>
+                <h3>Rs {{ total_revenue|default:"0" }}</h3>
                 <p>Platform Revenue</p>
                 <small>This Month</small>
             </div>
@@ -69,95 +95,117 @@
     <div class="section-title"><h3>Quick Actions</h3></div>
     <div class="quick-actions-grid">
         <div class="action-card blue">
-            <i class="fas fa-user-check"></i>
-            <h4>Verify Doctors</h4>
-            <span class="badge">3 Pending</span>
+            <a href="{% url 'super_admin_verify_doctor' %}" style="text-decoration:none; color:inherit; display:block;">
+                <i class="fas fa-user-check"></i>
+                <h4>Verify Doctors</h4>
+                {% if pending_doctors_count > 0 %}
+                    <span class="badge" style="background: #ef4444; color: white;">{{ pending_doctors_count }} Pending</span>
+                {% else %}
+                    <span class="badge" style="background: #10B981; color: white;">All Clear</span>
+                {% endif %}
+            </a>
         </div>
         <div class="action-card indigo">
-            <i class="far fa-hospital"></i>
-            <h4>Approve Hospitals</h4>
-            <span class="badge">2 Pending</span>
+            <a href="{% url 'super_admin_hospitals' %}" style="text-decoration:none; color:inherit; display:block;">
+                <i class="far fa-hospital"></i>
+                <h4>Approve Hospitals</h4>
+                <span class="badge">2 Pending</span>
+            </a>
         </div>
         <div class="action-card amber">
-            <i class="far fa-star"></i>
-            <h4>Review Moderation</h4>
-            <span class="badge">1 Flagged</span>
+            <a href="{% url 'super_admin_verify_reviews' %}" style="text-decoration:none; color:inherit; display:block;">
+                <i class="far fa-star"></i>
+                <h4>Review Moderation</h4>
+                <span class="badge">1 Flagged</span>
+            </a>
         </div>
         <div class="action-card green">
-            <i class="fas fa-chart-line"></i>
-            <h4>View Analytics</h4>
-            <span class="badge">Reports</span>
+            <a href="{% url 'super_admin_analytics' %}" style="text-decoration:none; color:inherit; display:block;">
+                <i class="fas fa-chart-line"></i>
+                <h4>View Analytics</h4>
+                <span class="badge">Reports</span>
+            </a>
         </div>
     </div>
 
     <!-- 4. Pending Approvals (Two Columns) -->
     <div class="approvals-grid">
-        <!-- Doctors Column -->
         <div class="approval-column">
             <div class="column-header">
                 <h3>Pending Doctor Approvals</h3>
-                <a href="#">View All <i class="fas fa-chevron-right"></i></a>
+                <a href="{% url 'super_admin_verify_doctor' %}">View All <i class="fas fa-chevron-right"></i></a>
+            </div>
+        
+        {% for doctor in pending_doctors %}
+        <div class="approval-card">
+            <div class="info">
+                <h4>Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h4>
+                <p>{{ doctor.specialization }}</p>
+                
+                <span class="time-ago">
+                    <i class="far fa-clock"></i> {{ doctor.created_at|timesince }} ago
+                </span>
             </div>
             
-            <div class="approval-card">
-                <div class="info">
-                    <h4>Dr. Amit Thapa</h4>
-                    <p>Cardiology</p>
-                    <span class="time-ago"><i class="far fa-clock"></i> 2h ago</span>
-                </div>
-                <div class="actions">
-                    <button class="btn approve">Approve</button>
-                    <button class="btn reject">Reject</button>
-                </div>
-            </div>
+            <div class="actions">
+                <a href="{% url 'approve_doctor' doctor.pk %}" 
+                    class="btn approve" 
+                    onclick="return confirm('Approve Dr. {{ doctor.user.first_name }}?')" 
+                    style="text-align:center; text-decoration:none;">
+                    Approve
+                </a>
 
-            <div class="approval-card">
-                <div class="info">
-                    <h4>Dr. Priya Sharma</h4>
-                    <p>Neurology</p>
-                    <span class="time-ago"><i class="far fa-clock"></i> 5h ago</span>
-                </div>
-                <div class="actions">
-                    <button class="btn approve">Approve</button>
-                    <button class="btn reject">Reject</button>
-                </div>
+                <a href="{% url 'reject_doctor' doctor.pk %}" 
+                    class="btn reject" 
+                    onclick="return confirm('Reject application for Dr. {{ doctor.user.first_name }}?')"
+                    style="text-align:center; text-decoration:none;">
+                    Reject
+                </a>
             </div>
         </div>
+        
+        {% empty %}
+        <div class="empty-state-card">
+            <i class="fas fa-check-circle"></i>
+            <h4>All Clear!</h4>
+            <p>No pending doctor applications.</p>
+        </div>
+        {% endfor %}
+
+    </div>
+
 
         <!-- Hospitals Column -->
         <div class="approval-column">
             <div class="column-header">
                 <h3>Pending Hospital Approvals</h3>
-                <a href="#">View All <i class="fas fa-chevron-right"></i></a>
+                <a href="{% url 'super_admin_hospitals' %}">View All <i class="fas fa-chevron-right"></i></a>
             </div>
             
+            <!-- Assuming pending_hospitals is passed in context -->
+            {% for hospital in pending_hospitals %}
             <div class="approval-card">
                 <div class="info">
-                    <h4>Kathmandu Medical Center</h4>
-                    <p>Kathmandu, Nepal</p>
-                    <span class="time-ago"><i class="far fa-clock"></i> 1d ago</span>
+                    <h4>{{ hospital.name }}</h4>
+                    <p>{{ hospital.city }}</p>
+                    <span class="time-ago"><i class="far fa-clock"></i> {{ hospital.created_at|timesince }} ago</span>
                 </div>
                 <div class="actions">
                     <button class="btn approve">Approve</button>
                     <button class="btn reject">Reject</button>
                 </div>
             </div>
-
-            <div class="approval-card">
-                <div class="info">
-                    <h4>Pokhara Health Clinic</h4>
-                    <p>Pokhara, Nepal</p>
-                    <span class="time-ago"><i class="far fa-clock"></i> 2d ago</span>
-                </div>
-                <div class="actions">
-                    <button class="btn approve">Approve</button>
-                    <button class="btn reject">Reject</button>
-                </div>
+            {% empty %}
+             <div class="empty-state-card">
+                <i class="fas fa-hospital"></i>
+                <h4>All Clear!</h4>
+                <p>No pending hospital applications.</p>
             </div>
+            {% endfor %}
         </div>
     </div>
 
-    <!-- 5. Recent Appointments Table -->
+    <!-- 5. Recent Appointments Table (DYNAMIC) -->
     <div class="recent-appointments">
         <h3>Recent Appointments</h3>
         <div class="table-responsive">
@@ -167,42 +215,56 @@
                         <th>Patient</th>
                         <th>Doctor</th>
                         <th>Date & Time</th>
-                        <th>Type</th>
+                        <th>Payment</th>
                         <th>Status</th>
                         <th>Amount</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% for appointment in recent_appointments %}
                     <tr>
-                        <td>Rajesh Kumar</td>
-                        <td>Dr. Arjun Sharma</td>
+                        <!-- Patient Name -->
                         <td>
-                            <div class="datetime">2024-11-24 <span>10:00 AM</span></div>
+                            {{ appointment.full_name|title }}
                         </td>
-                        <td>Video Call</td>
-                        <td><span class="status completed">Completed</span></td>
-                        <td>Rs 1,500</td>
+                        
+                        <!-- Doctor Name -->
+                        <td>Dr. {{ appointment.doctor_name|title }}</td>
+                        
+                        <!-- Date & Time -->
+                        <td>
+                            <div class="datetime">
+                                {{ appointment.date|date:"Y-m-d" }} 
+                                <span>{{ appointment.time_slot }}</span>
+                            </div>
+                        </td>
+                        
+                        <!-- Payment Method (Replacing Type which doesn't exist in model) -->
+                        <td>{{ appointment.payment_method|default:"N/A"|title }}</td>
+                        
+                        <!-- Status Badge -->
+                        <td>
+                            {% if appointment.status == 'completed' %}
+                                <span class="status completed">Completed</span>
+                            {% elif appointment.status == 'scheduled' %}
+                                <span class="status scheduled">Scheduled</span>
+                            {% elif appointment.status == 'cancelled' %}
+                                <span class="status cancelled">Cancelled</span>
+                            {% else %}
+                                <span class="status pending">{{ appointment.status|title }}</span>
+                            {% endif %}
+                        </td>
+                        
+                        <!-- Amount -->
+                        <td>Rs {{ appointment.amount }}</td>
                     </tr>
+                    {% empty %}
                     <tr>
-                        <td>Sita Devi</td>
-                        <td>Dr. Priya Singh</td>
-                        <td>
-                            <div class="datetime">2024-11-24 <span>11:30 AM</span></div>
+                        <td colspan="6" style="text-align: center; padding: 25px; color: #6b7280;">
+                            No recent appointments found.
                         </td>
-                        <td>In-Person</td>
-                        <td><span class="status scheduled">Scheduled</span></td>
-                        <td>Rs 2,000</td>
                     </tr>
-                    <tr>
-                        <td>Ram Bahadur</td>
-                        <td>Dr. Amit Thapa</td>
-                        <td>
-                            <div class="datetime">2024-11-24 <span>02:00 PM</span></div>
-                        </td>
-                        <td>Video Call</td>
-                        <td><span class="status cancelled">Cancelled</span></td>
-                        <td>Rs 1,500</td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>

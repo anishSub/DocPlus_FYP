@@ -5,22 +5,29 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/superAdmin/userManagement.css' %}">
+<!-- Embedded styles to fix missing avatar colors immediately -->
+<style>
+    .avatar.cyan { background-color: #06b6d4; color: white; }
+    .avatar.green { background-color: #10b981; color: white; }
+    .avatar.blue { background-color: #3b82f6; color: white; }
+    .avatar.indigo { background-color: #6366f1; color: white; }
+</style>
 {% endblock %}
 
 {% block content %}
     <!-- 1. Stats Overview -->
     <div class="user-stats-grid">
         <div class="stat-card cyan">
-            <h3>Total Patients</h3>
-            <p>8,234</p>
+            <h3><i class="fas fa-user-injured"></i> Total Patients</h3>
+            <p>{{ total_patients }}</p>
         </div>
         <div class="stat-card blue">
-            <h3>Total Doctors</h3>
-            <p>4,309</p>
+            <h3><i class="fas fa-user-md"></i> Total Doctors</h3>
+            <p>{{ total_doctors }}</p>
         </div>
         <div class="stat-card green">
-            <h3>Active Today</h3>
-            <p>2,156</p>
+            <h3><i class="fas fa-check-circle"></i> Active Today</h3>
+            <p>{{ active_today }}</p>
         </div>
     </div>
 
@@ -29,10 +36,10 @@
         <h2>User Management</h2>
         
         <div class="actions-wrapper">
-            <div class="search-box">
+            <form method="GET" class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search users...">
-            </div>
+                <input type="text" name="q" placeholder="Search users..." value="{{ request.GET.q|default:'' }}">
+            </form>
             
             <div class="btn-group">
                 <button class="btn-outline">
@@ -59,89 +66,75 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Row 1: Patient -->
+                {% for user in users %}
                 <tr>
                     <td>
                         <div class="user-info">
-                            <div class="avatar blue">R</div>
-                            <span>Rajesh Kumar</span>
+                            <!-- FIX 1: Cycle colors are now defined in <style> above -->
+                            <div class="avatar {% cycle 'blue' 'indigo' 'cyan' 'green' %}">
+                                <!-- FIX 2: Avatar now uses First + Last Name Initials -->
+                                {% if user.first_name and user.last_name %}
+                                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                                {% elif user.first_name %}
+                                    {{ user.first_name|first|upper }}
+                                {% else %}
+                                    {{ user.email|first|upper }}
+                                {% endif %}
+                            </div>
+                            <span>
+                                {% if user.first_name %}
+                                    {{ user.first_name|title }} {{ user.last_name|title }}
+                                {% else %}
+                                    Unknown User
+                                {% endif %}
+                            </span>
                         </div>
                     </td>
-                    <td>rajesh@email.com</td>
-                    <td><span class="role-badge patient">Patient</span></td>
-                    <td>2024-01-15</td>
-                    <td><span class="status-badge active">Active</span></td>
+                    <td>{{ user.email }}</td>
+                    
+                    <td>
+                        <!-- FIX 3: Added |upper filter to match case-insensitively -->
+                        {% if user.role|upper == 'DOCTOR' %}
+                            <span class="role-badge doctor">Doctor</span>
+                        {% elif user.role|upper == 'PATIENT' %}
+                            <span class="role-badge patient">Patient</span>
+                        {% else %}
+                            <!-- If it shows Admin here, the DB value is definitely ADMIN -->
+                            <span class="role-badge admin">{{ user.role|title }}</span>
+                        {% endif %}
+                    </td>
+                    
+                    <td>{{ user.date_joined|date:"M d, Y" }}</td>
+                    
+                    <td>
+                        {% if user.is_active %}
+                            <span class="status-badge active">Active</span>
+                        {% else %}
+                            <span class="status-badge inactive" style="background:#fee2e2; color:#ef4444;">Inactive</span>
+                        {% endif %}
+                    </td>
+                    
                     <td>
                         <div class="actions">
-                            <button class="icon-btn view"><i class="far fa-eye"></i></button>
-                            <button class="icon-btn edit"><i class="far fa-edit"></i></button>
-                            <button class="icon-btn delete"><i class="far fa-trash-alt"></i></button>
+                            <button class="icon-btn view" title="View Profile"><i class="far fa-eye"></i></button>
+                            <button class="icon-btn edit" title="Edit User"><i class="far fa-edit"></i></button>
+                            
+                            <!-- UPDATED: Changed from <button> to <a> tag to link to the view -->
+                            <!-- Ensure you have added path('delete-user/<int:pk>/', views.delete_user, name='delete_user') in your urls.py -->
+                            <a href="{% url 'delete_user' user.id %}" class="icon-btn delete" title="Delete User" onclick="return confirm('Are you sure you want to remove {{ user.first_name }}? This action cannot be undone.');">
+                                <i class="far fa-trash-alt"></i>
+                            </a>
+                            
                         </div>
                     </td>
                 </tr>
-
-                <!-- Row 2: Doctor -->
+                {% empty %}
                 <tr>
-                    <td>
-                        <div class="user-info">
-                            <div class="avatar indigo">A</div>
-                            <span>Dr. Arjun Sharma</span>
-                        </div>
-                    </td>
-                    <td>arjun@email.com</td>
-                    <td><span class="role-badge doctor">Doctor</span></td>
-                    <td>2023-11-20</td>
-                    <td><span class="status-badge active">Active</span></td>
-                    <td>
-                        <div class="actions">
-                            <button class="icon-btn view"><i class="far fa-eye"></i></button>
-                            <button class="icon-btn edit"><i class="far fa-edit"></i></button>
-                            <button class="icon-btn delete"><i class="far fa-trash-alt"></i></button>
-                        </div>
+                    <td colspan="6" style="text-align: center; padding: 30px;">
+                        No users found matching your search.
                     </td>
                 </tr>
-
-                <!-- Row 3: Patient -->
-                <tr>
-                    <td>
-                        <div class="user-info">
-                            <div class="avatar blue">S</div>
-                            <span>Sita Devi</span>
-                        </div>
-                    </td>
-                    <td>sita@email.com</td>
-                    <td><span class="role-badge patient">Patient</span></td>
-                    <td>2024-03-08</td>
-                    <td><span class="status-badge active">Active</span></td>
-                    <td>
-                        <div class="actions">
-                            <button class="icon-btn view"><i class="far fa-eye"></i></button>
-                            <button class="icon-btn edit"><i class="far fa-edit"></i></button>
-                            <button class="icon-btn delete"><i class="far fa-trash-alt"></i></button>
-                        </div>
-                    </td>
-                </tr>
-
-                <!-- Row 4: Doctor -->
-                <tr>
-                    <td>
-                        <div class="user-info">
-                            <div class="avatar indigo">P</div>
-                            <span>Dr. Priya Singh</span>
-                        </div>
-                    </td>
-                    <td>priya@email.com</td>
-                    <td><span class="role-badge doctor">Doctor</span></td>
-                    <td>2024-02-14</td>
-                    <td><span class="status-badge active">Active</span></td>
-                    <td>
-                        <div class="actions">
-                            <button class="icon-btn view"><i class="far fa-eye"></i></button>
-                            <button class="icon-btn edit"><i class="far fa-edit"></i></button>
-                            <button class="icon-btn delete"><i class="far fa-trash-alt"></i></button>
-                        </div>
-                    </td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

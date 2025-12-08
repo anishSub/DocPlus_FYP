@@ -8,8 +8,8 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/base/base.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     {% block extra_css %}{% endblock %}
 </head>
@@ -33,19 +33,36 @@
 
             <div class="header-actions" id="nav-actions">
                 {% comment %} i have to redirect the url to appointment if the user is authenticated  {% endcomment %}
-                <a href="{% if user.is_authenticated %}{% url 'personalInfo' %}{% else %}{% url 'register' %}{% endif %}" class="btn btn-yellow">
+                <a href="{% if user.is_authenticated %}{% url 'appointment_page' %}{% else %}{% url 'register' %}{% endif %}" class="btn btn-yellow">
                     <i class="ri-calendar-check-fill"></i>
                     Book Appointment
                 </a>
                 
                 {% if user.is_authenticated %}
                     
-                    <div class="user-profile-display">
-                        <div class="profile-circle">
-                            {{ user.username|make_list|first|upper }}
+                    <a href="{% url 'profile' %}" class="user-profile-link">
+                        <div class="user-profile-display">
+                            <!-- FIX: Avatar now uses First Name + Last Name Initials -->
+                            <div class="profile-circle">
+                                {% if user.first_name and user.last_name %}
+                                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                                {% elif user.first_name %}
+                                    {{ user.first_name|first|upper }}
+                                {% else %}
+                                    {{ user.email|first|upper }}
+                                {% endif %}
+                            </div>
+                            
+                            <!-- FIX: Name display uses First + Last Name (Capitalized), fallback to Email -->
+                            <span class="user-name-text">
+                                {% if user.first_name %}
+                                    {{ user.first_name|title }}
+                                {% comment %} {% else %}
+                                    {{ user.email }} {% endcomment %}
+                                {% endif %}
+                            </span>
                         </div>
-                        <span class="user-name-text">{{ user.username }}</span>
-                    </div>
+                    </a>
 
                     <form method="post" action="{% url 'logout' %}" class="logout-form">
                         {% csrf_token %}
@@ -101,7 +118,7 @@
                 <div class="footer-col">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="#">Home</a></li>
+                        <li><a href="{% url 'home' %}">Home</a></li>
                         <li><a href="#">About Us</a></li>
                         <li><a href="#">Hospitals</a></li>
                         <li><a href="#">Doctors</a></li>
@@ -111,8 +128,8 @@
                 <div class="footer-col">
                     <h3>For Patients</h3>
                     <ul>
-                        <li><a href="#">Book Appointment</a></li>
-                        <li><a href="#">Find Doctors</a></li>
+                        <li><a href="{% url 'appointment_page' %}">Book Appointment</a></li>
+                        <li><a href="{% url 'find_doctor' %}">Find Doctors</a></li>
                         <li><a href="#">Audio Consultation</a></li>
                         <li><a href="#">Write Review</a></li>
                         <li><a href="#">FAQs</a></li>

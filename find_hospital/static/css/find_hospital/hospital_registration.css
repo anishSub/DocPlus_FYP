@@ -1,0 +1,410 @@
+/* General Layout */
+.registration-wrapper {
+    background: #f8f9fa;
+    min-height: 100vh;
+    padding-bottom: 50px;
+}
+
+/* Header Section */
+.registration-header {
+    background: linear-gradient(90deg, #1C398E, #0092B8);
+    color: white;
+    padding: 40px  ; /* Extra padding bottom for overlap */
+}
+
+.back-link {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.header-content h1 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+.hospital-icon-badge {
+    font-size: 40px;
+    background: rgba(255,255,255,0.1);
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Main Container & Card */
+.main-container {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    /* z-index: 10; */
+    padding: 0 20px;
+}
+
+#hospitalRegForm {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    padding: 40px;
+    margin-top: 30px;
+}
+
+/* Stepper */
+.stepper-wrapper {
+    background: white;
+    padding: 20px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.step-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.5;
+    transition: 0.3s;
+}
+
+.step.active, .step.completed {
+    opacity: 1;
+}
+
+.step .circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.step.active .circle {
+    background: #0092B8;
+    color: white;
+    box-shadow: 0 0 0 4px rgba(0, 146, 184, 0.2);
+}
+
+.step.completed .circle {
+    background: #10B981; /* Green */
+    color: white;
+}
+
+.step .label {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.line {
+    flex: 1;
+    height: 2px;
+    background: #e2e8f0;
+    margin: 0 20px;
+    margin-bottom: 20px; /* Align with circle */
+}
+
+/* Form Styles */
+.form-step {
+    display: none; /* Hidden by default */
+    animation: fadeIn 0.4s;
+}
+
+.form-step.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.step-header {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 20px;
+}
+
+.step-header .icon-box {
+    width: 48px;
+    height: 48px;
+    background: #E0F7FA;
+    color: #0092B8;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #0092B8;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 146, 184, 0.1);
+}
+
+.form-group input.invalid {
+    border-color: #ef4444;
+    background: #fef2f2;
+}
+
+/* Services Grid (Buttons) */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.service-check input {
+    display: none;
+}
+
+.service-check span {
+    display: block;
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #4b5563;
+    transition: 0.2s;
+    background: #f9fafb;
+}
+
+.service-check input:checked + span {
+    background: #E0F7FA;
+    border-color: #0092B8;
+    color: #007595;
+    font-weight: 600;
+}
+
+/* Departments Tag Input */
+.dept-input-group {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-add-dept {
+    background: #0092B8;
+    color: white;
+    border: none;
+    padding: 0 20px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.dept-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.dept-tag {
+    background: #f1f5f9;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dept-tag i {
+    cursor: pointer;
+    color: #94a3b8;
+}
+
+.dept-tag i:hover {
+    color: #ef4444;
+}
+
+/* File Upload */
+.file-upload-box {
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+    background: #f8fafc;
+}
+
+.file-upload-box:hover {
+    border-color: #0092B8;
+    background: #f0f9ff;
+}
+
+.file-upload-box i {
+    font-size: 32px;
+    color: #94a3b8;
+    margin-bottom: 10px;
+}
+
+/* Emergency Toggle */
+.emergency-toggle input { display: none; }
+.emergency-toggle label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+.emergency-toggle input:checked + label {
+    background: #fee2e2;
+    border-color: #ef4444;
+    color: #b91c1c;
+}
+
+/* Buttons */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.btn-prev {
+    background: #e2e8f0;
+    color: #475569;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-next {
+    background: #1C398E;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* additional css for passwprd view button  */
+/* --- Password Wrapper Styling --- */
+
+/* --- FIXED PASSWORD VIEW CSS --- */
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+    display: block; /* Changed from flex to block to allow absolute positioning to work better */
+}
+
+/* 1. The Lock Icon (Left) */
+.input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%); /* Perfectly centers it vertically */
+    color: #9CA3AF;
+    font-size: 16px;
+    pointer-events: none; /* Clicks pass through */
+    z-index: 5;
+}
+
+/* 2. The Eye Icon (Right) */
+.toggle-password-btn {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%); /* Perfectly centers it vertically */
+    color: #6B7280;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 10;
+    background: transparent;
+}
+
+.toggle-password-btn:hover {
+    color: #1F2937;
+}
+
+/* 3. The Input Field Styling */
+/* We use !important to override the generic form styles */
+.input-wrapper input {
+    width: 100%;
+    /* Left padding space for Lock, Right padding space for Eye */
+    padding: 12px 45px 12px 45px !important; 
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    outline: none;
+    display: block; /* Ensures it fills the wrapper */
+}
+
+.input-wrapper input:focus {
+    border-color: #0092B8;
+}

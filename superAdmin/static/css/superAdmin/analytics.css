@@ -1,0 +1,198 @@
+/* --- 1. Banner --- */
+.analytics-banner {
+    background: linear-gradient(90deg, #0092b8, #1c398e); /* Blue Gradient */
+    color: white;
+    padding: 32px;
+    border-radius: 16px;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 10px rgba(14, 92, 152, 0.2);
+}
+
+.analytics-banner h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.analytics-banner p {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* --- 2. Revenue Overview --- */
+.section-container {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 24px;
+    border: 1px solid #e5e7eb;
+}
+
+.section-container h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 20px;
+}
+
+.revenue-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    text-align: center;
+}
+
+.revenue-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 16px;
+    border-right: 1px solid #e5e7eb;
+}
+
+.revenue-item:last-child {
+    border-right: none;
+}
+
+.revenue-item .label {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.revenue-item .value {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* --- 3. Metrics Grid --- */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.metric-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid #e5e7eb;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.icon-blue {
+    color: #0092b8;
+    font-size: 20px;
+}
+
+.card-header h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.metric-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.metric-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 14px;
+    color: #4b5563;
+}
+
+.metric-row:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.metric-row .number {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* Color helpers for numbers */
+.number.green { color: #16a34a; }
+.number.red { color: #dc2626; }
+.number.yellow { color: #d97706; }
+
+/* --- 4. Export Reports --- */
+.export-section h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 20px;
+}
+
+.export-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.export-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    border-radius: 12px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    text-align: left;
+    transition: transform 0.2s;
+}
+
+.export-card:hover { transform: translateY(-3px); }
+
+.export-card.blue { background: linear-gradient(135deg, #0092b8, #007796); }
+.export-card.indigo { background: linear-gradient(135deg, #2563eb, #1e40af); }
+.export-card.green { background: linear-gradient(135deg, #16a34a, #15803d); }
+
+.icon-box {
+    font-size: 24px;
+    opacity: 0.8;
+}
+
+.export-info h4 { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+.export-info p { font-size: 12px; opacity: 0.8; }
+
+/* --- RESPONSIVENESS --- */
+@media (max-width: 768px) {
+    /* Revenue Grid Stack */
+    .revenue-grid {
+        grid-template-columns: 1fr 1fr; /* 2x2 on mobile */
+        gap: 24px;
+    }
+    
+    .revenue-item {
+        border-right: none; /* Remove divider lines on mobile */
+        padding: 0;
+        align-items: center;
+    }
+
+    /* Stack Metrics */
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Stack Export Buttons */
+    .export-grid {
+        grid-template-columns: 1fr;
+    }
+}

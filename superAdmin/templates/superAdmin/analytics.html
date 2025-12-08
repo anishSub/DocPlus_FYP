@@ -1,0 +1,118 @@
+{% extends 'superAdmin/base.html' %}
+{% load static %}
+
+{% block title %}Platform Analytics{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/superAdmin/analytics.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- 1. Page Banner -->
+    <div class="analytics-banner">
+        <h2>Platform Analytics</h2>
+        <p>Comprehensive insights and statistics</p>
+    </div>
+
+    <!-- 2. Revenue Overview -->
+    <div class="section-container">
+        <h3>Revenue Overview</h3>
+        <div class="revenue-grid">
+            <div class="revenue-item">
+                <span class="label">Today</span>
+                <span class="value">Rs 85,000</span>
+            </div>
+            <div class="revenue-item">
+                <span class="label">This Week</span>
+                <span class="value">Rs 5.4L</span>
+            </div>
+            <div class="revenue-item">
+                <span class="label">This Month</span>
+                <span class="value">Rs 24.5L</span>
+            </div>
+            <div class="revenue-item">
+                <span class="label">Total</span>
+                <span class="value">Rs 3.2Cr</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Metrics Grid (User Activity & Appointment Metrics) -->
+    <div class="metrics-grid">
+        
+        <!-- Card 1: User Activity -->
+        <div class="metric-card">
+            <div class="card-header">
+                <i class="fas fa-chart-line icon-blue"></i>
+                <h4>User Activity</h4>
+            </div>
+            <div class="metric-list">
+                <div class="metric-row">
+                    <span>Daily Active Users</span>
+                    <span class="number">2,156</span>
+                </div>
+                <div class="metric-row">
+                    <span>New Sign-ups Today</span>
+                    <span class="number">143</span>
+                </div>
+                <div class="metric-row">
+                    <span>Avg. Session Duration</span>
+                    <span class="number">8m 32s</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Appointment Metrics -->
+        <div class="metric-card">
+            <div class="card-header">
+                <i class="far fa-calendar-check icon-blue"></i>
+                <h4>Appointment Metrics</h4>
+            </div>
+            <div class="metric-list">
+                <div class="metric-row">
+                    <span>Completion Rate</span>
+                    <span class="number green">94.2%</span>
+                </div>
+                <div class="metric-row">
+                    <span>Cancellation Rate</span>
+                    <span class="number red">5.8%</span>
+                </div>
+                <div class="metric-row">
+                    <span>Avg. Rating</span>
+                    <span class="number yellow">4.7/5.0</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 4. Export Reports -->
+    <div class="export-section">
+        <h3>Export Reports</h3>
+        <div class="export-grid">
+            <button class="export-card blue">
+                <div class="icon-box"><i class="fas fa-download"></i></div>
+                <div class="export-info">
+                    <h4>User Report</h4>
+                    <p>All users data</p>
+                </div>
+            </button>
+
+            <button class="export-card indigo">
+                <div class="icon-box"><i class="fas fa-download"></i></div>
+                <div class="export-info">
+                    <h4>Revenue Report</h4>
+                    <p>Financial data</p>
+                </div>
+            </button>
+
+            <button class="export-card green">
+                <div class="icon-box"><i class="fas fa-download"></i></div>
+                <div class="export-info">
+                    <h4>Appointment Report</h4>
+                    <p>Booking data</p>
+                </div>
+            </button>
+        </div>
+    </div>
+{% endblock %}
