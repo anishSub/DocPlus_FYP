@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-o*n5crrfy^kvwr-9q1in=dsun+3kbw5o)*w)j6$q*t@l^#x-0#'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -45,8 +47,18 @@ INSTALLED_APPS = [
     'appointments',
     'doctorAdmin',
     'superAdmin',
-    'hospitalAdmin'
+    'hospitalAdmin',
+    
+    #for Allauth apps 
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',   # For Google
+    'allauth.socialaccount.providers.facebook', # For Facebook
 ]
+
+SITE_ID = 1  
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -56,6 +68,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'myproject.urls'
@@ -174,3 +188,47 @@ LOGIN_REDIRECT_URL = 'home'
 
 # Redirect to login page after logout
 LOGOUT_REDIRECT_URL = 'login'
+
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend', # Needed to login by username in Django admin
+    'allauth.account.auth_backends.AuthenticationBackend', # Needed for social login
+]
+
+# ACCOUNT_USER_MODEL_USERNAME_FIELD = None # You use email, not username
+
+
+SOCIALACCOUNT_LOGIN_ON_GET = True # Skips the "Are you sure?" intermediate screen
+ACCOUNT_LOGIN_METHODS = {'email'}  # Replaces ACCOUNT_AUTHENTICATION_METHOD
+ACCOUNT_EMAIL_REQUIRED = True      # Keep this if you want email to be mandatory
+ACCOUNT_USERNAME_REQUIRED = False
+# this line to AUTO-GENERATE usernames from email
+ACCOUNT_PRESERVE_USERNAME_CASING = False
+
+# 5. Provider Settings (Put Keys HERE to avoid using Admin Panel)
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': os.getenv('GOOGLE_CLIENT_ID'),
+            'secret': os.getenv('GOOGLE_SECRET'),
+            'key': ''
+        },
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'}
+    },
+    'facebook': {
+        'APP': {
+            'client_id': os.getenv('FACEBOOK_CLIENT_ID'),
+            'secret': os.getenv('FACEBOOK_SECRET'),
+            'key': ''
+        },
+        'METHOD': 'oauth2',
+        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
+        'SCOPE': ['email', 'public_profile'],
+        'FIELDS': ['id', 'email', 'name', 'first_name', 'last_name'],
+        'EXCHANGE_TOKEN': True,
+    }
+}
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

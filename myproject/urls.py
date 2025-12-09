@@ -21,8 +21,9 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
     path('', include('pages.urls')),
     path('find_doctor/', include('find_doctor.urls')),
     path('find_hospital/', include('find_hospital.urls')),

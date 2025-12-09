@@ -252,3 +252,104 @@ body {
     border-color: #0092B8;
     background: white;
 }
+
+/* #Additional */
+/* --- Provider Link Section (Bottom of Register Page) --- */
+.provider-link-box {
+    margin-top: 10px;
+    text-align: center;
+    border-top: 1px solid #E5E7EB; /* Light gray border */
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.provider-text {
+    font-size: 14px;
+    color: #6B7280; /* Neutral gray */
+    margin-bottom: 8px;
+}
+
+.provider-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.provider-link {
+    color: #0092B8; /* Your primary brand color */
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s ease;
+}
+
+.provider-link:hover {
+    color: #1C398E; /* Darker blue on hover */
+    text-decoration: underline;
+}
+
+.separator {
+    color: #D1D5DB; /* Light gray */
+    font-size: 14px;
+}
+
+
+.provider-link-box {
+    margin-top: 20px;
+    text-align: center;
+    border-top: 1px solid #E5E7EB;
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    padding-left: 40px; 
+    padding-right: 40px;
+}
+
+.provider-text {
+    font-size: 14px;
+    color: #6B7280;
+    margin-bottom: 15px; /* Added slightly more space above buttons */
+}
+
+.provider-actions {
+    display: flex;
+    justify-content: space-between; /* Spreads them out */
+    align-items: center;
+    gap: 15px; /* Space between the two buttons */
+}
+
+
+
+
+/* New Button Class based on .btn-submit */
+.btn-provider {
+    /* Styles copied from .btn-submit */
+    height: 52px;
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px; /* Slightly smaller to ensure text fits */
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none; /* Removes link underline */
+
+    /* Layout properties to make <a> tag behave like a button */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1; /* Makes both buttons equal width (50% each) */
+    transition: opacity 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: adds nice depth */
+}
+
+.btn-provider:hover {
+    color: white; /* Keeps text white */
+    opacity: 0.9; /* Slight fade effect on hover */
+    transform: translateY(-1px); /* Slight lift effect */
+}
+
+.btn-provider:active {
+    transform: translateY(0);
+}

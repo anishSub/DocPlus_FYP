@@ -1,0 +1,33 @@
+
+
+# --- Security (Never upload these!) ---
+.env
+.DS_Store
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Django ---
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# --- Media (User Uploads) ---
+# We track the folder, but not the images inside it
+media/
+!media/.gitkeep
+
+# --- Static (Collected files) ---
+# Usually we don't commit the final 'staticfiles' folder, only 'static'
+staticfiles/
+
+# --- VS Code (Editor settings) ---
+.vscode/
+
+# --- Virtual Environment ---
+venv/
+env/
+.venv/

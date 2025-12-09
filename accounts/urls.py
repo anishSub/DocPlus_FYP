@@ -9,8 +9,10 @@ urlpatterns = [
     path('accounts/login/', CustomLoginView.as_view(), name='login'),
     
     path('accounts/logout/', CustomLogoutView.as_view(), name='logout'),
-    # Include the rest of Django's auth URLs (logout, password reset, etc.)
-    path('accounts/', include('django.contrib.auth.urls')),
     
     path('register/', RegisterView.as_view(), name='register'),
+    
+    path('', include('allauth.urls')),
+    
+    path('accounts/', include('django.contrib.auth.urls')), #password_reset
 ]

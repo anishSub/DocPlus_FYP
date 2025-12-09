@@ -97,5 +97,5 @@ class HospitalRegistrationView(View):
             return render(request, 'find_hospital/hospital_registration.html')
 
 class Hospital_successView(View):
-     def get(self,request):
+    def get(self,request):
         return render(request, 'find_hospital/registration_success.html')

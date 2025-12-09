@@ -61,7 +61,7 @@ class CustomLoginView(LoginView):
             
         # 3. HOSPITAL ADMIN (New)
         elif user.role == User.Role.HOSPITAL_ADMIN:
-            return redirect('home')
+            return redirect('hospital_admin_overview')
         
         # 3. PATIENT
         elif user.role == User.Role.PATIENT:

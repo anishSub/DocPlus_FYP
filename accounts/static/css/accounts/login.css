@@ -212,3 +212,24 @@ body {
     border-radius: 10px;
     background: var(--input-bg);
 }
+
+/* forget password  */
+/* Forgot Password Link Styling */
+.forgot-pass-box {
+    text-align: right;       /* Pushes link to the right side */
+    margin-top: 8px;         /* Adds space between input and link */
+    margin-bottom: 5px;      /* Adds slight space before the Sign In button */
+}
+
+.forgot-link {
+    font-size: 13px;
+    color: #6B7280;          /* Start with a neutral gray */
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.forgot-link:hover {
+    color: #0092B8;          /* Changes to your Brand Blue on hover */
+    text-decoration: underline;
+}
