@@ -4,9 +4,6 @@ from .models import PatientProfile, User
 
 @receiver(user_signed_up)
 def social_signup_process(request, user, **kwargs):
-    """
-    Runs automatically when a user signs up via Google/Facebook.
-    """
     # 1. Set Role to PATIENT
     if not user.role:
         user.role = User.Role.PATIENT

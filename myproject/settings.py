@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
+from pathlib import Path
+import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,6 +36,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'accounts',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
-    'accounts',
     'pages',
     'find_doctor',
     'find_hospital',    
@@ -160,6 +163,8 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",     
 ]
 
+LOGIN_REDIRECT_URL = '/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -184,7 +189,6 @@ SESSION_SAVE_EVERY_REQUEST = True # Resets the timer if they click a link
 
 
 
-LOGIN_REDIRECT_URL = 'home' 
 
 # Redirect to login page after logout
 LOGOUT_REDIRECT_URL = 'login'

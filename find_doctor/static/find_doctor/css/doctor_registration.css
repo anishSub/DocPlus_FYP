@@ -23,8 +23,6 @@ body {
 /* --- HEADER --- */
 .registration-header {
     background: linear-gradient(135deg, #0092B8 0%, #1447E6 50%, #1C398E 100%);
-    /* FIX 1: Significantly increased bottom padding (220px) to prevent overlap */
-    /* This reserves space for the card to sit on top without covering text */
     padding: 30px 20px 30px 20px; 
     color: white;
 }
@@ -74,8 +72,6 @@ body {
 /* --- MAIN CARD CONTAINER --- */
 .main-container {
     max-width: 1000px;
-    /* FIX 2: Reduced negative margin (-120px) to overlap the blue header correctly */
-    /* Combined with header padding, this ensures text is safe */
     margin: 0 auto 50px; 
     position: relative;
     z-index: 10;
@@ -89,7 +85,6 @@ body {
     border-radius: 16px;
     padding: 40px 50px; /* More internal padding */
     box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); 
-    /* FIX 3: Increased margin-bottom to separate stepper from form title */
     margin-bottom: 30px; 
     margin-top: 40px;
 }
@@ -283,6 +278,14 @@ input.invalid, select.invalid {
     font-size: 14px;
 }
 
+.upload-list {
+        display: flex;
+        flex-direction: column; 
+        gap: 16px;
+        width: 100%;
+        margin-top: 20px;
+    }
+
 .upload-item {
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -290,13 +293,14 @@ input.invalid, select.invalid {
     display: flex;
     align-items: center;
     gap: 20px;
+    width: 100%; /* Ensures it fills the container */
     margin-bottom: 16px;
     transition: 0.2s;
 }
 .upload-item:hover { border-color: var(--accent); background-color: #FAFAFA; }
 
 .icon-sq {
-    width: 48px; height: 48px;
+    width: 48px; height: 48px;flex-shrink: 0;
     background: #E0F2FE;
     color: var(--accent);
     border-radius: 10px;
@@ -321,6 +325,7 @@ input.invalid, select.invalid {
     cursor: pointer;
     font-weight: 500;
     transition: 0.2s;
+    white-space: nowrap;
 }
 .btn-upload:hover { background: #F0F9FF; }
 
@@ -372,7 +377,7 @@ input.invalid, select.invalid {
     border-top: 1px solid var(--border);
 }
 
-.btn {
+.registration-wrapper .btn {
     padding: 14px 32px;
     border-radius: 8px;
     font-size: 16px;
@@ -417,6 +422,29 @@ select[name="hospital_affiliation"] {
     border-radius: 5px; /* Adjust to match your theme */
     background-color: white;
 }
+
+.checkbox-label {
+    background: #f3f4f6;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    border: 1px solid #e5e7eb;
+    transition: 0.2s;
+}
+
+/* Change color when checked */
+.checkbox-label:has(input:checked) {
+    background: #0092B8;
+    color: white;
+    border-color: #0092B8;
+}
+
+
+
 
 @keyframes shake {
     0% { transform: translateX(0); }

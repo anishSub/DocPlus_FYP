@@ -59,13 +59,19 @@
                             </div>
                         </div>
 
-                        {% comment %} <div class="form-group">
-                            <label class="field-label">Password</label>
-                            <div class="input-wrapper">
-                                <input type="password" name="password" placeholder="Enter your password" required>
-                                <i class="fas fa-lock input-icon"></i>
+                        {% comment %} {% if form.errors %}
+                            <div class="alert alert-danger" style="color: red; margin-bottom: 15px;">
+                                <p><strong>There were errors with your submission:</strong></p>
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <p>{{ field.label }}: {{ error }}</p>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
                             </div>
-                        </div> {% endcomment %}
+                        {% endif %} {% endcomment %}
 
                         <div class="form-group">
                             <label class="field-label">Password</label>
@@ -84,12 +90,6 @@
 
                         <button type="submit" class="btn-submit">Sign In</button>
                     </form>
-
-
-
-
-
-
 
                     <div class="divider">
                         <span>Or continue with</span>
@@ -110,10 +110,6 @@
                     </div>
                 </div>
             </div>
-
-
-
-
 
             <div class="secure-note">
                 <i class="fas fa-shield-alt"></i> Your information is secure and encrypted

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from .models import DoctorProfile
+from .models import DoctorProfile,DoctorSchedule
 from django.core.exceptions import ValidationError
 # from django.contrib.auth.password_validation import validate_password # <--- Uncomment when ready for production
 from datetime import date
@@ -44,6 +44,22 @@ class DoctorRegistrationForm(forms.Form):
     position = forms.CharField(required=False)
     languages = forms.CharField(required=False)
 
+
+# --- NEW: Availability Fields (Added to Form) ---
+    DAYS_CHOICES = [
+        ('Mon', 'Monday'), ('Tue', 'Tuesday'), ('Wed', 'Wednesday'),
+        ('Thu', 'Thursday'), ('Fri', 'Friday'), ('Sat', 'Saturday'), ('Sun', 'Sunday')
+    ]
+    # MultipleChoiceField automatically handles the list for ArrayField
+    available_days = forms.MultipleChoiceField(
+        choices=DAYS_CHOICES, 
+        widget=forms.CheckboxSelectMultiple,
+        required=True
+    )
+    available_time_start = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
+    available_time_end = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
+    
+    
     # --- 3. Education ---
     degree = forms.CharField(max_length=100)
     university = forms.CharField(max_length=150)
@@ -161,6 +177,10 @@ class DoctorRegistrationForm(forms.Form):
             current_position=data['position'],
             languages_spoken=data['languages'],
             
+            available_days=data['available_days'], # Saves as list ['Mon', 'Wed']
+            available_time_start=data['available_time_start'],
+            available_time_end=data['available_time_end'],
+            
             medical_degree=data['degree'],
             medical_school=data['university'],
             graduation_year=data['grad_year'],
@@ -172,4 +192,17 @@ class DoctorRegistrationForm(forms.Form):
             degree_certificate=data['degree_doc']
             
         )
+        # 2. AUTOMATICALLY Create the Detailed Schedule Rows
+        # This populates the DoctorSchedule table based on the general info
+        selected_days = data['available_days'] # List like ['Mon', 'Wed']
+        start = data['available_time_start']
+        end = data['available_time_end']
+
+        for day_code in selected_days:
+            DoctorSchedule.objects.create(
+                doctor=doctor,
+                day=day_code,
+                start_time=start,
+                end_time=end
+            )
         return doctor

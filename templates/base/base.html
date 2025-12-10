@@ -10,10 +10,26 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/base/base.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" type="image/png" href="{% static 'images/photos/2ndlogo.png' %}">
     
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    {% if messages %}
+    <div id="message-container">
+        {% for message in messages %}
+            <div class="custom-toast {{ message.tags }}">
+                <span>
+                    {% if message.tags == 'success' %}<i class="ri-checkbox-circle-line" style="margin-right:8px"></i>{% endif %}
+                    {% if message.tags == 'error' %}<i class="ri-error-warning-line" style="margin-right:8px"></i>{% endif %}
+                    {{ message }}
+                </span>
+                <button class="toast-close" onclick="this.parentElement.remove();">&times;</button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
 
     <header class="header">
         <div class="header-container">
@@ -186,6 +202,23 @@
                 icon.classList.remove('ri-close-line');
                 icon.classList.add('ri-menu-line');
             }
+        });
+
+        // ADDED: Auto-dismiss Messages Logic
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const toasts = document.querySelectorAll('.custom-toast');
+                toasts.forEach(function(toast) {
+                    // Fade out
+                    toast.style.opacity = '0';
+                    // Remove from DOM after fade completes
+                    setTimeout(function() {
+                        if(toast.parentElement) {
+                            toast.remove();
+                        }
+                    }, 500);
+                });
+            }, 4000); // 4000ms = 4 seconds
         });
     </script>
 

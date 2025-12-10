@@ -23,13 +23,14 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
+    # path('accounts/', include('django.contrib.auth.urls')),
     path('', include('pages.urls')),
     path('find_doctor/', include('find_doctor.urls')),
     path('find_hospital/', include('find_hospital.urls')),
     path('appointments/', include('appointments.urls')),
     path('doctorAdmin/', include('doctorAdmin.urls')),
     path('superAdmin/', include('superAdmin.urls')),
+    path('accounts/', include('allauth.urls')),
 ]
 
 # This allows you to view uploaded files while developing

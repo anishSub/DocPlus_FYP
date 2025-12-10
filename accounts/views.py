@@ -9,7 +9,7 @@ from .models import User, PatientProfile
 
 class RegisterView(CreateView):
     form_class = CustomUserCreationForm
-    template_name = 'accounts/register.html'
+    template_name = 'account/register.html'
     success_url = reverse_lazy('login')
     
     def form_valid(self, form):
@@ -36,7 +36,7 @@ class RegisterView(CreateView):
         return redirect(self.success_url)
 
 class CustomLoginView(LoginView):
-    template_name = 'accounts/login.html'
+    template_name = 'account/login.html'
     redirect_authenticated_user = True
     
     def form_valid(self, form):

@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings 
 from find_hospital.models import Hospital
+from django.contrib.postgres.fields import ArrayField
 
 
 def user_directory_path(instance, filename):
@@ -21,11 +22,11 @@ class DoctorProfile(models.Model):
     
     # --- NEW: Profile Photo ------------------------------------------------
     # Using ImageField is better for photos, but FileField works too if you don't have Pillow installed.
-    profile_photo = models.ImageField(upload_to=user_directory_path, blank=True, null=True)
+    profile_photo = models.ImageField(upload_to=user_directory_path)
 
     # --- Professional ------------------------------------------------------
     specialization = models.CharField(max_length=100)
-    sub_specialty = models.CharField(max_length=100, blank=True, null=True)
+    sub_specialty = models.CharField(max_length=100)
     license_number = models.CharField(max_length=50, unique=True)
     registration_number = models.CharField(max_length=50, unique=True)
     registration_council = models.CharField(max_length=100)
@@ -44,29 +45,24 @@ class DoctorProfile(models.Model):
     # 2. If not in the list, they type it manually here
     hospital_name_manual = models.CharField(
         max_length=150, 
-        blank=True, 
-        null=True,
         help_text="If your hospital is not listed above, type the name here."
     )
     
-    @property
-    def current_hospital_name(self):
-        """
-        Returns the registered hospital name if it exists, 
-        otherwise returns the manually typed name.
-        """
-        if self.hospital_affiliation:
-            return self.hospital_affiliation.name
-        return self.hospital_name_manual
     
-    current_position = models.CharField(max_length=100, blank=True, null=True)
-    languages_spoken = models.CharField(max_length=200, blank=True, null=True)
+    current_position = models.CharField(max_length=100,  null=True)
+    languages_spoken = ArrayField(models.CharField(max_length=50),  default=list)
 
     # --- Education ---------------------------------------------------------
     medical_degree = models.CharField(max_length=100)
     medical_school = models.CharField(max_length=150)
     graduation_year = models.PositiveSmallIntegerField()
     consultation_fee = models.PositiveIntegerField(help_text="In NPR")
+    
+    available_days = ArrayField(models.CharField(max_length=10), default=list,help_text="Comma-separated days, e.g., 'Mon, Wed, Fri'")
+    
+    available_time_start = models.TimeField(help_text="Start time (e.g. 09:00:00)")
+    available_time_end = models.TimeField(help_text="End time (e.g. 17:00:00)", null=True)
+    
     bio = models.TextField(blank=True, null=True)
 
     # --- Documents ---------------------------------------------------------
@@ -81,6 +77,36 @@ class DoctorProfile(models.Model):
     def __str__(self):
         return f"Dr. {self.user.first_name} {self.user.last_name}"
     
+    @property
+    def current_hospital_name(self):
+        """
+        Returns the registered hospital name if it exists, 
+        otherwise returns the manually typed name.
+        """
+        if self.hospital_affiliation:
+            return self.hospital_affiliation.name
+        return self.hospital_name_manual
+
+
+
+
+class DoctorSchedule(models.Model):
+    doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE, related_name='schedules')
+    
+    DAY_CHOICES = [
+        ('Mon', 'Monday'), ('Tue', 'Tuesday'), ('Wed', 'Wednesday'),
+        ('Thu', 'Thursday'), ('Fri', 'Friday'), ('Sat', 'Saturday'), ('Sun', 'Sunday')
+    ]
+    day = models.CharField(max_length=3, choices=DAY_CHOICES)
+    
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    class Meta:
+        ordering = ['day', 'start_time']
+
+    def __str__(self):
+        return f"{self.get_day_display()}: {self.start_time} - {self.end_time}"
 
 
 

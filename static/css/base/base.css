@@ -271,3 +271,75 @@ ul { list-style: none; }
     .footer-top { flex-direction: column; gap: 30px; }
     .footer-bottom { flex-direction: column; gap: 15px; text-align: center; align-items: center; }
 }
+
+
+
+
+
+
+/* 1. Container: Floats on top of everything */
+#message-container {
+    position: fixed;       /* This prevents pushing the page down */
+    top: 100px;            /* Distance from top */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;        /* Ensures it sits ABOVE everything */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 90%;
+    max-width: 450px;
+    pointer-events: none;  /* Click through the empty space */
+}
+
+/* 2. The Message Card (Glassmorphism) */
+.custom-toast {
+    pointer-events: auto;  /* Enable clicking the card */
+    background: rgba(251, 237, 216, 0.95); /* Dark background */
+    backdrop-filter: blur(10px);        /* Blur effect behind */
+    color: #1b1e69;
+    padding: 16px 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3); /* deep shadow */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0;
+    animation: slideDownFade 0.5s forwards;
+    border-left: 5px solid #fff; /* Default border */
+}
+
+/* 3. Color Variations */
+.custom-toast.success { border-color: #10B981; } /* Green */
+.custom-toast.error   { border-color: #EF4444; } /* Red */
+.custom-toast.info    { border-color: #3B82F6; } /* Blue */
+.custom-toast.warning { border-color: #F59E0B; } /* Yellow */
+
+/* 4. Text & Icon Alignment */
+.custom-toast span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 5. Close Button */
+.toast-close {
+    background: none;
+    border: none;
+    color: #9CA3AF;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0 0 0 15px;
+    transition: 0.2s;
+    line-height: 1;
+}
+.toast-close:hover { color: #fff; transform: scale(1.1); }
+
+/* 6. Animation */
+@keyframes slideDownFade {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
