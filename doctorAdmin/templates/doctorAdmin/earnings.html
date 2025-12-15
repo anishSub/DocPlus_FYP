@@ -1,5 +1,6 @@
 {% extends 'doctorAdmin/baseAppointment.html' %}
 {% load static %}
+{% load humanize %} 
 
 {% block title %}Earnings{% endblock %}
 
@@ -8,29 +9,24 @@
 {% endblock %}
 
 {% block content %}
-    <!-- Page Header (Optional, if you want a title above the blue card) -->
-    <!-- <div class="page-header"><h2>Earnings</h2></div> -->
-
-    <!-- Earnings Overview Card (Blue Gradient) -->
     <div class="earnings-overview-card">
         <h2>Earnings Overview</h2>
         <div class="stats-row">
             <div class="stat-item">
                 <span class="label">This Month</span>
-                <span class="value">Rs 1,45,000</span>
+                <span class="value">Rs {{ this_month_earnings|default:"0" }}</span>
             </div>
             <div class="stat-item">
                 <span class="label">Last Month</span>
-                <span class="value">Rs 1,34,000</span>
+                <span class="value">Rs {{ last_month_earnings|default:"0" }}</span>
             </div>
             <div class="stat-item">
                 <span class="label">Total Earnings</span>
-                <span class="value">Rs 12,50,000</span>
+                <span class="value">Rs {{ total_earnings|default:"0" }}</span>
             </div>
         </div>
     </div>
 
-    <!-- Recent Transactions Section -->
     <div class="transactions-section">
         <h3>Recent Transactions</h3>
         
@@ -46,33 +42,37 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for txn in transactions %}
                     <tr>
-                        <td>2024-11-24</td>
-                        <td>Rajesh Kumar</td>
-                        <td>Video Call</td>
-                        <td>Rs 1,500</td>
-                        <td><span class="status-badge completed">Completed</span></td>
+                        <td>{{ txn.date|date:"Y-m-d" }}</td>
+                        <td>{{ txn.full_name }}</td>
+                        
+                        <td>{{ txn.payment_method|title }}</td>
+                        
+                        <td>Rs {{ txn.amount }}</td>
+                        
+                        <td>
+                            {% if txn.status == 'completed' %}
+                                <span class="status-badge completed">Completed</span>
+                            {% elif txn.status == 'cancelled' %}
+                                <span class="status-badge cancelled" style="background:#fee2e2; color:#dc2626;">Cancelled</span>
+                            {% else %}
+                                <span class="status-badge pending">Pending</span>
+                            {% endif %}
+                        </td>
                     </tr>
+                    {% empty %}
                     <tr>
-                        <td>2024-11-23</td>
-                        <td>Sita Sharma</td>
-                        <td>In-Person</td>
-                        <td>Rs 2,000</td>
-                        <td><span class="status-badge completed">Completed</span></td>
+                        <td colspan="5" style="text-align:center; padding: 20px; color:#6b7280;">
+                            No transactions found.
+                        </td>
                     </tr>
-                    <tr>
-                        <td>2024-11-22</td>
-                        <td>Ram Bahadur</td>
-                        <td>Video Call</td>
-                        <td>Rs 1,500</td>
-                        <td><span class="status-badge pending">Pending</span></td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- Payment Methods Section -->
     <div class="payment-methods-section">
         <h3>Payment Methods</h3>
         

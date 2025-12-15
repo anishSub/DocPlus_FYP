@@ -125,6 +125,12 @@
                     </div>
 
                     <div class="form-group full-width">
+                        <label>Online Appointment Link (Optional)</label>
+                        <input type="url" name="appointment_link" placeholder="https://www.hospital.com/book-appointment">
+                        <small style="color: #666; font-size: 0.8rem;">Direct link where patients can book appointments on your site</small>
+                    </div>
+
+                    <div class="form-group full-width">
                         <label>Full Address *</label>
                         <textarea name="address" rows="2" placeholder="Enter complete hospital address" required></textarea>
                     </div>
@@ -146,10 +152,10 @@
                         <input type="number" name="total_beds" placeholder="e.g., 200" required>
                     </div>
 
-                    <div class="form-group">
+                    {% comment %} <div class="form-group">
                         <label>Total Doctors *</label>
                         <input type="number" name="total_doctors" placeholder="e.g., 50" required>
-                    </div>
+                    </div> {% endcomment %}
 
                     <div class="form-group full-width">
                         <label>About Hospital *</label>

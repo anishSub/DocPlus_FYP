@@ -1,0 +1,137 @@
+
+    /* Specific styles for this page */
+    .management-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .doctor-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+        gap: 1.5rem;
+    }
+
+    .doctor-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        transition: transform 0.2s;
+        position: relative;
+    }
+
+    .doctor-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .doc-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 1rem;
+        border: 3px solid #EBF5FF;
+    }
+
+    .doc-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1A1A1A;
+        margin-bottom: 0.25rem;
+    }
+
+    .doc-specialty {
+        font-size: 0.9rem;
+        color: #0E82FD; /* Primary Color */
+        background: #EBF5FF;
+        padding: 4px 12px;
+        border-radius: 20px;
+        margin-bottom: 1rem;
+        display: inline-block;
+    }
+
+    .doc-stats {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 1.5rem;
+        color: #6C757D;
+        font-size: 0.85rem;
+    }
+
+    .doc-stats span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .card-actions {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .btn-view {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #E9ECEF;
+        border-radius: 8px;
+        color: #1A1A1A;
+        font-weight: 500;
+        transition: all 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .btn-view:hover {
+        background: #F8F9FA;
+        border-color: #D1D5DB;
+    }
+
+    .btn-remove {
+        padding: 10px;
+        border: none;
+        background: #FFEBEE;
+        color: #DC3545;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .btn-remove:hover {
+        background: #FCE4E4;
+        color: #B91C1C;
+    }
+
+    /* Empty State Styling */
+    .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 4rem;
+        background: white;
+        border-radius: 12px;
+        color: #6C757D;
+    }
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #E9ECEF;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .doctor-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+        .doctor-grid { grid-template-columns: 1fr; }
+    }

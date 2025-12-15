@@ -1,11 +1,153 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <h1>Welcome to Hospital Admin Page </h1>
-</body>
-</html>
+{% extends 'base/admin_base.html' %}
+{% load static %}
+
+{% block title %}Dashboard Overview - {{ hospital.name }}{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/hospitalAdmin/overview.css' %}">
+{% endblock %}
+
+{% block admin_content %}
+<div class="overview-header">
+    <div>
+        <h2>Dashboard Overview</h2>
+        <p class="welcome-text">Track your patient engagement and referral statistics.</p>
+    </div>
+    <a href="{% url 'edit_hospital_profile' %}" class="btn-primary-action">
+        <i class="fas fa-edit"></i> Edit Profile
+    </a>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-top">
+            <div class="icon-box blue-light">
+                <i class="far fa-eye blue-text"></i>
+            </div>
+            <span class="trend positive">Traffic</span>
+        </div>
+        <div class="stat-bottom">
+            <span class="stat-label">Profile Views</span>
+            <h3 class="stat-value">{{ stats.views }}</h3>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <div class="icon-box green-light">
+                <i class="fas fa-mouse-pointer green-text"></i>
+            </div>
+            <span class="trend positive">Leads</span>
+        </div>
+        <div class="stat-bottom">
+            <span class="stat-label">Website Clicks</span>
+            <h3 class="stat-value">{{ stats.clicks }}</h3>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <div class="icon-box purple-light">
+                <i class="fas fa-percent purple-text"></i>
+            </div>
+            <span class="trend positive">Conversion</span>
+        </div>
+        <div class="stat-bottom">
+            <span class="stat-label">Click-Through Rate</span>
+            <h3 class="stat-value">{{ stats.conversion_rate }}%</h3>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <div class="icon-box orange-light">
+                <i class="fas fa-user-md orange-text"></i>
+            </div>
+            <span class="trend">Staff</span>
+        </div>
+        <div class="stat-bottom">
+            <span class="stat-label">Active Doctors</span>
+            <h3 class="stat-value">{{ stats.active_doctors }}</h3>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <div class="icon-box yellow-light">
+                <i class="far fa-star yellow-text"></i>
+            </div>
+            <span class="trend positive">Feedback</span>
+        </div>
+        <div class="stat-bottom">
+            <span class="stat-label">Total Reviews</span>
+            <h3 class="stat-value">{{ stats.total_reviews }}</h3>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <div class="icon-box red-light">
+                <i class="fas fa-star red-text"></i>
+            </div>
+            <span class="trend">Quality</span>
+        </div>
+        <div class="stat-bottom">
+            <span class="stat-label">Average Rating</span>
+            <h3 class="stat-value">{{ stats.avg_rating }}</h3>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-split-container">
+    <div class="performance-section card-container">
+        <h3>Hospital Capacity</h3>
+        
+        <div class="beds-status-grid">
+            <div class="status-card blue-bg">
+                <span class="status-count">{{ performance.total_beds }}</span>
+                <span class="status-label">Total Beds</span>
+            </div>
+            <div class="status-card green-bg">
+                <span class="status-count">{{ performance.occupied_beds }}</span>
+                <span class="status-label">Est. Occupied</span>
+            </div>
+            <div class="status-card orange-bg">
+                <span class="status-count">{{ stats.active_doctors }}</span>
+                <span class="status-label">Doctors Available</span>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h4>Why "Clicks" matter?</h4>
+            <p>
+                Since direct booking is handled on your official website, 
+                <strong>"Website Clicks"</strong> represents the number of patients 
+                we have successfully redirected to you for appointments.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="quick-actions-footer">
+    <h3>Quick Actions</h3>
+    <div class="actions-grid">
+        <a href="{% url 'edit_hospital_profile' %}" class="action-card">
+            <i class="far fa-edit"></i>
+            <span>Update Profile</span>
+        </a>
+        
+        <a href="#" class="action-card">
+            <i class="far fa-star"></i>
+            <span>Check Reviews</span>
+        </a>
+        
+        {% if hospital.website %}
+        <a href="{{ hospital.website }}" target="_blank" class="action-card">
+            <i class="fas fa-external-link-alt"></i>
+            <span>Visit My Website</span>
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

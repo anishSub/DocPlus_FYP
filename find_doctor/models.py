@@ -5,7 +5,7 @@ from django.contrib.postgres.fields import ArrayField
 
 
 def user_directory_path(instance, filename):
-    """file will be uploaded to MEDIA_ROOT/doctors/<user_id>/<filename>"""
+    """file will be uploaded to MEDIA_ROOT/doctors/<user_id>/<filename> like: /your_project/media/doctors/17/photo.png"""
     return f"doctors/{instance.user.id}/{filename}"
 
 class DoctorProfile(models.Model):
@@ -20,13 +20,12 @@ class DoctorProfile(models.Model):
     city = models.CharField(max_length=50)
     address = models.TextField()
     
-    # --- NEW: Profile Photo ------------------------------------------------
-    # Using ImageField is better for photos, but FileField works too if you don't have Pillow installed.
-    profile_photo = models.ImageField(upload_to=user_directory_path)
+    #Database stores only the file path relative to MEDIA_ROOT
+    profile_photo = models.ImageField(upload_to=user_directory_path) 
 
     # --- Professional ------------------------------------------------------
     specialization = models.CharField(max_length=100)
-    sub_specialty = models.CharField(max_length=100)
+    sub_specialty = models.CharField(max_length=100,null=True, blank=True)
     license_number = models.CharField(max_length=50, unique=True)
     registration_number = models.CharField(max_length=50, unique=True)
     registration_council = models.CharField(max_length=100)

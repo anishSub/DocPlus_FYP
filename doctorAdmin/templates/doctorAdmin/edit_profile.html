@@ -4,45 +4,47 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/doctorAdmin/edit_profile.css' %}">
 
+
 <div class="dashboard-container">
 
     <div class="profile-edit-card">
         
-        <!-- Header moved inside card as requested -->
         <div class="header-box">
             <h2>Edit Profile</h2>
-            <p>Update your professional details, qualifications, and contact information</p>
+            <p>Update your professional details, qualifications, and schedule</p>
         </div>
         
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             
-            <!-- 1. Profile Photo Section -->
             <div class="photo-upload-section">
-                <div class="current-photo">
-                    {% if doctor.profile_photo %}
-                        <img src="{{ doctor.profile_photo.url }}" alt="Profile">
-                    {% else %}
-                        <div class="photo-placeholder">
-                            {{ doctor.user.first_name|first }}
-                        </div>
-                    {% endif %}
-                </div>
-                
-                <div class="upload-controls">
-                    <label class="section-label">Profile Photo</label>
-                    
-                    <!-- Restored the nice button styling for file upload -->
-                    <div class="file-input-wrapper">
-                        {{ form.profile_photo }}
-                        <span class="file-custom-label"><i class="fas fa-camera"></i> Change Photo</span>
+                <div class="image-wrapper">
+                    <div class="current-photo">
+                        {% if doctor.profile_photo %}
+                            <img src="{{ doctor.profile_photo.url }}" alt="Profile" id="img-preview">
+                        {% else %}
+                            <div class="photo-placeholder" id="placeholder-preview">
+                                {{ doctor.user.first_name|first|upper }}
+                            </div>
+                            <img src="" alt="Profile" id="img-preview" style="display: none;">
+                        {% endif %}
                     </div>
+
+                    <label for="id_profile_photo" class="camera-badge" title="Change Photo">
+                        <i class="fas fa-camera"></i>
+                    </label>
+                </div>
+
+                <div class="photo-text">
+                    <h3>Profile Photo</h3>
+                    <p class="upload-hint">Square JPG or PNG, Max 5MB</p>
                     
-                    <p class="upload-hint">Recommended: Square JPG or PNG, at least 400x400px</p>
+                    <div class="hidden-input-container">
+                        {{ form.profile_photo }} 
+                    </div>
                 </div>
             </div>
 
-            <!-- 2. Professional Information -->
             <h3 class="section-title">Professional Information</h3>
             <div class="form-grid">
                 <div class="form-group">
@@ -57,21 +59,65 @@
 
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Current Hospital</label>
-                    {{ form.current_hospital }}
+                    <label>Registered Hospital</label>
+                    {{ form.hospital_affiliation }}
                 </div>
+                <div class="form-group">
+                    <label>Manual Hospital Name</label>
+                    {{ form.hospital_name_manual }}
+                </div>
+            </div>
+
+            <div class="form-grid">
                 <div class="form-group">
                     <label>Current Position</label>
                     {{ form.current_position }}
                 </div>
+                <div class="form-group">
+                    <label>Years of Experience</label>
+                    {{ form.years_of_experience }}
+                </div>
             </div>
 
-            <div class="form-group">
-                <label>Years of Experience</label>
-                {{ form.years_of_experience }}
+            <h3 class="section-title">Manage Weekly Schedule</h3>
+            <div class="schedule-manager-card">
+                
+                <div class="day-tabs">
+                    <button type="button" class="day-tab active" onclick="loadDay('Sun')">Sun</button>
+                    <button type="button" class="day-tab" onclick="loadDay('Mon')">Mon</button>
+                    <button type="button" class="day-tab" onclick="loadDay('Tue')">Tue</button>
+                    <button type="button" class="day-tab" onclick="loadDay('Wed')">Wed</button>
+                    <button type="button" class="day-tab" onclick="loadDay('Thu')">Thu</button>
+                    <button type="button" class="day-tab" onclick="loadDay('Fri')">Fri</button>
+                    <button type="button" class="day-tab" onclick="loadDay('Sat')">Sat</button>
+                </div>
+
+                <div class="time-editor-area">
+                    <h4 id="active-day-label">Sunday Schedule</h4>
+                    
+                    <div id="slots-container" class="slots-list">
+                        <p class="no-slots-msg">Loading...</p>
+                    </div>
+
+                    <div class="add-slot-box">
+                        <div class="time-inputs">
+                            <div class="time-group">
+                                <label>Start Time</label>
+                                <input type="time" id="new-start" class="time-input">
+                            </div>
+                            <span style="align-self: center; padding-bottom: 5px;">to</span>
+                            <div class="time-group">
+                                <label>End Time</label>
+                                <input type="time" id="new-end" class="time-input">
+                            </div>
+                        </div>
+                        <button type="button" class="btn-add-slot" onclick="addSlot()">
+                            <i class="fas fa-plus"></i> Add Slot
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <!-- 3. Education -->
             <h3 class="section-title">Education</h3>
             <div class="form-grid">
                 <div class="form-group">
@@ -89,7 +135,6 @@
                 {{ form.graduation_year }}
             </div>
 
-            <!-- 4. Contact & Details -->
             <h3 class="section-title">Contact & Details</h3>
             <div class="form-grid">
                 <div class="form-group">
@@ -115,10 +160,10 @@
                 <div class="form-group">
                     <label>Languages Spoken</label>
                     {{ form.languages_spoken }}
+                    <small style="color:#888">Enter comma separated (e.g. English, Nepali)</small>
                 </div>
             </div>
 
-            <!-- 5. Bio -->
             <h3 class="section-title">About Me</h3>
             <div class="form-group">
                 <label>Professional Bio</label>
@@ -133,4 +178,22 @@
         </form>
     </div>
 </div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // 1. Pass Django URLs to a global JavaScript variable
+    const SCHEDULE_CONFIG = {
+        urls: {
+            get: "{% url 'get_schedule' %}",
+            add: "{% url 'add_schedule' %}",
+            delete: "{% url 'delete_schedule' %}"
+        },
+        csrfToken: "{{ csrf_token }}" // Pass the token here too!
+    };
+</script>
+
+<script src="{% static 'js/doctorAdmin/edit_profile.js' %}"></script>
 {% endblock %}

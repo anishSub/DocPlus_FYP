@@ -11,15 +11,15 @@
         <h1>Find Doctors</h1>
         <p>Connect with qualified and experienced doctors across Nepal</p>
         
-        <div class="search-wrapper">
+        <form method="GET" action="{% url 'find_doctor' %}" class="search-wrapper">
             <div class="search-bar">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" placeholder="Search doctors by name or specialty...">
+                <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Search doctors by name or specialty...">
             </div>
-            <button class="btn-filter">
-                <i class="fas fa-sliders-h"></i> Filters
+            <button type="submit" class="btn-filter">
+                Search
             </button>
-        </div>
+        </form>
     </div>
 </section>
 
@@ -27,262 +27,126 @@
     <div class="container">
         
         <div class="results-header">
-            <p>Found <span class="text-dark fw-bold">8</span> doctors</p>
+            <p>Found <span class="text-dark fw-bold">{{ total_count }}</span> doctors</p>
         </div>
 
         <div class="doctors-grid">
-        <a href="{% url 'doctor_detail' %}" class="doctor-card-link">
-            <div class="doctor-card">
-                <div class="doc-header-image">
-                    <img src="{% static 'images/photos/doctor_photo.jpeg' %}" alt="Dr. Rajesh Kumar Sharma">
-                    <div class="rating-badge">
-                        <i class="fas fa-star text-yellow"></i> 4.8
-                    </div>
-                </div>
-
             
-                <div class="card-body">
-                    <div class="doc-identity">
-                        <h3>Dr. Rajesh Kumar Sharma</h3>
-                        <span class="specialty">Cardiologist</span>
-                        <p class="degree">MD, DM (Cardiology)</p>
-                    </div>
-
-                    <div class="doc-meta-row">
-                        <div class="meta-item">
-                            <i class="fas fa-briefcase icon-teal"></i> 15 years
-                        </div>
-                        <div class="meta-item">
-                            <i class="fas fa-map-marker-alt icon-teal"></i> Kathmandu
-                        </div>
-                    </div>
-
-                    <div class="divider"></div>
-
-                    <div class="doc-details">
-                        <div class="detail-block">
-                            <label>Hospital</label>
-                            <p>Tribhuvan University Teaching Hospital</p>
-                        </div>
-                        <div class="detail-block">
-                            <label>Available</label>
-                            <p>Mon, Wed, Fri</p>
+            {% for doctor in page_obj %}
+            <a href="{% url 'doctor_detail' doctor.pk %}" class="doctor-card-link">
+                <div class="doctor-card">
+                    <div class="doc-header-image">
+                        {% if doctor.profile_photo %}
+                            <img src="{{ doctor.profile_photo.url }}" alt="Dr. {{ doctor.user.first_name }}">
+                        {% else %}
+                            <img src="{% static 'images/defaults/doctor_default.jpg' %}" alt="Default Doctor">
+                        {% endif %}
+                        
+                        <div class="rating-badge">
+                            <i class="fas fa-star text-yellow"></i> {{ doctor.avg_rating|default:"0.0"|floatformat:1 }}
                         </div>
                     </div>
+                
+                    <div class="card-body">
+                        <div class="doc-identity">
+                            <h3>Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h3>
+                            <span class="specialty">{{ doctor.specialization }}</span>
+                            <p class="degree">{{ doctor.medical_degree }}</p>
+                        </div>
 
-                    <div class="divider"></div>
+                        <div class="doc-meta-row">
+                            <div class="meta-item">
+                                <i class="fas fa-briefcase icon-teal"></i> {{ doctor.years_of_experience }} years
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-map-marker-alt icon-teal"></i> {{ doctor.city }}
+                            </div>
+                        </div>
 
-                    <div class="doc-footer">
+                        <div class="divider"></div>
+
+                        <div class="doc-details">
+                            <div class="detail-block">
+                                <label>Hospital</label>
+                                <p>
+                                    {% if doctor.hospital_affiliation %}
+                                        {{ doctor.hospital_affiliation.name }}
+                                    {% else %}
+                                        {{ doctor.hospital_name_manual|default:"Private Clinic" }}
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="detail-block">
+                                <label>Available</label>
+                                <p>
+                                    {% if doctor.available_days %}
+                                        {{ doctor.available_days|join:", " }}
+                                    {% else %}
+                                        Contact for Schedule
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="doc-footer">
                         <div class="fee-review-row">
                             <div class="fee-box">
                                 <label>Consultation Fee</label>
-                                <div class="price">NPR 1500</div>
+                                <div class="price">NPR {{ doctor.consultation_fee }}</div>
                             </div>
                             <div class="review-box">
-                                <span class="review-count">324 <br> reviews</span>
+                                <span class="review-count">{{ doctor.review_count|default:"0" }} <br> reviews</span>
                             </div>
                         </div>
 
                         <div class="action-buttons">
+                            <button class="btn-view-profile">
+                                <i class="far fa-eye"></i> View Profile
+                            </button>
+                            
                             <button class="btn-book-now">
                                 <i class="far fa-calendar-check"></i> Book Now
                             </button>
-                            {% comment %} <button class="btn-chat">
-                                <i class="far fa-comment-alt"></i>
-                            </button> {% endcomment %}
                         </div>
                     </div>
+                    </div>
                 </div>
+            </a>
+            {% empty %}
+            <div class="col-12 text-center py-5" style="grid-column: 1/-1;">
+                <h3>No doctors found matching your criteria.</h3>
             </div>
-        </a>
-
-            <div class="doctor-card">
-                <div class="doc-header-image">
-                    <img src="{% static 'images/photos/doctor_photo.jpeg' %}" alt="Dr. Sita Devi Thapa">
-                    <div class="rating-badge">
-                        <i class="fas fa-star text-yellow"></i> 4.9
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    <div class="doc-identity">
-                        <h3>Dr. Sita Devi Thapa</h3>
-                        <span class="specialty">Pediatrician</span>
-                        <p class="degree">MBBS, MD (Pediatrics)</p>
-                    </div>
-
-                    <div class="doc-meta-row">
-                        <div class="meta-item">
-                            <i class="fas fa-briefcase icon-teal"></i> 12 years
-                        </div>
-                        <div class="meta-item">
-                            <i class="fas fa-map-marker-alt icon-teal"></i> Kathmandu
-                        </div>
-                    </div>
-
-                    <div class="divider"></div>
-
-                    <div class="doc-details">
-                        <div class="detail-block">
-                            <label>Hospital</label>
-                            <p>Grande International Hospital</p>
-                        </div>
-                        <div class="detail-block">
-                            <label>Available</label>
-                            <p>Tue, Thu, Sat</p>
-                        </div>
-                    </div>
-
-                    <div class="divider"></div>
-
-                    <div class="doc-footer">
-                        <div class="fee-review-row">
-                            <div class="fee-box">
-                                <label>Consultation Fee</label>
-                                <div class="price">NPR 1200</div>
-                            </div>
-                            <div class="review-box">
-                                <span class="review-count">456 <br> reviews</span>
-                            </div>
-                        </div>
-
-                        <div class="action-buttons">
-                            <button class="btn-book-now">
-                                <i class="far fa-calendar-check"></i> Book Now
-                            </button>
-                            {% comment %} <button class="btn-chat">
-                                <i class="far fa-comment-alt"></i>
-                            </button> {% endcomment %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="doctor-card">
-                <div class="doc-header-image">
-                    <img src="{% static 'images/photos/doctor_photo.jpeg' %}" alt="Dr. Ramesh Gurung">
-                    <div class="rating-badge">
-                        <i class="fas fa-star text-yellow"></i> 4.7
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    <div class="doc-identity">
-                        <h3>Dr. Ramesh Gurung</h3>
-                        <span class="specialty">Orthopedic Surgeon</span>
-                        <p class="degree">MS (Orthopedics)</p>
-                    </div>
-
-                    <div class="doc-meta-row">
-                        <div class="meta-item">
-                            <i class="fas fa-briefcase icon-teal"></i> 18 years
-                        </div>
-                        <div class="meta-item">
-                            <i class="fas fa-map-marker-alt icon-teal"></i> Kathmandu
-                        </div>
-                    </div>
-
-                    <div class="divider"></div>
-
-                    <div class="doc-details">
-                        <div class="detail-block">
-                            <label>Hospital</label>
-                            <p>Norvic International Hospital</p>
-                        </div>
-                        <div class="detail-block">
-                            <label>Available</label>
-                            <p>Mon, Tue, Thu</p>
-                        </div>
-                    </div>
-
-                    <div class="divider"></div>
-
-                    <div class="doc-footer">
-                        <div class="fee-review-row">
-                            <div class="fee-box">
-                                <label>Consultation Fee</label>
-                                <div class="price">NPR 1800</div>
-                            </div>
-                            <div class="review-box">
-                                <span class="review-count">289 <br> reviews</span>
-                            </div>
-                        </div>
-
-                        <div class="action-buttons">
-                            <button class="btn-book-now">
-                                <i class="far fa-calendar-check"></i> Book Now
-                            </button>
-                            {% comment %} <button class="btn-chat">
-                                <i class="far fa-comment-alt"></i>
-                            </button> {% endcomment %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="doctor-card">
-                <div class="doc-header-image">
-                    <img src="{% static 'images/photos/doctor_photo.jpeg' %}" alt="Dr. Anita Shrestha">
-                    <div class="rating-badge">
-                        <i class="fas fa-star text-yellow"></i> 4.5
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    <div class="doc-identity">
-                        <h3>Dr. Anita Shrestha</h3>
-                        <span class="specialty">Dermatologist</span>
-                        <p class="degree">MD (Dermatology)</p>
-                    </div>
-
-                    <div class="doc-meta-row">
-                        <div class="meta-item">
-                            <i class="fas fa-briefcase icon-teal"></i> 10 years
-                        </div>
-                        <div class="meta-item">
-                            <i class="fas fa-map-marker-alt icon-teal"></i> Lalitpur
-                        </div>
-                    </div>
-
-                    <div class="divider"></div>
-
-                    <div class="doc-details">
-                        <div class="detail-block">
-                            <label>Hospital</label>
-                            <p>Patan Hospital</p>
-                        </div>
-                        <div class="detail-block">
-                            <label>Available</label>
-                            <p>Wed, Fri, Sat</p>
-                        </div>
-                    </div>
-
-                    <div class="divider"></div>
-
-                    <div class="doc-footer">
-                        <div class="fee-review-row">
-                            <div class="fee-box">
-                                <label>Consultation Fee</label>
-                                <div class="price">NPR 1000</div>
-                            </div>
-                            <div class="review-box">
-                                <span class="review-count">198 <br> reviews</span>
-                            </div>
-                        </div>
-
-                        <div class="action-buttons">
-                            <button class="btn-book-now">
-                                <i class="far fa-calendar-check"></i> Book Now
-                            </button>
-                            {% comment %} <button class="btn-chat">
-                                <i class="far fa-comment-alt"></i>
-                            </button> {% endcomment %}
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
 
         </div>
+
+        {% if page_obj.has_other_pages %}
+        <div class="pagination-wrapper" style="margin-top: 40px; display: flex; justify-content: center; gap: 10px;">
+            
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}" class="btn-page">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <span class="btn-page active">{{ num }}</span>
+                {% else %}
+                    <a href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}" class="btn-page">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}" class="btn-page">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+
     </div>
 </section>
 {% endblock %}

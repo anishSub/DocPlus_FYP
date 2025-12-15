@@ -30,26 +30,24 @@ class Hospital(models.Model):
     district = models.CharField(max_length=100)
     website = models.URLField(blank=True, null=True)
     address = models.TextField()
-
+    
+    appointment_link = models.URLField(
+        blank=True, 
+        null=True, 
+        help_text="Direct link to the hospital's booking page"
+    )
     # --- Step 2: Capacity & Details ---
     total_beds = models.PositiveIntegerField()
-    total_doctors = models.PositiveIntegerField()
+    # total_doctors = models.PositiveIntegerField()
+    # In your HTML template (hospital_detail.html)
+    # <p>Total Doctors: {{ hospital.affiliated_doctors.count }}</p>
     description = models.TextField()
     
     # List of services offered
-    services = ArrayField(
-        models.CharField(max_length=100),
-        blank=True,
-        default=list,
-        help_text="Enter services separated by commas in admin"
-    )
+    services = models.ManyToManyField("Service", blank=True, related_name='hospitals')
     
     # List of departments/specialties offered
-    departments = ArrayField(
-        models.CharField(max_length=100),
-        blank=True,
-        default=list
-    )
+    departments = models.ManyToManyField("Department", blank=True, related_name='hospitals')
 
     # --- Step 3: Media & Hours ---
     image = models.ImageField(upload_to='hospital_images/')
@@ -62,10 +60,30 @@ class Hospital(models.Model):
     # --- System Fields ---
     is_verified = models.BooleanField(default=False) # Admin approves later
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    # --- NEW: Analytics Fields ---
+    total_views = models.PositiveIntegerField(default=0)
+    total_website_clicks = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name
 
+
+'''One Hospital offers Many Services (e.g., ICU, MRI, X-Ray).
+One Service (like "MRI") is offered by Many Hospitals.'''
+class Service(models.Model):
+    name = models.CharField(max_length=100, unique=True) # e.g., "MRI", "ICU"
+    
+    def __str__(self):
+        return self.name
+
+'''One Hospital has Many Departments (e.g., they have a Heart Wing, a Brain Wing, and a Kids' Wing).
+One Department (like "Cardiology") exists in Many Hospitals (almost every big hospital has a Cardiology department).'''
+class Department(models.Model):
+    name = models.CharField(max_length=100, unique=True) # e.g., "Cardiology"
+    
+    def __str__(self):
+        return self.name
 
 
 class HospitalReview(models.Model):

@@ -153,6 +153,15 @@ class DoctorRegistrationForm(forms.Form):
             user.role = User.Role.DOCTOR
             user.save()
 
+        # Convert "English, Nepali" string into a List 
+        raw_languages = data.get('languages', '')
+        if raw_languages:
+            # Splits text by comma and removes extra spaces
+            languages_list = [lang.strip() for lang in raw_languages.split(',') if lang.strip()]
+        else:
+            languages_list = []
+            
+            
         # 3. Create Doctor Profile
         doctor = DoctorProfile.objects.create(
             user=user,
@@ -175,7 +184,7 @@ class DoctorRegistrationForm(forms.Form):
             hospital_name_manual=data.get('hospital_name_manual'),
             
             current_position=data['position'],
-            languages_spoken=data['languages'],
+            languages_spoken=languages_list,
             
             available_days=data['available_days'], # Saves as list ['Mon', 'Wed']
             available_time_start=data['available_time_start'],

@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hospital Admin Panel{% endblock %}</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{% static 'css/hospitalAdmin/admin_base.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <div class="admin-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-clinic-medical"></i> DocPlus Admin
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="{% url 'hospital_admin_overview' %}" 
+                   class="nav-link {% if request.resolver_match.url_name == 'hospital_admin_overview' %}active{% endif %}">
+                    <i class="fas fa-th-large"></i> Dashboard
+                </a>
+
+                <a href="{% url 'edit_hospital_profile' %}" 
+                   class="nav-link {% if request.resolver_match.url_name == 'edit_hospital_profile' %}active{% endif %}">
+                    <i class="fas fa-hospital-user"></i> Hospital Profile
+                </a>
+
+                <a href="{% url 'hospital_doctor_management' %}" 
+                  class="nav-link {% if request.resolver_match.url_name == 'hospital_doctor_management' %}active{% endif %}">
+                    <i class="fas fa-user-md"></i> Active Doctors
+                </a>
+
+                <a href="#" class="nav-link">
+                    <i class="far fa-star"></i> Reviews
+                </a>
+                
+                <a href="/" class="nav-link bottom-link">
+                     <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            
+            <header class="top-navbar">
+                <div class="nav-left">
+                    <h1>{% block page_title %}Admin Dashboard{% endblock %}</h1>
+                </div>
+                
+                <div class="nav-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search data...">
+                    </div>
+
+                    <div class="notification-icon">
+                        <i class="far fa-bell"></i>
+                        <span class="badge"></span>
+                    </div>
+
+                    <div class="user-profile-dropdown">
+                        <div class="user-avatar">
+                            {% if request.user.hospital_profile.image %}
+                                <img src="{{ request.user.hospital_profile.image.url }}" alt="Hospital Logo">
+                            {% else %}
+                                <i class="fas fa-hospital"></i>
+                            {% endif %}
+                        </div>
+                        <div class="user-info">
+                            <span class="user-name">{{ request.user.hospital_profile.name|default:"Hospital Admin" }}</span>
+                            <span class="user-role">Administrator</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                {% if messages %}
+                    <div class="messages-container">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% block admin_content %}
+                {% endblock %}
+            </div>
+
+        </main>
+    </div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

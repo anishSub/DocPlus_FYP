@@ -1,29 +1,39 @@
-from django.shortcuts import render
-from django.views import View
-from django.shortcuts import redirect
-from django.views.decorators.http import require_POST
-from .models import Appointment
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.decorators.http import require_POST
+from django.utils.decorators import method_decorator
 from .models import Appointment
 from find_doctor.models import DoctorProfile
-
+from datetime import datetime, timedelta 
 
 class AppointmentView(View):
-    # Handle viewing the page (GET request)
     def get(self, request):
-        # Fetch approved doctors to populate the select dropdown
+        # 1. Fetch approved doctors for dropdown
         doctors = DoctorProfile.objects.filter(is_approved=True).select_related('user')
         
+        # 2. CAPTURE PRE-FILLED DATA (From URL Parameters)
+        pre_doctor_id = request.GET.get('doctor')
+        pre_date = request.GET.get('appointment_date')
+        pre_time = request.GET.get('time_slot')
+        
+        # Safe conversion of ID to integer for template comparison
+        try:
+            pre_doctor_id = int(pre_doctor_id) if pre_doctor_id else None
+        except ValueError:
+            pre_doctor_id = None
+
         context = {
-            'doctors': doctors
+            'doctors': doctors,
+            'pre_doctor_id': pre_doctor_id,
+            'pre_date': pre_date,
+            'pre_time': pre_time,
         }
         return render(request, 'appointment/appointment.html', context)
 
+
 @require_POST
 def save_appointment(request):
-    # --- 1. Extract Data from Step 1 (Personal) ---
+    # --- 1. Extract Data ---
     full_name = request.POST.get('full_name')
     email = request.POST.get('email')
     phone = request.POST.get('phone')
@@ -32,31 +42,38 @@ def save_appointment(request):
     city = request.POST.get('city')
     address = request.POST.get('address')
 
-    # --- 2. Extract Data from Step 2 (Appointment) ---
-    # The HTML select returns the Doctor's ID (value="{{ doctor.id }}")
     doctor_id = request.POST.get('doctor') 
-    
-    # We fetch the actual object to get the Name and Fee
     doctor_obj = get_object_or_404(DoctorProfile, id=doctor_id)
     doctor_name_str = f"Dr. {doctor_obj.user.first_name} {doctor_obj.user.last_name}"
-    doctor_fee = doctor_obj.consultation_fee
-
+    
     appointment_date = request.POST.get('appointment_date')
-    time_slot = request.POST.get('time_slot')
+    
+    # --- 2. TIME CONVERSION LOGIC ---
+    time_str = request.POST.get('time_slot') # Gets "09:00 AM" string
+    
+    start_time_obj = None
+    end_time_obj = None
 
-    # --- 3. Extract Data from Step 3 (Medical) ---
+    try:
+        # Parse the string "09:00 AM" -> Python Time Object
+        start_datetime = datetime.strptime(time_str, "%I:%M %p") 
+        start_time_obj = start_datetime.time()
+        
+        # Calculate End Time (Adding 30 minutes duration)
+        end_datetime = start_datetime + timedelta(minutes=30)
+        end_time_obj = end_datetime.time()
+    except (ValueError, TypeError):
+        # Redirect back if time is missing/invalid
+        return redirect('appointment_page') 
+
     reason = request.POST.get('reason')
     symptoms = request.POST.get('symptoms')
-    
-    # Handle File Upload (Medical Reports)
     medical_reports = request.FILES.get('medical_reports')
-
-    # --- 4. Extract Data from Step 4 (Payment) ---
     payment_method = request.POST.get('payment_method')
 
-    # --- 5. SAVE TO DATABASE ---
+    # --- 3. SAVE TO DATABASE ---
     appointment = Appointment.objects.create(
-        user=request.user if request.user.is_authenticated else None, # Handle guest users if needed
+        user=request.user if request.user.is_authenticated else None,
         full_name=full_name,
         email=email,
         phone=phone,
@@ -64,26 +81,28 @@ def save_appointment(request):
         gender=gender,
         city=city,
         address=address,
-        doctor_name=doctor_name_str, # Save the readable name, not the ID
+        doctor=doctor_obj, 
         date=appointment_date,
-        time_slot=time_slot,
+        
+        start_time=start_time_obj, 
+        end_time=end_time_obj,
+        
         reason=reason,
         symptoms=symptoms,
         medical_reports=medical_reports,
         payment_method=payment_method,
-        status='scheduled' 
+        status='scheduled',
+        amount=doctor_obj.consultation_fee 
     )
     
-    # --- 6. Prepare Success Page Data ---
     context = {
         'patient_name': full_name,
         'doctor_name': doctor_name_str,
         'date': appointment_date,
-        'time': time_slot,
-        'fee': f"NPR {doctor_fee}", # Use the real fee from database
+        'time': time_str, 
+        'fee': f"NPR {doctor_obj.consultation_fee}",
         'email': email,
         'payment_method': payment_method
     }
     
-    # Render the success page directly
     return render(request, 'appointment/appointment_success.html', context)

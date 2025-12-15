@@ -306,6 +306,69 @@
     background: #F0F9FF;
 }
 
+.btn-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid #ddd;
+    color: #555;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.2s;
+}
+.btn-page:hover { background: #f3f4f6; color: #0C4D98; }
+.btn-page.active { background: #0C4D98; color: white; border-color: #0C4D98; }
+
+/* --- Action Buttons Layout --- */
+.action-buttons {
+    display: flex;
+    gap: 12px; /* Space between buttons */
+    margin-top: 15px;
+    width: 100%;
+}
+
+/* Common Button Styles */
+.btn-view-profile, 
+.btn-book-now {
+    flex: 1; /* Makes them equal width */
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+/* Specific Colors */
+.btn-view-profile {
+    background-color: #e0f2fe; /* Light Blue background */
+    color: #0284c7;            /* Darker Blue text */
+    border: 1px solid #bae6fd;
+}
+
+.btn-view-profile:hover {
+    background-color: #bae6fd;
+}
+
+.btn-book-now {
+    background-color: #0C4D98; /* Your Brand Blue */
+    color: white;
+}
+
+.btn-book-now:hover {
+    background-color: #0a3d7a;
+    box-shadow: 0 4px 12px rgba(12, 77, 152, 0.2);
+}
+
 /* --- Responsive --- */
 @media (max-width: 768px) {
     .search-wrapper { flex-direction: column; padding: 12px; gap: 12px; }

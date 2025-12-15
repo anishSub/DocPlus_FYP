@@ -9,17 +9,15 @@
 <div class="appointment-container">
     <div class="main-wrapper">
         
-        <!-- Header Content -->
         <div class="header-content">
             <a href="javascript:void(0)" class="back-btn" onclick="handleHeaderBack()">
                 <i class="fas fa-arrow-left"></i>
                 Back
             </a>
             <h1>Book Online Video Consultation</h1>
-            <p>Complete the form to schedule your 5-minute video appointment</p>
+            <p>Complete the form to schedule your appointment</p>
         </div>
 
-        <!-- Stepper -->
         <div class="stepper-card">
             <div class="stepper-container">
                 <div class="step active" id="step-indicator-1">
@@ -47,12 +45,20 @@
             </div>
         </div>
 
-        <!-- Main Form Card -->
         <div class="form-card">
+            
+            <div id="prefill-banner" class="booking-info-banner">
+                <i class="fas fa-check-circle"></i>
+                <p>
+                    You have selected <strong id="banner-doc">--</strong> for 
+                    <strong id="banner-date">--</strong> at <strong id="banner-time">--</strong>. 
+                    <br>Please confirm your personal  and other details below to confirm your appointment.
+                </p>
+            </div>
+
             <form id="bookingForm" method="POST" action="{% url 'save_appointment' %}" enctype="multipart/form-data">
                 {% csrf_token %}
 
-                <!-- STEP 1: PERSONAL INFORMATION (PRE-FILLED) -->
                 <div class="form-section" id="step-content-1">
                     <div class="form-header">
                         <h2>Personal Information</h2>
@@ -63,7 +69,6 @@
                         <div class="form-group">
                             <label class="label">Full Name <span class="required">*</span></label>
                             <div class="input-wrapper">
-                                <!-- Pre-filled from User Model -->
                                 <input type="text" name="full_name" value="{{ user.get_full_name }}" placeholder="Enter your full name" required>
                                 <i class="fas fa-user field-icon"></i>
                             </div>
@@ -72,7 +77,6 @@
                         <div class="form-group">
                             <label class="label">Email Address <span class="required">*</span></label>
                             <div class="input-wrapper">
-                                <!-- Pre-filled from User Model -->
                                 <input type="email" name="email" value="{{ user.email }}" placeholder="your.email@example.com" required>
                                 <i class="fas fa-envelope field-icon"></i>
                             </div>
@@ -81,7 +85,6 @@
                         <div class="form-group">
                             <label class="label">Phone Number <span class="required">*</span></label>
                             <div class="input-wrapper">
-                                <!-- Pre-filled from PatientProfile -->
                                 <input type="tel" name="phone" value="{{ user.patient_profile.mobile_number|default:'' }}" placeholder="+977 98XXXXXXXX" required>
                                 <i class="fas fa-phone field-icon"></i>
                             </div>
@@ -90,7 +93,6 @@
                         <div class="form-group">
                             <label class="label">Date of Birth <span class="required">*</span></label>
                             <div class="input-wrapper">
-                                <!-- Pre-filled from PatientProfile (formatted as YYYY-MM-DD for date inputs) -->
                                 <input type="text" name="dob" value="{{ user.patient_profile.date_of_birth|date:'Y-m-d'|default:'' }}" placeholder="Select date" onfocus="(this.type='date')" onblur="(this.type='text')" required>
                                 <i class="far fa-calendar field-icon"></i>
                             </div>
@@ -120,7 +122,6 @@
                         <div class="form-group full-width">
                             <label class="label">Address <span class="required">*</span></label>
                             <div class="input-wrapper">
-                                <!-- Pre-filled from PatientProfile inside textarea -->
                                 <textarea name="address" placeholder="Enter your complete address" required>{{ user.patient_profile.address|default:'' }}</textarea>
                                 <i class="fas fa-map-marker-alt field-icon"></i>
                             </div>
@@ -137,7 +138,6 @@
                     </div>
                 </div>
 
-                <!-- STEP 2: APPOINTMENT DETAILS -->
                 <div class="form-section hidden" id="step-content-2">
                     <div class="form-header">
                         <h2>Appointment Details</h2>
@@ -147,27 +147,22 @@
                     <div class="form-grid">
                         <div class="form-group full-width">
                             <label class="label">Select Doctor <span class="required">*</span></label>
-
                             <div class="input-wrapper">
-                        <!-- CRITICAL FIX IS HERE -->
-                        <!-- We loop through the 'doctors' passed from the view -->
                                 <select name="doctor" id="doctorSelect" required onchange="updateSummary()">
-                                    <option value="" disabled selected>Choose a doctor</option>
+                                    <option value="" disabled {% if not pre_doctor_id %}selected{% endif %}>Choose a doctor</option>
                                     
                                     {% for doctor in doctors %}
-                                        <!-- value is the ID (Number) -->
-                                        <!-- data-fee is used by JS to update price -->
                                         <option 
                                             value="{{ doctor.id }}" 
                                             data-fee="{{ doctor.consultation_fee }}"
                                             data-specialty="{{ doctor.specialization }}"
+                                            {% if doctor.id == pre_doctor_id %}selected{% endif %}
                                         >
                                             Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }} - {{ doctor.specialization }} (NPR {{ doctor.consultation_fee }})
                                         </option>
                                     {% empty %}
                                         <option value="" disabled>No doctors available</option>
                                     {% endfor %}
-                                    
                                 </select>
                                 <i class="fas fa-chevron-down select-arrow"></i>
                             </div>
@@ -176,7 +171,9 @@
                         <div class="form-group">
                             <label class="label">Appointment Date <span class="required">*</span></label>
                             <div class="input-wrapper">
-                                <input type="date" name="appointment_date" id="dateInput" required onchange="updateSummary()">
+                                <input type="date" name="appointment_date" id="dateInput" 
+                                       value="{{ pre_date|default:'' }}" 
+                                       required onchange="updateSummary()">
                                 <i class="far fa-calendar field-icon"></i>
                             </div>
                         </div>
@@ -184,14 +181,14 @@
                         <div class="form-group">
                             <label class="label">Consultation Type</label>
                             <div class="input-wrapper">
-                                <input type="text" value="Online Video Consultation (5 minutes)" readonly style="background-color: #f9fafb;">
+                                <input type="text" value="Online Video Consultation (30 minutes)" readonly style="background-color: #f9fafb;">
                                 <i class="fas fa-video field-icon"></i>
                             </div>
                         </div>
 
                         <div class="form-group full-width">
                             <label class="label">Select Time Slot <span class="required">*</span></label>
-                            <input type="hidden" name="time_slot" id="selectedTimeSlot">
+                            <input type="hidden" name="time_slot" id="selectedTimeSlot" required>
                             
                             <div class="time-slot-grid">
                                 <div class="time-slot" onclick="selectTime(this, '09:00 AM')">09:00 AM</div>
@@ -214,7 +211,6 @@
                     </div>
                 </div>
 
-                <!-- STEP 3: MEDICAL INFO -->
                 <div class="form-section hidden" id="step-content-3">
                     <div class="form-header">
                         <h2>Medical Information</h2>
@@ -261,14 +257,12 @@
                     </div>
                 </div>
 
-                <!-- STEP 4: PAYMENT -->
                 <div class="form-section hidden" id="step-content-4">
                     <div class="form-header">
                         <h2>Payment & Confirmation</h2>
                         <p>Review your appointment and complete payment</p>
                     </div>
 
-                    <!-- Summary Card -->
                     <div class="summary-card">
                         <h3>Appointment Summary</h3>
                         <div class="summary-row">
@@ -286,7 +280,7 @@
                         <div class="summary-divider"></div>
                         <div class="summary-row total-row">
                             <span class="label">Total Fee:</span>
-                            <span class="value">NPR 900</span>
+                            <span class="value" id="summaryFee">NPR 0</span>
                         </div>
                     </div>
 
@@ -335,6 +329,8 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     let currentStep = 1;
 
@@ -344,6 +340,9 @@
         document.getElementById(`step-content-${step}`).classList.remove('hidden');
         updateStepperUI(step);
         currentStep = step;
+        
+        // Update summary if moving to final step
+        if (step === 4) updateSummary();
     }
 
     function nextStep(step) {
@@ -364,12 +363,10 @@
         }
     }
 
-    // --- STEPPER UI ---
     function updateStepperUI(activeStep) {
         for (let i = 1; i <= 4; i++) {
             const stepEl = document.getElementById(`step-indicator-${i}`);
             const lineEl = document.getElementById(`line-${i-1}`);
-            
             stepEl.classList.remove('active', 'completed');
             if (lineEl) lineEl.classList.remove('completed');
             
@@ -390,7 +387,6 @@
         }
     }
 
-    // --- VALIDATION ---
     function validateStep(step) {
         const section = document.getElementById(`step-content-${step}`);
         const inputs = section.querySelectorAll('input[required], select[required], textarea[required]');
@@ -399,19 +395,23 @@
         inputs.forEach(input => {
             if (!input.value) {
                 isValid = false;
-                input.style.borderColor = 'var(--error-color)';
+                input.style.borderColor = 'red';
             } else {
-                input.style.borderColor = 'var(--border-color)';
+                input.style.borderColor = '#d1d5db';
             }
         });
 
         if (!isValid) {
-            alert('Please fill in all required fields.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Information',
+                text: 'Please fill in all required fields to proceed.',
+                confirmButtonColor: '#0C4D98' // Matches your brand blue
+            });
         }
         return isValid;
     }
 
-    // --- SELECTION LOGIC ---
     function selectTime(element, time) {
         document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
         element.classList.add('selected');
@@ -425,31 +425,72 @@
         document.getElementById('selectedPaymentMethod').value = method;
     }
 
-    // --- FIXED SUMMARY LOGIC ---
     function updateSummary() {
         const doctorSelect = document.getElementById('doctorSelect');
         const date = document.getElementById('dateInput').value;
         const time = document.getElementById('selectedTimeSlot').value;
 
-        // 1. Get Doctor Name (Not ID)
-        if (doctorSelect.selectedIndex > 0) { // Check if a doctor is actually selected
+        if (doctorSelect.selectedIndex > 0) {
             const selectedOption = doctorSelect.options[doctorSelect.selectedIndex];
+            document.getElementById('summaryDoctor').innerText = selectedOption.text.split(' - ')[0]; // Show just name
             
-            // Get the text inside the option (e.g., "Dr. Ram - Cardiology...")
-            const doctorNameText = selectedOption.text; 
-            document.getElementById('summaryDoctor').innerText = doctorNameText;
-
-            // 2. Get Dynamic Fee
             const fee = selectedOption.getAttribute('data-fee');
-            if(fee) {
-                // Update the Total Fee display (You need to add ID="summaryFee" to your HTML, see below)
-                const feeDisplay = document.querySelector('.total-row .value');
-                if(feeDisplay) feeDisplay.innerText = "NPR " + fee;
-            }
+            if(fee) document.getElementById('summaryFee').innerText = "NPR " + fee;
         }
 
         if(date) document.getElementById('summaryDate').innerText = date;
         if(time) document.getElementById('summaryTime').innerText = time;
     }
+
+    // --- NEW: PRE-FILL & BANNER LOGIC ---
+    document.addEventListener('DOMContentLoaded', function() {
+        const preTime = "{{ pre_time|default:'' }}";
+        const preDoctor = "{{ pre_doctor_id|default:'' }}";
+        const preDate = "{{ pre_date|default:'' }}";
+
+        // 1. Handle Time Slot Selection (Visual Only)
+        if (preTime) {
+            const timeGrid = document.querySelector('.time-slot-grid');
+            let found = false;
+
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                if (slot.innerText.trim() === preTime) {
+                    selectTime(slot, preTime);
+                    found = true;
+                }
+            });
+
+            // Create slot visual if it doesn't match static list
+            if (!found && preTime) {
+                const newSlot = document.createElement('div');
+                newSlot.className = 'time-slot selected';
+                newSlot.innerText = preTime;
+                newSlot.onclick = function() { selectTime(this, preTime); };
+                timeGrid.appendChild(newSlot);
+                document.getElementById('selectedTimeSlot').value = preTime;
+            }
+        }
+
+        // 2. Logic: If data exists, Update Summary & Show Banner
+        if (preDoctor && preDate && preTime) {
+            updateSummary(); // Ensures Step 2/4 summary is ready
+
+            // Get Doctor Name from the already-selected dropdown
+            const doctorSelect = document.getElementById('doctorSelect');
+            if (doctorSelect.selectedIndex > 0) {
+                const doctorName = doctorSelect.options[doctorSelect.selectedIndex].text.split(' - ')[0];
+                
+                // Populate Banner Text
+                document.getElementById('banner-doc').innerText = doctorName;
+                document.getElementById('banner-date').innerText = preDate;
+                document.getElementById('banner-time').innerText = preTime;
+
+                // Show the Banner
+                document.getElementById('prefill-banner').style.display = 'flex';
+            }
+            
+            // UX DECISION: Stay on Step 1. We do NOT call showStep(2).
+        }
+    });
 </script>
 {% endblock %}

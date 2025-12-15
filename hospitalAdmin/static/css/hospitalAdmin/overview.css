@@ -1,0 +1,248 @@
+/* =========================================
+   DASHBOARD OVERVIEW SPECIFIC STYLES
+   ========================================= */
+
+:root {
+    /* Status Colors */
+    --success-green: #28A745;
+    --danger-red: #DC3545;
+    --warning-orange: #FFC107;
+    
+    /* Icon Backgrounds */
+    --blue-light: #EBF5FF; --blue-text: #0E82FD;
+    --green-light: #E8F5E9; --green-text: #28A745;
+    --yellow-light: #FFF8E1; --yellow-text: #FBC02D;
+    --orange-light: #FFF3E0; --orange-text: #F57C00;
+    --purple-light: #F3E5F5; --purple-text: #AB47BC;
+    --red-light: #FFEBEE; --red-text: #DC3545;
+}
+
+/* --- Header Section --- */
+.overview-header {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.overview-header h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.welcome-text {
+    color: #6C757D;
+    font-size: 0.95rem;
+}
+
+/* --- Buttons --- */
+.btn-primary-action {
+    background-color: #0E82FD;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary-action:hover {
+    background-color: #0b6bcb;
+    color: white;
+}
+
+/* --- Stats Grid (Cards) --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 per row looks better for 6 items */
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.25rem;
+    border-radius: 12px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.icon-box {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+/* Icon Colors */
+.blue-light { background: var(--blue-light); } .blue-text { color: var(--blue-text); }
+.green-light { background: var(--green-light); } .green-text { color: var(--green-text); }
+.purple-light { background: var(--purple-light); } .purple-text { color: var(--purple-text); }
+.orange-light { background: var(--orange-light); } .orange-text { color: var(--orange-text); }
+.yellow-light { background: var(--yellow-light); } .yellow-text { color: var(--yellow-text); }
+.red-light { background: var(--red-light); } .red-text { color: var(--red-text); }
+
+.trend {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 20px;
+    background-color: #f0f0f0;
+    color: #6C757D;
+}
+.trend.positive {
+    background-color: var(--green-light);
+    color: var(--success-green);
+}
+
+.stat-bottom .stat-label {
+    display: block;
+    color: #6C757D;
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+.stat-bottom .stat-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1A1A1A;
+}
+
+/* --- Performance Section --- */
+.card-container {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+}
+
+.beds-status-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.status-card {
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+}
+
+.status-card.blue-bg { background-color: #0E82FD; }
+.status-card.green-bg { background-color: var(--success-green); }
+.status-card.orange-bg { background-color: var(--warning-orange); color: #333; }
+
+.status-count {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.status-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* --- Info Box (The "Why Clicks Matter" box) --- */
+.info-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.info-box h4 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: #1A1A1A;
+}
+
+.info-box p {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.5;
+}
+
+/* --- Quick Actions Footer --- */
+.quick-actions-footer {
+    background: #1D3557;
+    padding: 2rem;
+    border-radius: 12px;
+    color: white;
+}
+
+.quick-actions-footer h3 {
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+
+.action-card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    transition: all 0.3s;
+    text-decoration: none;
+}
+
+.action-card:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+    color: white;
+}
+
+.action-card i {
+    font-size: 1.5rem;
+}
+
+.action-card span {
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-grid, .beds-status-grid, .actions-grid {
+        grid-template-columns: 1fr;
+    }
+    .overview-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+}

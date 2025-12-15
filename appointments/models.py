@@ -23,12 +23,16 @@ class Appointment(models.Model):
     )
     # View variable 'appointment_date' maps to this 'date' field
     date = models.DateField()
-    time_slot = models.CharField(max_length=20)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    
+    @property
+    def time_slot_display(self):
+        return f"{self.start_time.strftime('%I:%M %p')} - {self.end_time.strftime('%I:%M %p')}"
     
     # 3. Medical Info
     reason = models.TextField()
     symptoms = models.TextField(blank=True, null=True)
-    # Matches 'medical_reports' from request.FILES
     medical_reports = models.FileField(upload_to='medical_reports/', blank=True, null=True)
 
     # 4. Payment & Status

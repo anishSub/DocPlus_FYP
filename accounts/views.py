@@ -28,9 +28,10 @@ class RegisterView(CreateView):
         
         # 5. Extract mobile number from the validated form data
         mobile = form.cleaned_data.get('mobile_number')
+        gender = form.cleaned_data.get('gender')
         
         # 6. Create Patient Profile with the mobile number
-        PatientProfile.objects.create(user=user, mobile_number=mobile)
+        PatientProfile.objects.create(user=user, mobile_number=mobile, gender=gender)
         
         messages.success(self.request, 'Registration successful! Please log in.')
         return redirect(self.success_url)

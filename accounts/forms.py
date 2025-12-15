@@ -22,10 +22,25 @@ class CustomUserCreationForm(UserCreationForm):
         required=True,
         widget=forms.TextInput(attrs={'placeholder': 'Mobile Number'})
     )
+    date_of_birth = forms.DateField(
+        required=True,
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
+    
+    GENDER_CHOICES = [
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('O', 'Other'),
+    ]
+    gender = forms.ChoiceField(
+        choices=GENDER_CHOICES,
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'}) # Optional styling
+    )
     
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email', 'mobile_number')
+        fields = ('first_name', 'last_name', 'email', 'mobile_number','date_of_birth')
     
     def clean_email(self):
         """
@@ -64,11 +79,11 @@ class CustomUserCreationForm(UserCreationForm):
         
         if commit:
             user.save()
-            # We create the profile in the view to handle roles, 
-            # but if this form is used elsewhere with commit=True, this handles it:
             PatientProfile.objects.create(
                 user=user,
-                mobile_number=self.cleaned_data['mobile_number']
+                mobile_number=self.cleaned_data['mobile_number'],
+                date_of_birth=self.cleaned_data['date_of_birth'],
+                gender=self.cleaned_data['gender']
             )
         
         return user

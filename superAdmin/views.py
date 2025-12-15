@@ -50,7 +50,7 @@ class AdminOverviewView(TemplateView):
         # CRITICAL FIX: 
         # 1. Used 'date' instead of 'appointment_date' in order_by
         # 2. Removed select_related('doctor') because your model uses 'doctor_name' (CharField), not a ForeignKey
-        recent_appointments = Appointment.objects.all().order_by('-date', '-time_slot')[:5]
+        recent_appointments = Appointment.objects.all().order_by('-date', '-start_time')[:5]
         
         context['recent_appointments'] = recent_appointments
 

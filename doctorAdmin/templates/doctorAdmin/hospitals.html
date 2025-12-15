@@ -8,102 +8,105 @@
 {% endblock %}
 
 {% block content %}
-    <!-- Page Header -->
     <div class="page-header">
         <h2>My Hospitals & Clinics</h2>
-        <button class="add-btn">
-            <i class="fas fa-plus"></i> Add Hospital
-        </button>
+        
+        <a href="{% url 'edit_profile' %}" class="add-btn" style="text-decoration: none;">
+            <i class="fas fa-pen"></i> Manage Hospital
+        </a>
     </div>
 
-    <!-- Hospital List -->
     <div class="hospital-list">
         
-        <!-- Hospital Card 1 -->
-        <div class="hospital-card">
-            <div class="card-content">
-                <div class="hospital-logo">
-                    <i class="far fa-building"></i>
-                </div>
-                
-                <div class="hospital-info">
-                    <div class="info-header">
-                        <h3>Grande International Hospital</h3>
-                        <div class="top-actions">
-                            <button class="icon-action edit"><i class="far fa-edit"></i></button>
-                            <button class="icon-action delete"><i class="far fa-trash-alt"></i></button>
-                        </div>
+        {% if doctor.hospital_affiliation %}
+            <div class="hospital-card">
+                <div class="card-content">
+                    <div class="hospital-logo">
+                        {% if doctor.hospital_affiliation.image %}
+                            <img src="{{ doctor.hospital_affiliation.image.url }}" alt="Logo" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">
+                        {% else %}
+                            <i class="far fa-building"></i>
+                        {% endif %}
                     </div>
                     
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Kathmandu, Nepal</span>
+                    <div class="hospital-info">
+                        <div class="info-header">
+                            <h3>{{ doctor.hospital_affiliation.name }}</h3>
+                            <div class="top-actions">
+                                <a href="{% url 'edit_profile' %}" class="icon-action edit"><i class="far fa-edit"></i></a>
+                            </div>
                         </div>
-                        <div class="info-item">
-                            <i class="fas fa-stethoscope"></i>
-                            <span>Cardiology</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-user-md"></i>
-                            <span>Senior Consultant</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="far fa-clock"></i>
-                            <span>Mon, Wed, Fri - 9:00 AM to 5:00 PM</span>
+                        
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>{{ doctor.hospital_affiliation.city }}, {{ doctor.hospital_affiliation.district }}</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-tag"></i>
+                                <span>{{ doctor.hospital_affiliation.hospital_type }}</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-briefcase-medical"></i>
+                                <span>{{ doctor.current_position|default:"Doctor" }}</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-phone"></i>
+                                <span>{{ doctor.hospital_affiliation.phone }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card-footer">
-                <button class="btn-primary">View Details</button>
-                <button class="btn-secondary">Update Schedule</button>
-            </div>
-        </div>
-
-        <!-- Hospital Card 2 -->
-        <div class="hospital-card">
-            <div class="card-content">
-                <div class="hospital-logo">
-                    <i class="far fa-hospital"></i>
+                <div class="card-footer">
+                    <button class="btn-primary" disabled style="opacity: 0.7; cursor: not-allowed;">Verified Profile</button>
+                    <a href="{% url 'doctor_schedule' request.user.username %}" class="btn-secondary" style="text-decoration:none">View Schedule</a>
                 </div>
-                
-                <div class="hospital-info">
-                    <div class="info-header">
-                        <h3>Nepal Mediciti Hospital</h3>
-                        <div class="top-actions">
-                            <button class="icon-action edit"><i class="far fa-edit"></i></button>
-                            <button class="icon-action delete"><i class="far fa-trash-alt"></i></button>
-                        </div>
+            </div>
+
+        {% elif doctor.hospital_name_manual %}
+            <div class="hospital-card">
+                <div class="card-content">
+                    <div class="hospital-logo" style="background-color: #f3f4f6; color: #6b7280;">
+                        <i class="far fa-hospital"></i>
                     </div>
                     
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Lalitpur, Nepal</span>
+                    <div class="hospital-info">
+                        <div class="info-header">
+                            <h3>{{ doctor.hospital_name_manual }}</h3>
+                            <div class="top-actions">
+                                <a href="{% url 'edit_profile' %}" class="icon-action edit"><i class="far fa-edit"></i></a>
+                            </div>
                         </div>
-                        <div class="info-item">
-                            <i class="fas fa-stethoscope"></i>
-                            <span>Cardiology</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-briefcase-medical"></i>
-                            <span>Visiting Doctor</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="far fa-clock"></i>
-                            <span>Tue, Thu - 2:00 PM to 6:00 PM</span>
+                        
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <i class="fas fa-info-circle"></i>
+                                <span style="font-style: italic;">Manual Entry (Not Verified)</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-user-md"></i>
+                                <span>{{ doctor.current_position|default:"Doctor" }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="card-footer">
+                    <a href="{% url 'edit_profile' %}" class="btn-primary" style="text-decoration:none">Edit Details</a>
+                </div>
             </div>
 
-            <div class="card-footer">
-                <button class="btn-primary">View Details</button>
-                <button class="btn-secondary">Update Schedule</button>
+        {% else %}
+            <div class="empty-state" style="text-align:center; padding: 40px; background: white; border-radius: 12px; border: 1px dashed #ccc;">
+                <i class="far fa-hospital" style="font-size: 40px; color: #ccc; margin-bottom: 15px;"></i>
+                <h3 style="color: #666;">No Hospital Affiliated</h3>
+                <p style="color: #888; margin-bottom: 20px;">Please edit your profile to add your current workplace.</p>
+                <a href="{% url 'edit_profile' %}" class="btn-primary" style="text-decoration:none; padding: 10px 20px;">
+                    Add Hospital Info
+                </a>
             </div>
-        </div>
+        {% endif %}
 
     </div>
 {% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base/admin_base.html' %}
+{% load static %}
+
+{% block title %}Manage Doctors - {{ hospital.name }}{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/hospitalAdmin/management.css' %}">
+{% endblock %}
+
+{% block admin_content %}
+
+<div class="management-header">
+    <div>
+        <h2>Active Doctors</h2>
+        <p style="color: #6C757D;">Manage the {{ doctor_count }} doctors affiliated with your hospital.</p>
+    </div>
+    </div>
+
+<div class="doctor-grid">
+    {% for doctor in doctors %}
+    <div class="doctor-card">
+        {% if doctor.profile_photo %}
+            <img src="{{ doctor.profile_photo.url }}" alt="{{ doctor.user.get_full_name }}" class="doc-avatar">
+        {% else %}
+            <img src="https://ui-avatars.com/api/?name={{ doctor.user.first_name }}+{{ doctor.user.last_name }}&background=EBF5FF&color=0E82FD" class="doc-avatar">
+        {% endif %}
+
+        <h3 class="doc-name">Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h3>
+        <span class="doc-specialty">{{ doctor.specialization }}</span>
+
+        <div class="doc-stats">
+            <span><i class="fas fa-briefcase"></i> {{ doctor.years_of_experience }} Yrs</span>
+            <span><i class="fas fa-wallet"></i> NPR {{ doctor.consultation_fee }}</span>
+        </div>
+
+        <div class="card-actions">
+            <a href="{% url 'doctor_detail' doctor.pk %}" target="_blank" class="btn-view">
+                <i class="far fa-eye"></i> Profile
+            </a>
+
+            <form method="POST" onsubmit="return confirm('Are you sure you want to remove Dr. {{ doctor.user.first_name }} from your hospital? This cannot be undone.');">
+                {% csrf_token %}
+                <input type="hidden" name="doctor_id" value="{{ doctor.id }}">
+                <input type="hidden" name="action" value="remove">
+                <button type="submit" class="btn-remove" title="Remove Doctor">
+                    <i class="fas fa-user-minus"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+    {% empty %}
+    <div class="empty-state">
+        <i class="fas fa-user-md"></i>
+        <h3>No Active Doctors Found</h3>
+        <p>Doctors who register and select "{{ hospital.name }}" as their affiliation will appear here.</p>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

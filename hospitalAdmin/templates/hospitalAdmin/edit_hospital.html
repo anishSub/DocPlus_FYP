@@ -1,0 +1,163 @@
+{% extends 'base/admin_base.html' %} 
+{% load static %}
+
+{% block title %}Edit Profile - {{ form.instance.name }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/hospitalAdmin/edit_hospital.css' %}">
+{% endblock %}
+
+{% block admin_content %}
+<div class="edit-card">
+    <div class="card-header">
+        <h2>Edit Hospital Profile</h2>
+        <p>Update your hospital's information, services, and facilities.</p>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" class="edit-form">
+        {% csrf_token %}
+
+        <div class="form-section">
+            <h3 class="section-title"><i class="far fa-building"></i> Identity & Branding</h3>
+            
+            <div class="image-upload-box">
+                <div class="current-img">
+                    {% if form.instance.image %}
+                        <img src="{{ form.instance.image.url }}" alt="Hospital Logo">
+                    {% else %}
+                        <div class="placeholder-img"><i class="fas fa-hospital"></i></div>
+                    {% endif %}
+                </div>
+                <div class="upload-btn-wrapper">
+                    <label>Upload New Logo/Image</label>
+                    {{ form.image }}
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Hospital Name</label>
+                    {{ form.name }}
+                </div>
+                <div class="form-group">
+                    <label>Hospital Type</label>
+                    {{ form.hospital_type }}
+                </div>
+                <div class="form-group">
+                    <label>Established Year</label>
+                    {{ form.established_year }}
+                </div>
+                <div class="form-group">
+                    <label>Total Beds</label>
+                    {{ form.total_beds }}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>About Hospital</label>
+                {{ form.description }}
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3 class="section-title"><i class="fas fa-map-marker-alt"></i> Contact & Location</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    {{ form.phone }}
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    {{ form.email }}
+                </div>
+                <div class="form-group">
+                    <label>City</label>
+                    {{ form.city }}
+                </div>
+                <div class="form-group">
+                    <label>District</label>
+                    {{ form.district }}
+                </div>
+                
+                <div class="form-group">
+                    <label>Website URL (Home)</label>
+                    {{ form.website }}
+                </div>
+                
+                <div class="form-group">
+                    <label>Appointment Link (Direct Booking)</label>
+                    {{ form.appointment_link }}
+                </div>
+            </div>
+            
+            <div class="form-group full-width">
+                <label>Detailed Address</label>
+                {{ form.address }}
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3 class="section-title"><i class="far fa-clock"></i> Operations & Timing</h3>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>OPD Start Time</label>
+                    {{ form.opd_start }}
+                </div>
+                <div class="form-group">
+                    <label>OPD End Time</label>
+                    {{ form.opd_end }}
+                </div>
+            </div>
+
+            <div class="emergency-toggle">
+                <label class="switch-label">
+                    {{ form.emergency_available }}
+                    <span class="toggle-text">24/7 Emergency Service Available</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3 class="section-title"><i class="fas fa-stethoscope"></i> Services & Departments</h3>
+            
+            <div class="checkbox-group-wrapper">
+                <label class="group-label">Select Available Services</label>
+                <div class="checkbox-grid">
+                    {% for checkbox in form.services %}
+                        <div class="checkbox-item">
+                            {{ checkbox.tag }} 
+                            <span class="cb-label">{{ checkbox.choice_label }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="checkbox-group-wrapper" style="margin-top: 20px;">
+                <label class="group-label">Select Departments</label>
+                <div class="checkbox-grid">
+                    {% for checkbox in form.departments %}
+                        <div class="checkbox-item">
+                            {{ checkbox.tag }} 
+                            <span class="cb-label">{{ checkbox.choice_label }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3 class="section-title"><i class="fas fa-trophy"></i> Achievements</h3>
+            <div class="form-group">
+                {{ form.achievements }}
+                <small>List your awards or recognitions here.</small>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-save">Save Changes</button>
+        </div>
+
+    </form>
+</div>
+{% endblock %}

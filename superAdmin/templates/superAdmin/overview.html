@@ -8,14 +8,12 @@
 {% endblock %}
 
 {% block content %}
-    <!-- 1. Welcome Banner -->
     <div class="welcome-banner">
         <div class="banner-text">
             <h2>Welcome, Administrator</h2>
             <p>Here's what's happening with DocPlus today</p>
         </div>
 
-        <!-- Admin Avatar with Hover Info -->
         <div class="admin-profile-header">
             <div class="admin-avatar-circle">
                 {% if user.first_name and user.last_name %}
@@ -40,7 +38,6 @@
         </div>
     </div>
 
-    <!-- 2. Stats Grid -->
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-header">
@@ -91,7 +88,6 @@
         </div>
     </div>
 
-    <!-- 3. Quick Actions -->
     <div class="section-title"><h3>Quick Actions</h3></div>
     <div class="quick-actions-grid">
         <div class="action-card blue">
@@ -128,7 +124,6 @@
         </div>
     </div>
 
-    <!-- 4. Pending Approvals (Two Columns) -->
     <div class="approvals-grid">
         <div class="approval-column">
             <div class="column-header">
@@ -175,14 +170,12 @@
     </div>
 
 
-        <!-- Hospitals Column -->
         <div class="approval-column">
             <div class="column-header">
                 <h3>Pending Hospital Approvals</h3>
                 <a href="{% url 'super_admin_hospitals' %}">View All <i class="fas fa-chevron-right"></i></a>
             </div>
             
-            <!-- Assuming pending_hospitals is passed in context -->
             {% for hospital in pending_hospitals %}
             <div class="approval-card">
                 <div class="info">
@@ -205,7 +198,6 @@
         </div>
     </div>
 
-    <!-- 5. Recent Appointments Table (DYNAMIC) -->
     <div class="recent-appointments">
         <h3>Recent Appointments</h3>
         <div class="table-responsive">
@@ -223,26 +215,21 @@
                 <tbody>
                     {% for appointment in recent_appointments %}
                     <tr>
-                        <!-- Patient Name -->
                         <td>
                             {{ appointment.full_name|title }}
                         </td>
                         
-                        <!-- Doctor Name -->
                         <td>Dr. {{ appointment.doctor_name|title }}</td>
                         
-                        <!-- Date & Time -->
                         <td>
                             <div class="datetime">
                                 {{ appointment.date|date:"Y-m-d" }} 
-                                <span>{{ appointment.time_slot }}</span>
+                                <span>{{ appointment.time_slot_display }}</span>
                             </div>
                         </td>
                         
-                        <!-- Payment Method (Replacing Type which doesn't exist in model) -->
                         <td>{{ appointment.payment_method|default:"N/A"|title }}</td>
                         
-                        <!-- Status Badge -->
                         <td>
                             {% if appointment.status == 'completed' %}
                                 <span class="status completed">Completed</span>
@@ -255,7 +242,6 @@
                             {% endif %}
                         </td>
                         
-                        <!-- Amount -->
                         <td>Rs {{ appointment.amount }}</td>
                     </tr>
                     {% empty %}

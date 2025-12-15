@@ -5,55 +5,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Profile - DocPlus</title>
-    
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/profile_view/profile_view.css' %}">
-    
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Navbar -->
     <header class="patient-navbar">
         <div class="nav-left">
-            <!-- NEW: Back Button -->
             <a href="/" class="icon-btn back-home" title="Back to Home">
                 <i class="fas fa-arrow-left"></i>
             </a>
-
-            {% comment %} <div class="avatar-small">
-                <img src="https://ui-avatars.com/api/?name=Rajesh+Kumar&background=random" alt="User">
-            </div> {% endcomment %}
-                    <div class="avatar-small">
-                        <img src="https://ui-avatars.com/api/?name={{ user.username }}&size=128&background=0e5c98&color=fff" alt="{{ user.username}}">
-                    </div>
+            <div class="avatar-small">
+                {% if profile.profile_image %}
+                    <img src="{{ profile.profile_image.url }}" alt="User">
+                {% else %}
+                    <img src="https://ui-avatars.com/api/?name={{ user.first_name }}+{{ user.last_name }}&background=0e5c98&color=fff" alt="User">
+                {% endif %}
+            </div>
             <div class="nav-greeting">
                 <h3>Welcome back,</h3>
-                <span>{{ user.username }}</span>
+                <span>{{ user.first_name|default:user.username }}</span>
             </div>
         </div>
         <div class="nav-right">
-            <button class="icon-btn"><i class="far fa-bell"></i><span class="dot"></span></button>
-            <button class="icon-btn"><i class="fas fa-cog"></i></button>
-            <button class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            <button class="logout-btn" onclick="window.location.href='{% url 'logout' %}'">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
         </div>
     </header>
 
     <div class="profile-container">
         
-        <!-- Left Column: Profile Card -->
         <aside class="profile-sidebar">
             <div class="profile-card">
                 <div class="profile-header">
                     <div class="profile-img-large">
-                        <img src="https://ui-avatars.com/api/?name={{ user.username }}&size=128&background=0e5c98&color=fff" alt="{{ user.username}}">
+                        {% if profile.profile_image %}
+                            <img src="{{ profile.profile_image.url }}" alt="User">
+                        {% else %}
+                            <img src="https://ui-avatars.com/api/?name={{ user.first_name }}+{{ user.last_name }}&size=128&background=0e5c98&color=fff" alt="User">
+                        {% endif %}
                     </div>
-                    <h2>{{ user.username }}</h2>
-                    <span class="patient-id">Patient ID:{{ user.profile.id }}</span>
+                    <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+                    <span class="patient-id">Patient ID: #PT-{{ user.id }}</span>
                 </div>
 
                 <div class="contact-info">
@@ -63,145 +58,174 @@
                     </div>
                     <div class="info-row">
                         <i class="fas fa-phone-alt"></i>
-                        <span>{{ user.profile.mobile_number }}</span>
+                        <span>{{ profile.mobile_number|default:"-- --" }}</span>
                     </div>
                     <div class="info-row">
                         <i class="far fa-user"></i>
-                        <span>Age: 35 years</span>
+                        <span>{{ profile.get_gender_display|default:" Gender: N/A" }}</span>
                     </div>
                     <div class="info-row">
                         <i class="fas fa-heartbeat"></i>
-                        <span>Blood Group: B+</span>
+                        <span>Blood Group: {{ profile.blood_group|default:"N/A" }}</span>
                     </div>
                 </div>
 
                 <div class="profile-stats">
                     <div class="p-stat">
-                        <strong>12</strong>
+                        <strong>{{ total_appts }}</strong>
                         <span>Appointments</span>
                     </div>
                     <div class="p-stat">
-                        <strong>8</strong>
-                        <span>Prescriptions</span>
+                        <strong>0</strong> <span>Prescriptions</span>
                     </div>
                 </div>
 
-                <!-- Edit Profile Button -->
-              <a href="{% url 'profile_edit' %}">
-                <button class="edit-profile-btn">
-                    <i class="far fa-edit"></i> Edit Profile
-                </button>
-              </a>
+                <a href="{% url 'profile_edit' %}">
+                    <button class="edit-profile-btn">
+                        <i class="far fa-edit"></i> Edit Profile
+                    </button>
+                </a>
             </div>
         </aside>
 
-        <!-- Right Column: Main Content -->
         <main class="main-content">
             
-            <!-- 1. Health Stats -->
             <section class="health-stats-section">
                 <h3><i class="fas fa-heartbeat"></i> Health Stats</h3>
                 <div class="stats-grid">
-                    <div class="stat-box heart">
-                        <div class="icon-circle"><i class="far fa-heart"></i></div>
-                        <span class="stat-label">Heart Rate</span>
-                        <strong class="stat-value">72 bpm</strong>
-                        <span class="stat-status normal"><i class="fas fa-check-circle"></i> normal</span>
+                    
+                    <div class="stat-box" style="background: #fff5f5; border-left: 4px solid #fc8181;">
+                        <div class="icon-circle" style="color: #fc8181; background: #fff;"><i class="fas fa-hand-dots"></i></div>
+                        <span class="stat-label">Allergies</span>
+                        <strong class="stat-value" style="font-size: 16px; margin-top: 5px;">
+                            {% if profile.allergies %}
+                                {{ profile.allergies|truncatechars:15 }}
+                            {% else %}
+                                None
+                            {% endif %}
+                        </strong>
+                        <span class="stat-status" style="color: #718096; font-size: 11px;">
+                            {% if profile.allergies %}
+                                <i class="fas fa-exclamation-circle"></i> recorded
+                            {% else %}
+                                <i class="fas fa-check-circle"></i> no known allergies
+                            {% endif %}
+                        </span>
                     </div>
-                    <div class="stat-box temp">
-                        <div class="icon-circle"><i class="fas fa-thermometer-half"></i></div>
-                        <span class="stat-label">Temperature</span>
-                        <strong class="stat-value">98.6°F</strong>
-                        <span class="stat-status normal"><i class="fas fa-check-circle"></i> normal</span>
+
+                    <div class="stat-box" style="background: #ebf8ff; border-left: 4px solid #63b3ed;">
+                        <div class="icon-circle" style="color: #63b3ed; background: #fff;"><i class="fas fa-tint"></i></div>
+                        <span class="stat-label">Blood Group</span>
+                        
+                        {% if profile.blood_group %}
+                            <strong class="stat-value" style="font-size: 18px; margin-top: 5px;">{{ profile.blood_group }}</strong>
+                            <span class="stat-status" style="color: #718096; font-size: 11px;">
+                                <i class="fas fa-check-circle"></i> recorded
+                            </span>
+                        {% else %}
+                            <strong class="stat-value" style="font-size: 18px; color: #a0aec0; margin-top: 5px;">Not Added</strong>
+                            <a href="{% url 'profile_edit' %}" class="stat-status" style="text-decoration: underline; color: #4299e1; font-size: 12px;">
+                                Add Now
+                            </a>
+                        {% endif %}
                     </div>
-                    <div class="stat-box bp">
-                        <div class="icon-circle"><i class="fas fa-chart-line"></i></div>
-                        <span class="stat-label">Blood Pressure</span>
-                        <strong class="stat-value">120/80</strong>
-                        <span class="stat-status normal"><i class="fas fa-check-circle"></i> normal</span>
-                    </div>
-                    <div class="stat-box weight">
-                        <div class="icon-circle"><i class="fas fa-weight"></i></div>
+
+                    <div class="stat-box" style="background: #f0fff4; border-left: 4px solid #48bb78;">
+                        <div class="icon-circle" style="color: #48bb78; background: #fff;"><i class="fas fa-weight"></i></div>
                         <span class="stat-label">Weight</span>
-                        <strong class="stat-value">75 kg</strong>
-                        <span class="stat-status stable"><i class="fas fa-check-circle"></i> stable</span>
+                        
+                        {% if profile.weight %}
+                            <strong class="stat-value" style="font-size: 18px; margin-top: 5px;">{{ profile.weight }} kg</strong>
+                            <span class="stat-status" style="color: #718096; font-size: 11px;">
+                                <i class="far fa-clock"></i> {{ profile.updated_at|date:"M d, Y" }}
+                            </span>
+                        {% else %}
+                            <strong class="stat-value" style="font-size: 18px; color: #a0aec0; margin-top: 5px;">Not Added</strong>
+                            <a href="{% url 'profile_edit' %}" class="stat-status" style="text-decoration: underline; color: #4299e1; font-size: 12px;">
+                                Add Now
+                            </a>
+                        {% endif %}
                     </div>
+
+                    <div class="stat-box" style="background: #faf5ff; border-left: 4px solid #9f7aea;">
+                        <div class="icon-circle" style="color: #9f7aea; background: #fff;"><i class="fas fa-ruler-vertical"></i></div>
+                        <span class="stat-label">Height</span>
+                        
+                        {% if profile.height %}
+                            <strong class="stat-value" style="font-size: 18px; margin-top: 5px;">{{ profile.height }} cm</strong>
+                            <span class="stat-status" style="color: #718096; font-size: 11px;">
+                                <i class="far fa-clock"></i> {{ profile.updated_at|date:"M d, Y" }}
+                            </span>
+                        {% else %}
+                            <strong class="stat-value" style="font-size: 18px; color: #a0aec0; margin-top: 5px;">Not Added</strong>
+                            <a href="{% url 'profile_edit' %}" class="stat-status" style="text-decoration: underline; color: #4299e1; font-size: 12px;">
+                                Add Now
+                            </a>
+                        {% endif %}
+                    </div>
+
                 </div>
             </section>
 
-            <!-- 2. Tabs Navigation -->
             <div class="tabs-nav">
                 <button class="tab-btn active"><i class="fas fa-chart-pie"></i> Overview</button>
-                <button class="tab-btn"><i class="far fa-calendar-alt"></i> Appointments</button>
-                <button class="tab-btn"><i class="fas fa-prescription"></i> Prescriptions</button>
-                <button class="tab-btn"><i class="far fa-file-alt"></i> Records</button>
             </div>
 
-            <!-- 3. Next Appointment Banner -->
+            {% if upcoming_appt %}
             <div class="next-appointment-banner">
                 <div class="banner-icon"><i class="fas fa-exclamation-circle"></i></div>
                 <div class="banner-content">
                     <h4>Next Appointment</h4>
-                    <p>You have an appointment with <strong>Dr. Amita Sharma</strong> on 28 Nov 2024</p>
+                    <p>You have an appointment with <strong>Dr. {{ upcoming_appt.doctor.user.last_name }}</strong> on {{ upcoming_appt.date|date:"M d, Y" }} at {{ upcoming_appt.start_time }}</p>
+            </div>
+            {% else %}
+            <div class="next-appointment-banner" style="background:#f3f4f6; border-left: 4px solid #9ca3af;">
+                <div class="banner-icon" style="color:#6b7280"><i class="fas fa-info-circle"></i></div>
+                <div class="banner-content">
+                    <h4>No Upcoming Appointments</h4>
+                    <p>Book a consultation to get started.</p>
                 </div>
             </div>
+            {% endif %}
 
-            <!-- 4. Recent Consultations -->
             <section class="recent-consultations">
                 <h3>Recent Consultations</h3>
                 
+                {% for appt in recent_appts %}
                 <div class="consultation-card">
                     <div class="doctor-img">
-                        <img src="https://ui-avatars.com/api/?name=Sunita+Maharjan&background=random" alt="Doctor">
+                        {% if appt.doctor.profile_photo %}
+                            <img src="{{ appt.doctor.profile_photo.url }}" alt="Doc">
+                        {% else %}
+                            <img src="https://ui-avatars.com/api/?name={{ appt.doctor.user.first_name }}+{{ appt.doctor.user.last_name }}" alt="Doc">
+                        {% endif %}
                     </div>
                     <div class="consultation-info">
                         <div class="info-header">
-                            <h4>Dr. Sunita Maharjan</h4>
-                            <span class="date">Nov 15, 2024</span>
+                            <h4>Dr. {{ appt.doctor.user.first_name }} {{ appt.doctor.user.last_name }}</h4>
+                            <span class="date">{{ appt.date|date:"M d, Y" }}</span>
                         </div>
-                        <span class="specialty">Dermatologist</span>
-                        <p class="diagnosis">Diagnosis: <span>Seasonal Allergies</span></p>
-                        <a href="#" class="view-details">View Details <i class="fas fa-chevron-right"></i></a>
+                        <span class="specialty">{{ appt.doctor.specialization }}</span>
+                        <p class="diagnosis">Reason: <span>{{ appt.reason|truncatechars:30 }}</span></p>
+                        <span class="status-badge" style="font-size:12px; padding:2px 8px; background:#e5e7eb; border-radius:10px;">{{ appt.status|title }}</span>
                     </div>
                 </div>
-
-                <div class="consultation-card">
-                    <div class="doctor-img">
-                        <img src="https://ui-avatars.com/api/?name=Prakash+Adhikari&background=random" alt="Doctor">
-                    </div>
-                    <div class="consultation-info">
-                        <div class="info-header">
-                            <h4>Dr. Prakash Adhikari</h4>
-                            <span class="date">Oct 28, 2024</span>
-                        </div>
-                        <span class="specialty">Orthopedist</span>
-                        <p class="diagnosis">Diagnosis: <span>Mild Back Pain</span></p>
-                        <a href="#" class="view-details">View Details <i class="fas fa-chevron-right"></i></a>
-                    </div>
-                </div>
+                {% empty %}
+                <p style="color:#666; padding:10px;">No recent consultation history.</p>
+                {% endfor %}
             </section>
 
-            <!-- 5. Quick Actions -->
             <section class="quick-actions">
                 <h3>Quick Actions</h3>
                 <div class="actions-grid">
-                    <button class="action-btn">
+                    <a href="{% url 'appointment_page' %}" class="action-btn" style="text-decoration:none;">
                         <div class="icon-box"><i class="far fa-calendar-plus"></i></div>
                         <span>Book Appointment</span>
-                    </button>
-                    <button class="action-btn">
-                        <div class="icon-box"><i class="fas fa-video"></i></div>
-                        <span>Start Consultation</span>
-                    </button>
-                    <button class="action-btn">
-                        <div class="icon-box"><i class="far fa-comments"></i></div>
-                        <span>Chat with Doctor</span>
-                    </button>
+                    </a>
                 </div>
             </section>
 
         </main>
     </div>
-
 </body>
 </html>

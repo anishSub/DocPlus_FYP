@@ -148,6 +148,25 @@
                         <input type="number" name="experience" id="experience" required>
                     </div>
 
+                    <div class="full-width" style="margin-top:10px">
+                            <label>Hospital Affiliation</label>
+                            <div class="form-group">
+                                {{ form.hospital_affiliation }}
+                            </div>
+                            <div style="text-align:center; margin:10px; color:#888">- OR -</div>
+                            <input type="text" name="hospital_name_manual" id="hospital_name_manual" placeholder="Type Hospital Name">
+                            <p id="rev_hospital" style="display:none"></p>
+                    </div>
+
+                    <div class="form-group full-width" style="margin-bottom: 15px;">
+                        <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 12px; border-radius: 8px; display: flex; align-items: start; gap: 10px; color: #1e40af; font-size: 13px;">
+                            <i class="fas fa-info-circle" style="margin-top: 2px;"></i>
+                            <span>
+                                <strong>Note:</strong> Set your general availability here. You can customize specific times for different days (e.g., 9am-12pm on Sunday, 2pm-5pm on Monday) later in your <strong>Doctor Dashboard</strong>.
+                            </span>
+                        </div>
+                    </div>
+
                     <div class="form-group full-width">
                         <label style="margin-bottom: 10px; display:block; font-weight:600;">Available Days *</label>
                         <div class="days-checkbox-grid" style="display: flex; gap: 15px; flex-wrap: wrap;">
@@ -200,6 +219,8 @@
                         <label>Bio</label>
                         <textarea name="bio" id="bio" rows="3"></textarea>
                     </div>
+
+
                 </div>
             </div>
 
@@ -285,15 +306,7 @@
                         <div><label>Available Days</label><p id="rev_days">-</p></div>
                         <div><label>Timing</label><p id="rev_time">-</p></div>
                         
-                        <div class="full-width" style="margin-top:10px">
-                            <label>Hospital Affiliation</label>
-                            <div class="form-group">
-                                {{ form.hospital_affiliation }}
-                            </div>
-                            <div style="text-align:center; margin:10px; color:#888">- OR -</div>
-                            <input type="text" name="hospital_name_manual" id="hospital_name_manual" placeholder="Type Hospital Name">
-                            <p id="rev_hospital" style="display:none"></p>
-                        </div>
+
                     </div>
                 </div>
 
@@ -320,73 +333,162 @@
 
     function showTab(n) {
         var x = document.getElementsByClassName("form-step");
-        for(let i=0; i<x.length; i++) { x[i].style.display = "none"; x[i].classList.remove('active'); }
+        
+        // Hide all steps
+        for(let i=0; i<x.length; i++) {
+            x[i].style.display = "none";
+            x[i].classList.remove('active');
+        }
+        
+        // Show current step
         x[n].style.display = "block";
         setTimeout(() => x[n].classList.add('active'), 10);
 
+        // Buttons Logic
         let prevBtn = document.getElementById("prevBtn");
-        prevBtn.style.display = "inline-flex";
-        prevBtn.innerHTML = (n==0) ? "Cancel" : "Previous";
-        if(n==0) prevBtn.onclick = function() { window.location.href="/"; };
-        else prevBtn.onclick = function() { nextPrev(-1); };
-
         let nextBtn = document.getElementById("nextBtn");
-        nextBtn.innerHTML = (n == x.length - 1) ? "Submit Application" : "Next";
+
+        if (n == 0) {
+            prevBtn.style.display = "inline-flex";
+            prevBtn.innerHTML = "Cancel"; 
+            prevBtn.onclick = function() { window.location.href="/"; };
+        } else {
+            prevBtn.style.display = "inline-flex";
+            prevBtn.innerHTML = "Previous";
+            prevBtn.onclick = function() { nextPrev(-1); };
+        }
+
+        if (n == (x.length - 1)) {
+            nextBtn.innerHTML = 'Submit Application';
+        } else {
+            nextBtn.innerHTML = 'Next';
+        }
 
         updateStepper(n);
         if(n == 4) populateReview();
     }
 
-    function nextPrev(n) {
+    // --- MAIN NAVIGATION LOGIC (ASYNC) ---
+    async function nextPrev(n) {
         var x = document.getElementsByClassName("form-step");
-        if (n == 1 && !validateForm()) return false;
         
-        // --- EMAIL CHECK LOGIC (SIMPLIFIED FOR BREVITY) ---
-        if (currentTab == 0 && n == 1) {
-            let emailInput = document.getElementById('email');
-            if (!emailInput.checkValidity()) {
-                emailInput.classList.add("invalid");
-                return false;
-            }
-            // Add your fetch logic here from previous code if needed
+        // 1. If going back, just go back
+        if (n == -1) {
+            currentTab = currentTab + n;
+            showTab(currentTab);
+            return;
         }
 
-        currentTab = currentTab + n;
-        if (currentTab >= x.length) {
+        // 2. Validate current fields (Standard HTML validation)
+        if (!validateForm()) return false;
+
+        // 3. SPECIAL CHECK: Email Validation on Step 0
+        if (currentTab == 0) {
+            let emailInput = document.getElementById('email');
+            let errorMsg = document.getElementById('emailError'); 
+            let nextBtn = document.getElementById('nextBtn');
+            
+            // A. Check Format
+            if (!emailInput.checkValidity()) {
+                emailInput.classList.add("invalid");
+                errorMsg.style.display = "block";
+                errorMsg.innerText = "Please enter a valid email address.";
+                return false;
+            }
+
+            // B. Check Database (AJAX)
+            // Show loading state
+            let originalText = nextBtn.innerHTML;
+            nextBtn.innerHTML = 'Checking...';
+            nextBtn.disabled = true;
+
+            try {
+                // Fetch to your Django View
+                let response = await fetch(`{% url 'check_email' %}?email=${emailInput.value}`);
+                let data = await response.json();
+
+                if (data.exists) {
+                    // STOP! Email exists
+                    emailInput.classList.add("invalid");
+                    errorMsg.style.display = "block";
+                    errorMsg.innerText = "This email is already registered. Please login or use another.";
+                    errorMsg.style.color = "red";
+                    
+                    // Reset Button
+                    nextBtn.innerHTML = originalText;
+                    nextBtn.disabled = false;
+                    return false; // Prevent moving to next step
+                } else {
+                    // All good
+                    emailInput.classList.remove("invalid");
+                    errorMsg.style.display = "none";
+                }
+            } catch (error) {
+                console.error('Error checking email:', error);
+                // Optionally alert user or let them pass if server is down
+            }
+            
+            // Reset button state before moving
+            nextBtn.innerHTML = originalText;
+            nextBtn.disabled = false;
+        }
+
+        // 4. Submit if finished
+        if (currentTab + n >= x.length) {
             document.getElementById("regForm").submit();
             return false;
         }
+        
+        // 5. Go to next step
+        currentTab = currentTab + n;
         showTab(currentTab);
     }
 
     function validateForm() {
-        var x = document.getElementsByClassName("form-step");
-        var inputs = x[currentTab].querySelectorAll("input, select");
-        var valid = true;
-        for (let i = 0; i < inputs.length; i++) {
-            if (inputs[i].hasAttribute('required') && inputs[i].value == "") {
-                inputs[i].classList.add("invalid");
+        var x, y, i, valid = true;
+        x = document.getElementsByClassName("form-step");
+        
+        // Get inputs in current tab
+        y = x[currentTab].getElementsByTagName("input");
+        z = x[currentTab].getElementsByTagName("select");
+        
+        for (i = 0; i < y.length; i++) {
+            if (y[i].hasAttribute('required') && y[i].value == "") {
+                y[i].className += " invalid";
                 valid = false;
             }
         }
-        return valid;
+        for (i = 0; i < z.length; i++) {
+            if (z[i].hasAttribute('required') && z[i].value == "") {
+                z[i].className += " invalid";
+                valid = false;
+            }
+        }
+        return valid; 
     }
 
     function updateStepper(n) {
         var steps = document.getElementsByClassName("step");
         var lines = document.getElementsByClassName("line");
-        const icons = ['<i class="far fa-user"></i>', '<i class="fas fa-stethoscope"></i>', '<i class="fas fa-graduation-cap"></i>', '<i class="far fa-file-alt"></i>', '<i class="far fa-check-circle"></i>'];
-        
+        const icons = [
+            '<i class="far fa-user"></i>',
+            '<i class="fas fa-stethoscope"></i>',
+            '<i class="fas fa-graduation-cap"></i>',
+            '<i class="far fa-file-alt"></i>',
+            '<i class="far fa-check-circle"></i>'
+        ];
+
         for (var i = 0; i < steps.length; i++) {
-            steps[i].classList.remove("active", "completed");
             let circle = steps[i].querySelector('.circle');
-            circle.innerHTML = icons[i];
+            steps[i].classList.remove("active", "completed");
+            circle.innerHTML = icons[i]; 
             if(i < lines.length) lines[i].classList.remove("completed");
 
-            if (i == n) steps[i].classList.add("active");
-            else if (i < n) {
+            if (i == n) {
+                steps[i].classList.add("active");
+            } else if (i < n) {
                 steps[i].classList.add("completed");
-                circle.innerHTML = '<i class="fas fa-check"></i>';
+                circle.innerHTML = '<i class="fas fa-check"></i>'; 
                 if(i < lines.length) lines[i].classList.add("completed");
             }
         }
@@ -396,35 +498,72 @@
         if(input.files && input.files[0]) {
             input.parentElement.querySelector('.file-name').innerText = input.files[0].name;
             let btn = input.parentElement.querySelector('.btn-upload');
-            btn.innerHTML = 'Selected'; btn.style.background = '#10B981'; btn.style.color = 'white';
+            btn.innerHTML = 'Selected';
+            btn.style.background = '#10B981';
+            btn.style.color = 'white';
         }
     }
 
     function populateReview() {
-        document.getElementById('rev_name').innerText = document.getElementById('full_name').value || '-';
-        document.getElementById('rev_email').innerText = document.getElementById('email').value || '-';
-        document.getElementById('rev_phone').innerText = document.getElementById('phone').value || '-';
-        document.getElementById('rev_specialty').innerText = document.getElementById('specialty').value || '-';
-        document.getElementById('rev_license').innerText = document.getElementById('license_no').value || '-';
+        // Simple helpers to safely get values
+        const getVal = (id) => document.getElementById(id) ? document.getElementById(id).value : '-';
+        const setVal = (id, val) => { if(document.getElementById(id)) document.getElementById(id).innerText = val; };
 
-        let checkboxes = document.querySelectorAll('input[name="available_days"]:checked');
-        let days = []; checkboxes.forEach((c) => days.push(c.value));
-        document.getElementById('rev_days').innerText = days.join(", ");
+        setVal('rev_name', getVal('full_name'));
+        setVal('rev_email', getVal('email'));
+        setVal('rev_phone', getVal('phone'));
+        setVal('rev_city', getVal('city'));
+        setVal('rev_specialty', getVal('specialty'));
+        setVal('rev_license', getVal('license_no'));
         
-        let s = document.getElementById('available_time_start').value;
-        let e = document.getElementById('available_time_end').value;
-        document.getElementById('rev_time').innerText = `${s} - ${e}`;
-    }
+        // Available Days
+        let checkboxes = document.querySelectorAll('input[name="available_days"]:checked');
+        let days = [];
+        checkboxes.forEach((c) => days.push(c.value));
+        setVal('rev_days', days.length > 0 ? days.join(", ") : "None");
+
+        // Time
+        let s = getVal('available_time_start');
+        let e = getVal('available_time_end');
+        setVal('rev_time', (s && e) ? `${s} - ${e}` : '-');
+
+        // Hospital Logic
+        let drop = document.querySelector('[name="hospital_affiliation"]');
+        let manual = document.getElementById('hospital_name_manual');
+        let hospName = "-";
+        
+        if (drop && drop.value) hospName = drop.options[drop.selectedIndex].text;
+        else if (manual && manual.value) hospName = manual.value;
+        
+        setVal('rev_hospital', hospName);
+    }   
 
     function toggleSpecialty(selectObj) {
-        var other = document.getElementById('specialty_other');
-        other.style.display = (selectObj.value === 'Other') ? 'block' : 'none';
+        var otherInput = document.getElementById('specialty_other');
+        if (selectObj.value === 'Other') {
+            otherInput.style.display = 'block';
+            otherInput.required = true;
+            otherInput.name = "specialty"; 
+            selectObj.name = "specialty_select"; 
+        } else {
+            otherInput.style.display = 'none';
+            otherInput.required = false;
+            otherInput.name = "specialty_other_unused";
+            selectObj.name = "specialty";
+        }
     }
-    
-    function togglePassword(id, icon) {
-        var x = document.getElementById(id);
-        if(x.type === "password") { x.type="text"; icon.classList.replace("fa-eye", "fa-eye-slash"); }
-        else { x.type="password"; icon.classList.replace("fa-eye-slash", "fa-eye"); }
+
+    function togglePassword(fieldId, icon) {
+        const input = document.getElementById(fieldId);
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        } else {
+            input.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        }
     }
 </script>
 {% endblock %}

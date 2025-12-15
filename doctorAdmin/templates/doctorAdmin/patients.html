@@ -8,37 +8,63 @@
 {% endblock %}
 
 {% block content %}
-    <!-- Page Header -->
     <div class="page-header">
-        <h2>My Patients</h2>
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" placeholder="Search patients...">
-        </div>
+        <h2>My Patients <span style="font-size: 0.8em; color: #666; font-weight: normal;">({{ total_count }})</span></h2>
+        
+        <form method="GET" action="" class="search-box">
+            <button type="submit" style="border:none; background:transparent; cursor:pointer;">
+                <i class="fas fa-search"></i>
+            </button>
+            <input type="text" name="q" placeholder="Search patients by name..." value="{{ request.GET.q }}">
+        </form>
     </div>
 
-    <!-- Patients Table Container -->
     <div class="table-container">
         <table class="patients-table">
             <thead>
                 <tr>
                     <th>Patient Name</th>
                     <th>Last Visit</th>
-                    <th>Diagnosis</th>
+                    <th>Diagnosis / Reason</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Rows... -->
+                {% for patient in patients %}
                 <tr>
-                    <td><div class="patient-profile"><div class="avatar blue">R</div><span>Rajesh Kumar</span></div></td>
-                    <td>2024-11-20</td>
-                    <td>Hypertension</td>
-                    <td><span class="status-badge treatment">Under Treatment</span></td>
-                    <td><div class="actions"><button class="icon-action"><i class="far fa-eye"></i></button></div></td>
+                    <td>
+                        <div class="patient-profile">
+                            <div class="avatar {% cycle 'blue' 'purple' 'orange' 'green' %}">
+                                {{ patient.avatar_char }}
+                            </div>
+                            <span>{{ patient.name }}</span>
+                        </div>
+                    </td>
+                    <td>{{ patient.last_visit|date:"M d, Y" }}</td>
+                    
+                    <td>{{ patient.diagnosis|truncatechars:30 }}</td>
+                    
+                    <td>
+                        <span class="status-badge {{ patient.css_class }}">
+                            {{ patient.status }}
+                        </span>
+                    </td>
+                    
+                    <td>
+                        <div class="actions">
+                            <button class="icon-action" title="View History"><i class="far fa-eye"></i></button>
+                        </div>
+                    </td>
                 </tr>
-                <!-- More Rows -->
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px; color: #6b7280;">
+                        <i class="fas fa-user-injured" style="font-size: 32px; margin-bottom: 10px; display: block; opacity: 0.5;"></i>
+                        No patients found.
+                    </td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
