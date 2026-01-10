@@ -49,7 +49,7 @@ class FindDoctorView(View):
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.db.models import Avg, Count
-from .models import DoctorProfile, DoctorSchedule
+from .models import DoctorProfile, DoctorSchedule, DoctorReview
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 
@@ -84,6 +84,34 @@ class DcotorDetailsView(View):
             'schedule_json': json.dumps(schedule_data, cls=DjangoJSONEncoder) 
         }
         return render(request, 'find_doctor/doctor_detail.html', context)
+
+    def post(self, request, pk):
+        if not request.user.is_authenticated:
+            messages.error(request, "You must be logged in to review.")
+            return redirect('login')
+        
+        doctor = get_object_or_404(DoctorProfile, pk=pk)
+        
+        # Check if already reviewed
+        if DoctorReview.objects.filter(user=request.user, doctor=doctor).exists():
+            messages.warning(request, "You have already reviewed this doctor.")
+            return redirect('doctor_detail', pk=pk)
+            
+        rating = request.POST.get('rating')
+        comment = request.POST.get('comment')
+        
+        if rating:
+            DoctorReview.objects.create(
+                user=request.user,
+                doctor=doctor,
+                rating=rating,
+                comment=comment
+            )
+            messages.success(request, "Review submitted successfully!")
+        else:
+            messages.error(request, "Please select a star rating.")
+            
+        return redirect('doctor_detail', pk=pk)
 
 # find_doctor/views.py
 

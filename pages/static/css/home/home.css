@@ -1,6 +1,6 @@
-/* =========================================
+/* 
 GLOBAL & HERO SECTION
-   ========================================= */
+*/
 section {
     width: 100%;
     box-sizing: border-box;
@@ -12,18 +12,16 @@ section {
     margin: 0 auto;
 }
 
-/* Hero */
-/* =========================================
+/* 
 1. HERO SECTION
-   ========================================= */
+   */
 .hero-section {
-    /* UPDATED: 3-Color Gradient from Design */
     background: linear-gradient(135deg, #0092B8 0%, #1447E6 50%, #1C398E 100%);
     
     color: white;
     padding: 80px 0 100px 0;
     position: relative;
-    overflow: hidden; /* Ensures no child elements spill out */
+    overflow: hidden; 
 }
 
 .hero-container {
@@ -99,13 +97,13 @@ section {
 .icon-circle {
     width: 56px;
     height: 56px;
-    border-radius: 10px; /* Changed to 10px to match design */
+    border-radius: 10px; 
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px; /* Slightly larger icon */
+    font-size: 28px; 
     margin-bottom: 24px;
-    color: white; /* Icons are now white */
+    color: white; 
 }
 
 /* 1. Find Hospitals Gradient */
@@ -164,16 +162,16 @@ section {
     text-align: center;
 }
 
-/* Desktop layout - Force exactly 3 columns */
+
 @media (min-width: 1024px) {
     .features-grid {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
-/* --- UPDATED FEATURE CARD --- */
+
 .feature-card {
-    padding: 32px 24px; /* Increased padding for better look */
+    padding: 32px 24px; 
     border: 1px solid #EAECF0; /* ADDED BORDER */
     border-radius: 16px; /* ADDED RADIUS */
     background: white;
@@ -196,9 +194,8 @@ section {
     justify-content: center;
     margin: 0 auto 24px;
     font-size: 28px;
-    /* New Single Style for ALL icons */
-    background-color: #E0F7FA; /* Light blue background */
-    color: #0092B8; /* Dark blue icon color */
+    background-color: #E0F7FA; 
+    color: #0092B8; 
 }
 
 /* --- TEXT STYLES --- */
@@ -217,13 +214,10 @@ section {
     font-weight: 400;
 }
 
-/* Steps */
-/* =========================================
-   4. HOW IT WORKS SECTION
-   ========================================= */
+
+/* 4. HOW IT WORKS SECTION */
 .how-it-works {
     padding: 80px 0;
-    /* Exact Gradient from Figma */
     background: linear-gradient(180deg, #f7f7f9 0%, rgb(250, 249, 249) 100%);
 }
 
@@ -240,7 +234,6 @@ section {
     border-radius: 14px;
     flex: 1;
     min-width: 280px;
-    /* Exact Shadow from Figma */
     box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.10); 
     position: relative;
     overflow: hidden;
@@ -253,7 +246,6 @@ section {
 
 .step-number {
     font-size: 60px;
-    /* Using a Light Cyan to match the design vibe (since Figma code had transparent) */
     color: #E0F7FA; 
     font-weight: 400;
     position: absolute;
@@ -268,20 +260,20 @@ section {
     margin-bottom: 12px;
     font-size: 20px;
     font-weight: 400;
-    color: #101828; /* Figma Color */
+    color: #101828; 
     position: relative;
     z-index: 1;
 }
 
 .step-card p {
-    color: #4A5565; /* Figma Color */
+    color: #4A5565; 
     font-size: 16px;
     line-height: 26px;
     position: relative;
     z-index: 1;
 }
 
-/* Optional: Connecting Line Effect (Visual only) */
+
 .step-card::after {
     content: '';
     position: absolute;
@@ -289,21 +281,21 @@ section {
     right: 0;
     width: 30px;
     height: 2px;
-    background: #53EAFD; /* The Cyan Line Color from Figma */
-    display: none; /* Hidden by default on mobile */
+    background: #53EAFD; 
+    display: none; 
 }
 
 /* Show connecting lines on larger screens */
 @media (min-width: 992px) {
     .step-card:not(:last-child)::after {
         display: block;
-        right: -15px; /* Positions it between cards */
+        right: -15px; 
     }
 }
 
-/* =========================================
-   5. TESTIMONIALS SECTION (New & Fixed)
-   ========================================= */
+/* 
+5. TESTIMONIALS SECTION (New & Fixed)
+ */
 .testimonials-section {
     padding: 80px 0;
     background: white;
@@ -318,7 +310,7 @@ section {
 .testimonial-card {
     flex: 1;
     min-width: 300px;
-    background: #F9FAFB; /* From Figma */
+    background: #F9FAFB; 
     border: 1px solid #E5E7EB;
     border-radius: 14px;
     padding: 32px;
@@ -360,9 +352,7 @@ section {
 .user-info span { color: #6A7282; font-size: 14px; }
 
 
-/* =========================================
-   6. DOCTOR SECTION (Matched to Hospital Design)
-   ========================================= */
+/* 6. DOCTOR SECTION (Matched to Hospital Design)*/
 
 .doctor-cta-section {
     /* Same Gradient flow */
@@ -424,7 +414,7 @@ section {
 
 .doctor-benefits li i { 
     font-size: 20px; 
-    color: #53EAFD; /* Cyan checkmarks */
+    color: #53EAFD; 
 }
 
 .btn-doctor-reg {
@@ -514,9 +504,8 @@ section {
     }
 }
 
-/* =========================================
-   7. CTA BANNER (Bottom)
-   ========================================= */
+
+/* 7. CTA BANNER (Bottom) */
 .cta-banner {
     /* The Exact 3-Color Gradient from Figma */
     background: linear-gradient(90deg, #0092B8 0%, #1447E6 50%, #1C398E 100%);
@@ -557,7 +546,7 @@ section {
 
 /* Base Button Style */
 .btn-cta {
-    padding: 12px 32px; /* Height approx 60px total */
+    padding: 12px 32px; 
     border-radius: 10px;
     font-size: 16px;
     font-weight: 400;
@@ -568,7 +557,7 @@ section {
     gap: 8px;
     transition: transform 0.2s;
     min-width: 160px;
-    height: 60px; /* Fixed height to match Figma */
+    height: 60px; 
 }
 
 .btn-cta:hover {
@@ -596,9 +585,7 @@ section {
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* =========================================
-   NEW SECTION: HOSPITAL PARTNER (Matches Design)
-   ========================================= */
+/* NEW SECTION: HOSPITAL PARTNER (Matches Design)*/
 
 .hospital-partner-section {
     padding: 80px 0 80px 0;
@@ -773,9 +760,7 @@ section {
         padding: 30px;
     }
 }
-/* =========================================
-8. MOBILE RESPONSIVENESS
-   ========================================= */
+/* MOBILE RESPONSIVENESS */
 @media (max-width: 968px) {
     .hero-container, .doctor-container { flex-direction: column; text-align: center; }
     .hero-image-wrapper { padding-left: 0; margin-top: 40px; }

@@ -33,7 +33,6 @@
         <div class="doctors-grid">
             
             {% for doctor in page_obj %}
-            <a href="{% url 'doctor_detail' doctor.pk %}" class="doctor-card-link">
                 <div class="doctor-card">
                     <div class="doc-header-image">
                         {% if doctor.profile_photo %}
@@ -100,20 +99,19 @@
                                 <span class="review-count">{{ doctor.review_count|default:"0" }} <br> reviews</span>
                             </div>
                         </div>
-
-                        <div class="action-buttons">
-                            <button class="btn-view-profile">
+                        
+                        <div class="doc-card-btns-final">
+                            <a href="{% url 'doctor_detail' doctor.pk %}" class="btn-profile-final">
                                 <i class="far fa-eye"></i> View Profile
-                            </button>
+                            </a>
                             
-                            <button class="btn-book-now">
+                            <a href="{% url 'appointment_page' %}?doctor={{ doctor.id }}" class="btn-book-final">
                                 <i class="far fa-calendar-check"></i> Book Now
-                            </button>
+                            </a>
                         </div>
                     </div>
-                    </div>
                 </div>
-            </a>
+                </div>
             {% empty %}
             <div class="col-12 text-center py-5" style="grid-column: 1/-1;">
                 <h3>No doctors found matching your criteria.</h3>

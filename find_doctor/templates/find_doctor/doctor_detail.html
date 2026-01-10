@@ -101,6 +101,32 @@
     <div id="overview-section" class="container main-content-grid fade-in">
         
         <div class="details-column">
+            
+            {% if user.is_authenticated %}
+            <div class="write-review-card white-card mb-16" style="padding: 24px; margin-bottom: 30px;">
+                <h3 style="margin-bottom: 5px;">Rate Dr. {{ doctor.user.last_name }}</h3>
+                <p style="color: #6B7280; font-size: 14px; margin-bottom: 15px;">Share your experience with us</p>
+                <form method="POST" action="{% url 'doctor_detail' doctor.pk %}">
+                    {% csrf_token %}
+                    <div class="rating-input-wrapper" style="margin-bottom: 20px;">
+                        <div class="star-rating">
+                            <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 stars">★</label>
+                            <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 stars">★</label>
+                            <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 stars">★</label>
+                            <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 stars">★</label>
+                            <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 star">★</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 15px; text-align: left;">
+                        <textarea name="comment" rows="3" class="form-control" placeholder="Write a review (optional)..." style="width:100%; padding:12px; border:1px solid #E5E7EB; border-radius:10px; resize: none; font-size: 14px;"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: auto; padding: 10px 40px;">Submit Rating</button>
+                </form>
+            </div>
+            {% endif %}
+
             <div class="content-section">
                 <h3 class="section-title">Dr. {{ doctor.user.first_name }}</h3>
                 <p class="bio-text">
@@ -177,6 +203,35 @@
 
     <div id="reviews-section" class="container fade-in" style="display: none;">
         <div class="reviews-wrapper">
+            
+
+            
+            <style>
+                /* Star Rating Improved CSS */
+                .star-rating {
+                    display: flex;
+                    flex-direction: row-reverse;
+                    justify-content: flex-end; /* Left align (reversed) */
+                    float: left; /* Ensure it stays left */
+                    gap: 8px;
+                }
+                .star-rating input { display: none; }
+                .star-rating label {
+                    font-size: 35px; /* Bigger stars */
+                    color: #D1D5DB; /* Lighter gray default */
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+                }
+                .star-rating label:hover,
+                .star-rating label:hover ~ label {
+                    color: #FBBF24; /* Brighter Gold Hover */
+                    transform: scale(1.1);
+                }
+                .star-rating input:checked ~ label {
+                    color: #F59E0B; /* Deep Gold Selected */
+                }
+            </style>
             
             <div class="review-summary-card">
                 <div class="summary-left">

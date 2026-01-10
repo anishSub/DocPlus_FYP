@@ -22,6 +22,11 @@ class CustomUserCreationForm(UserCreationForm):
         required=True,
         widget=forms.TextInput(attrs={'placeholder': 'Mobile Number'})
     )
+    username = forms.CharField(
+        max_length=150,
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': 'Choose a username'})
+    )
     date_of_birth = forms.DateField(
         required=True,
         widget=forms.DateInput(attrs={'type': 'date'})
@@ -40,7 +45,7 @@ class CustomUserCreationForm(UserCreationForm):
     
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email', 'mobile_number','date_of_birth')
+        fields = ('first_name', 'last_name', 'username', 'email', 'mobile_number', 'date_of_birth', 'gender')
     
     def clean_email(self):
         """

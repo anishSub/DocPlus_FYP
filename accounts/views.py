@@ -13,25 +13,16 @@ class RegisterView(CreateView):
     success_url = reverse_lazy('login')
     
     def form_valid(self, form):
-        # 1. Create the user instance but DO NOT save to DB yet
+        # The form's save() method already handles:
+        # 1. Creating the User with email, first_name, last_name, username
+        # 2. Creating PatientProfile with mobile_number, date_of_birth, gender
+        
         user = form.save(commit=False)
-        
-        # 2. THE FIX: Set username to be the same as email
-        # This satisfies the database requirement for a unique username
-        user.username = user.email 
-        
-        # 3. Set default role
         user.role = User.Role.PATIENT
-        
-        # 4. Now save the user to the database
         user.save()
         
-        # 5. Extract mobile number from the validated form data
-        mobile = form.cleaned_data.get('mobile_number')
-        gender = form.cleaned_data.get('gender')
-        
-        # 6. Create Patient Profile with the mobile number
-        PatientProfile.objects.create(user=user, mobile_number=mobile, gender=gender)
+        # Now create the PatientProfile via the form's save method
+        form.save(commit=True)
         
         messages.success(self.request, 'Registration successful! Please log in.')
         return redirect(self.success_url)

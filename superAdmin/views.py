@@ -22,20 +22,16 @@ class AdminOverviewView(TemplateView):
         context['total_patients'] = User.objects.filter(role='PATIENT').count()
         context['total_doctors'] = User.objects.filter(role='DOCTOR').count()
         
-        # --- 2. Appointment Stats ---
         today = timezone.now().date()
         
-        # FIX: Using 'date' instead of 'appointment_date'
         context['total_appointments_today'] = Appointment.objects.filter(date=today).count()
         
-        # FIX: Using lowercase 'completed' based on your model choices
         context['completed_appointments_count'] = Appointment.objects.filter(
             date=today, 
             status='completed'
         ).count()
 
         # --- 3. Revenue Stats ---
-        # Calculate total revenue from completed appointments
         revenue_data = Appointment.objects.filter(status='completed').aggregate(Sum('amount'))
         context['total_revenue'] = revenue_data['amount__sum'] or 0
 
@@ -43,13 +39,7 @@ class AdminOverviewView(TemplateView):
         context['pending_doctors'] = DoctorProfile.objects.filter(is_approved=False).select_related('user')[:5]
         context['pending_doctors_count'] = DoctorProfile.objects.filter(is_approved=False).count()
         
-        # (Placeholder for hospitals if you have that model)
-        # context['pending_hospitals_count'] = Hospital.objects.filter(is_approved=False).count()
 
-        # --- 5. RECENT APPOINTMENTS (THE FIX) ---
-        # CRITICAL FIX: 
-        # 1. Used 'date' instead of 'appointment_date' in order_by
-        # 2. Removed select_related('doctor') because your model uses 'doctor_name' (CharField), not a ForeignKey
         recent_appointments = Appointment.objects.all().order_by('-date', '-start_time')[:5]
         
         context['recent_appointments'] = recent_appointments

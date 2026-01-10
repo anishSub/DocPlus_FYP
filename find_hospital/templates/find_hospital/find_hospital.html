@@ -9,7 +9,7 @@
 <section class="hospitals-hero">
     <div class="container hero-content">
         <h1>Available Hospitals</h1>
-        <p>Showing <span class="fw-bold text-cyan">{{ total_count }}</span> healthcare facilities</p>
+        <p>Explore verified healthcare facilities across Nepal</p>
         
         <form method="GET" action="." class="search-wrapper">
             <div class="search-bar">
@@ -26,6 +26,10 @@
 <section class="section-padding bg-gray">
     <div class="container">
         
+        <div class="results-header">
+            <p>Found <span class="text-dark fw-bold">{{ total_count }}</span> hospitals</p>
+        </div>
+
         <div class="hospitals-grid">
             
             {% for hospital in hospitals %}

@@ -38,9 +38,7 @@ class Hospital(models.Model):
     )
     # --- Step 2: Capacity & Details ---
     total_beds = models.PositiveIntegerField()
-    # total_doctors = models.PositiveIntegerField()
-    # In your HTML template (hospital_detail.html)
-    # <p>Total Doctors: {{ hospital.affiliated_doctors.count }}</p>
+
     description = models.TextField()
     
     # List of services offered

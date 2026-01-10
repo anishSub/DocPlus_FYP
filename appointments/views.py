@@ -8,7 +8,6 @@ from datetime import datetime, timedelta
 
 class AppointmentView(View):
     def get(self, request):
-        # 1. Fetch approved doctors for dropdown
         doctors = DoctorProfile.objects.filter(is_approved=True).select_related('user')
         
         # 2. CAPTURE PRE-FILLED DATA (From URL Parameters)
@@ -33,7 +32,6 @@ class AppointmentView(View):
 
 @require_POST
 def save_appointment(request):
-    # --- 1. Extract Data ---
     full_name = request.POST.get('full_name')
     email = request.POST.get('email')
     phone = request.POST.get('phone')
@@ -49,7 +47,7 @@ def save_appointment(request):
     appointment_date = request.POST.get('appointment_date')
     
     # --- 2. TIME CONVERSION LOGIC ---
-    time_str = request.POST.get('time_slot') # Gets "09:00 AM" string
+    time_str = request.POST.get('time_slot') 
     
     start_time_obj = None
     end_time_obj = None

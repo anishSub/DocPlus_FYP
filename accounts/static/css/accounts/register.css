@@ -10,7 +10,12 @@
     --success: #10B981;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
 
 body {
     background: var(--bg-gradient);
@@ -18,7 +23,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 40px 20px;
+    padding: 20px 20px;
 }
 
 /* --- Layout --- */
@@ -30,7 +35,8 @@ body {
 
 .auth-container {
     width: 100%;
-    max-width: 672px; /* Wider for Register Page */
+    max-width: 600px;
+    /* Optimized width for two-column compact form */
 }
 
 /* --- Back Button --- */
@@ -38,36 +44,64 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    color: rgba(255,255,255,0.9);
+    color: rgba(255, 255, 255, 0.9);
     text-decoration: none;
     margin-bottom: 16px;
     font-size: 14px;
     transition: opacity 0.2s;
 }
-.back-btn:hover { opacity: 0.8; }
+
+.back-btn:hover {
+    opacity: 0.8;
+}
 
 /* --- Card Styles --- */
 .auth-card {
     background: white;
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
 .auth-header {
     background: var(--primary-gradient);
-    padding: 32px;
+    padding: 20px 32px;
     color: white;
 }
-.auth-header h1 { font-size: 28px; margin-bottom: 8px; font-weight: 600; }
-.auth-header p { color: #CEFAFE; font-size: 16px; }
 
-.auth-body { padding: 32px; }
+.auth-header h1 {
+    font-size: 24px;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.auth-header p {
+    color: #CEFAFE;
+    font-size: 14px;
+}
+
+.auth-body {
+    padding: 24px;
+}
 
 /* --- Form Elements --- */
-.auth-form { display: flex; flex-direction: column; gap: 20px; }
-.form-group { display: flex; flex-direction: column; gap: 6px; }
-.field-label { font-size: 14px; font-weight: 500; color: #364153; }
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.field-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #364153;
+}
 
 /* User Type Grid (Specific to Register) */
 .user-type-grid {
@@ -76,9 +110,15 @@ body {
     gap: 12px;
 }
 
-.type-radio input { display: none; }
+.type-radio input {
+    display: none;
+}
+
 .radio-box {
-    display: flex; align-items: center; justify-content: center; gap: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
     height: 48px;
     border: 1px solid var(--border);
     border-radius: 10px;
@@ -88,35 +128,90 @@ body {
     font-size: 14px;
     text-transform: capitalize;
 }
-.radio-box i { display: none; }
-.type-radio input:checked + .radio-box {
+
+.radio-box i {
+    display: none;
+}
+
+.type-radio input:checked+.radio-box {
     background: #ECFEFF;
     border-color: #0092B8;
     color: #0092B8;
     font-weight: 600;
 }
-.type-radio input:checked + .radio-box i { display: inline-block; }
+
+.type-radio input:checked+.radio-box i {
+    display: inline-block;
+}
 
 /* Inputs */
-.row-input { display: flex; gap: 12px; }
-.row-input .input-wrapper { flex: 1; }
-.input-wrapper { position: relative; }
+.row-input {
+    display: flex;
+    gap: 12px;
+}
+
+.row-input .input-wrapper {
+    flex: 1;
+}
+
+.input-wrapper {
+    position: relative;
+}
 
 .input-wrapper input {
     width: 100%;
-    height: 52px;
-    padding: 12px 16px 12px 44px;
+    height: 44px;
+    padding: 10px 16px 10px 40px;
     border: 1px solid var(--border);
     border-radius: 10px;
     background: var(--input-bg);
-    font-size: 16px;
+    font-size: 15px;
     color: var(--text-dark);
     outline: none;
 }
-.input-wrapper input:focus { border-color: #0092B8; background: white; }
+
+.input-wrapper input:focus {
+    border-color: #0092B8;
+    background: white;
+}
+
+/* Select Dropdown Styling (Gender, etc.) */
+.input-wrapper select {
+    width: 100%;
+    height: 44px;
+    padding: 10px 16px 10px 40px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--input-bg);
+    font-size: 15px;
+    color: var(--text-dark);
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    /* Remove default arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 20px;
+}
+
+.input-wrapper select:focus {
+    border-color: #0092B8;
+    background-color: white;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230092B8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+/* Placeholder-like styling for default option */
+.input-wrapper select option[value=""] {
+    color: #9CA3AF;
+}
+
 .input-icon {
     position: absolute;
-    left: 16px; top: 50%;
+    left: 16px;
+    top: 50%;
     transform: translateY(-50%);
     color: #9CA3AF;
     font-size: 18px;
@@ -124,42 +219,81 @@ body {
 
 /* Terms Checkbox */
 .terms-check {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 14px; color: var(--text-gray);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-gray);
 }
-.terms-check a { color: #0092B8; text-decoration: none; font-weight: 500; }
+
+.terms-check a {
+    color: #0092B8;
+    text-decoration: none;
+    font-weight: 500;
+}
 
 /* Submit Button */
 .btn-submit {
-    height: 52px;
+    height: 44px;
     background: var(--primary-gradient);
     color: white;
     border: none;
     border-radius: 10px;
-    font-size: 16px; font-weight: 600;
+    font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
-    margin-top: 8px;
+    margin-top: 4px;
 }
-.btn-submit:hover { opacity: 0.90; }
+
+.btn-submit:hover {
+    opacity: 0.90;
+}
 
 /* --- Social & Footer --- */
-.divider { text-align: center; margin: 24px 0; position: relative; }
-.divider::before {
-    content: ''; position: absolute; top: 50%; left: 0; right: 0;
-    height: 1px; background: var(--border); z-index: 1;
-}
-.divider span {
-    background: white; position: relative; z-index: 2;
-    padding: 0 16px; color: var(--text-gray); font-size: 14px;
+.divider {
+    text-align: center;
+    margin: 16px 0;
+    position: relative;
 }
 
-.social-buttons { display: flex; gap: 16px; }
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border);
+    z-index: 1;
+}
+
+.divider span {
+    background: white;
+    position: relative;
+    z-index: 2;
+    padding: 0 16px;
+    color: var(--text-gray);
+    font-size: 14px;
+}
+
+.social-buttons {
+    display: flex;
+    gap: 16px;
+}
+
 .btn-social {
-    flex: 1; height: 48px;
+    flex: 1;
+    height: 42px;
     border: 1px solid var(--border);
-    background: white; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    cursor: pointer; font-size: 14px; color: var(--text-dark);
+    background: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-dark);
 }
 
 
@@ -169,34 +303,65 @@ body {
 }
 
 /* Google Icon Color (Official Google Red) */
-.google i { 
-    color: #df5353; 
-    font-size: 18px; 
+.google i {
+    color: #df5353;
+    font-size: 18px;
 }
 
 /* Facebook Icon Color (Official Facebook Blue) */
-.facebook i { 
-    color: #1877F2; 
-    font-size: 18px; 
+.facebook i {
+    color: #1877F2;
+    font-size: 18px;
 }
 
-.auth-footer { text-align: center; margin-top: 24px; font-size: 14px; color: var(--text-gray); }
-.auth-footer a { color: #0092B8; text-decoration: none; font-weight: 600; }
+.auth-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--text-gray);
+}
+
+.auth-footer a {
+    color: #0092B8;
+    text-decoration: none;
+    font-weight: 600;
+}
 
 .secure-note {
-    text-align: center; color: rgba(255,255,255,0.8);
-    margin-top: 24px; font-size: 14px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 16px;
+    font-size: 13px;
 }
 
 /* Alerts */
-.messages-container { margin-bottom: 20px; }
-.alert { padding: 12px; border-radius: 8px; font-size: 14px; margin-bottom: 8px; }
-.alert.error { background: #FEF2F2; color: #991B1B; border: 1px solid #FCA5A5; }
+.messages-container {
+    margin-bottom: 20px;
+}
+
+.alert {
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.alert.error {
+    background: #FEF2F2;
+    color: #991B1B;
+    border: 1px solid #FCA5A5;
+}
 
 /* Responsive */
 @media (max-width: 600px) {
-    .user-type-grid { grid-template-columns: 1fr; }
-    .row-input { flex-direction: column; gap: 20px; }
+    .user-type-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .row-input {
+        flex-direction: column;
+        gap: 20px;
+    }
 }
 
 
@@ -207,8 +372,8 @@ body {
     position: relative;
     width: 100%;
     /* Flexbox keeps icons aligned properly */
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
 }
 
 /* 1. The Lock Icon (Left) */
@@ -218,14 +383,16 @@ body {
     z-index: 5;
     color: #9CA3AF;
     font-size: 18px;
-    pointer-events: none; /* Clicks go through to input */
+    pointer-events: none;
+    /* Clicks go through to input */
 }
 
 /* 2. The Eye Icon (Right) */
 .toggle-password-btn {
     position: absolute;
-    right: 16px; 
-    z-index: 10; /* Clickable */
+    right: 16px;
+    z-index: 10;
+    /* Clickable */
     cursor: pointer;
     color: #888;
     font-size: 18px;
@@ -241,7 +408,7 @@ body {
     width: 100%;
     /* Left Padding: 44px (for Lock) */
     /* Right Padding: 44px (for Eye) */
-    padding: 12px 44px 12px 44px !important; 
+    padding: 12px 44px 12px 44px !important;
     border: 1px solid var(--border);
     border-radius: 10px;
     background: var(--input-bg);
@@ -258,14 +425,16 @@ body {
 .provider-link-box {
     margin-top: 10px;
     text-align: center;
-    border-top: 1px solid #E5E7EB; /* Light gray border */
+    border-top: 1px solid #E5E7EB;
+    /* Light gray border */
     padding-top: 20px;
     padding-bottom: 20px;
 }
 
 .provider-text {
     font-size: 14px;
-    color: #6B7280; /* Neutral gray */
+    color: #6B7280;
+    /* Neutral gray */
     margin-bottom: 8px;
 }
 
@@ -277,7 +446,8 @@ body {
 }
 
 .provider-link {
-    color: #0092B8; /* Your primary brand color */
+    color: #0092B8;
+    /* Your primary brand color */
     font-weight: 600;
     text-decoration: none;
     font-size: 14px;
@@ -285,38 +455,42 @@ body {
 }
 
 .provider-link:hover {
-    color: #1C398E; /* Darker blue on hover */
+    color: #1C398E;
+    /* Darker blue on hover */
     text-decoration: underline;
 }
 
 .separator {
-    color: #D1D5DB; /* Light gray */
+    color: #D1D5DB;
+    /* Light gray */
     font-size: 14px;
 }
 
 
 .provider-link-box {
-    margin-top: 20px;
+    margin-top: 12px;
     text-align: center;
     border-top: 1px solid #E5E7EB;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 16px;
+    padding-bottom: 16px;
 
-    padding-left: 40px; 
+    padding-left: 40px;
     padding-right: 40px;
 }
 
 .provider-text {
-    font-size: 14px;
+    font-size: 13px;
     color: #6B7280;
-    margin-bottom: 15px; /* Added slightly more space above buttons */
+    margin-bottom: 12px;
 }
 
 .provider-actions {
     display: flex;
-    justify-content: space-between; /* Spreads them out */
+    justify-content: space-between;
+    /* Spreads them out */
     align-items: center;
-    gap: 15px; /* Space between the two buttons */
+    gap: 15px;
+    /* Space between the two buttons */
 }
 
 
@@ -325,29 +499,36 @@ body {
 /* New Button Class based on .btn-submit */
 .btn-provider {
     /* Styles copied from .btn-submit */
-    height: 52px;
+    height: 44px;
     background: var(--primary-gradient);
     color: white;
     border: none;
     border-radius: 10px;
-    font-size: 15px; /* Slightly smaller to ensure text fits */
+    font-size: 14px;
+    /* Slightly smaller to ensure text fits */
     font-weight: 600;
     cursor: pointer;
-    text-decoration: none; /* Removes link underline */
+    text-decoration: none;
+    /* Removes link underline */
 
     /* Layout properties to make <a> tag behave like a button */
     display: flex;
     align-items: center;
     justify-content: center;
-    flex: 1; /* Makes both buttons equal width (50% each) */
+    flex: 1;
+    /* Makes both buttons equal width (50% each) */
     transition: opacity 0.2s ease, transform 0.1s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: adds nice depth */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Optional: adds nice depth */
 }
 
 .btn-provider:hover {
-    color: white; /* Keeps text white */
-    opacity: 0.9; /* Slight fade effect on hover */
-    transform: translateY(-1px); /* Slight lift effect */
+    color: white;
+    /* Keeps text white */
+    opacity: 0.9;
+    /* Slight fade effect on hover */
+    transform: translateY(-1px);
+    /* Slight lift effect */
 }
 
 .btn-provider:active {
