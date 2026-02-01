@@ -201,4 +201,18 @@ class SettingsView(TemplateView):
         context = super().get_context_data(**kwargs)
         # Add your context data here if needed
         return context
-    
+
+from .models import ErrorLog
+from django.views.generic import ListView, DetailView
+
+class ErrorLogListView(ListView):
+    model = ErrorLog
+    template_name = 'superAdmin/error_logs.html'
+    context_object_name = 'errors'
+    ordering = ['-timestamp']
+    paginate_by = 20
+
+class ErrorLogDetailView(DetailView):
+    model = ErrorLog
+    template_name = 'superAdmin/error_log_detail.html'
+    context_object_name = 'error'

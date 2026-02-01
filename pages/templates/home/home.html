@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/home/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/home/home.css' %}?v=14">
 {% endblock %}
 
 {% block content %}
@@ -13,11 +13,159 @@
             <h1>Your Health, <br>Our Priority</h1>
             <p class="hero-subtitle">Find trusted hospitals and qualified doctors across Nepal. Book appointments, read reviews, and get expert medical consultations from anywhere.</p>
             
+            <!-- Inline Alert Message -->
+            <div id="search-alert" class="search-inline-alert" style="display: none;">
+                <i class="ri-information-fill"></i> Please select a result from the list below 👇
+            </div>
+
             <div class="search-box">
                 <i class="ri-search-line search-icon"></i>
-                <input type="text" placeholder="Search doctors, hospitals, specialties...">
-                <button class="search-btn">Search</button>
+                <input type="text" id="globalSearchInput" placeholder="Search doctors, hospitals, specialties..." autocomplete="off">
+                <button class="search-btn" onclick="handleSearchClick()">Search</button>
+                
+                <!-- Search Results Dropdown -->
+                <div id="searchResults" class="search-results-dropdown"></div>
             </div>
+
+<script>
+    const searchInput = document.getElementById('globalSearchInput');
+    const resultsBox = document.getElementById('searchResults');
+    const searchAlert = document.getElementById('search-alert');
+    let debounceTimer;
+
+    // 1. Listen for typing
+    searchInput.addEventListener('input', function() {
+        // Hide alert when user types
+        searchAlert.style.display = 'none';
+
+        const query = this.value.trim();
+        
+        clearTimeout(debounceTimer);
+        
+        if (query.length < 2) {
+            resultsBox.style.display = 'none';
+            return;
+        }
+
+        // Debounce API calls (wait 300ms)
+        debounceTimer = setTimeout(() => {
+            fetch(`/api/global-search/?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    renderResults(data, query);
+                })
+                .catch(error => console.error('Error:', error));
+        }, 300);
+    });
+
+    // 2. Render Results (Dispatcher Logic)
+    function renderResults(data, query) {
+        if (data.doctors.length === 0 && data.hospitals.length === 0) {
+            resultsBox.innerHTML = `
+                <div class="no-results">No results found</div>
+                <div class="dispatcher-links">
+                    <a href="{% url 'find_doctor' %}?query=${query}" class="dispatcher-link">See all Doctors for "${query}"</a>
+                    <a href="{% url 'find_hospital' %}?query=${query}" class="dispatcher-link">See all Hospitals for "${query}"</a>
+                </div>
+            `;
+            resultsBox.style.display = 'block';
+            return;
+        }
+
+        let html = '';
+
+        // Doctors Section
+        if (data.doctors.length > 0) {
+            html += '<div class="result-category">Doctors</div>';
+            data.doctors.forEach(doc => {
+                html += `
+                    <a href="${doc.url}" class="result-item">
+                        <img src="${doc.image || '{% static "images/default-user.png" %}'}" class="result-img" onerror="this.src='{% static "images/default-user.png" %}'">
+                        <div class="result-info">
+                            <span class="result-name">${doc.name}</span>
+                            <span class="result-desc">${doc.specialty}</span>
+                        </div>
+                    </a>
+                `;
+            });
+        }
+
+        // Hospitals Section
+        if (data.hospitals.length > 0) {
+            html += '<div class="result-category">Hospitals</div>';
+            data.hospitals.forEach(hosp => {
+                html += `
+                    <a href="${hosp.url}" class="result-item">
+                        <img src="${hosp.image || '{% static "images/default-hospital.png" %}'}" class="result-img" onerror="this.src='{% static "images/default-hospital.png" %}'">
+                        <div class="result-info">
+                            <span class="result-name">${hosp.name}</span>
+                            <span class="result-desc">${hosp.city}</span>
+                        </div>
+                    </a>
+                `;
+            });
+        }
+
+        // 3. Dispatcher Links (Always Show at Bottom)
+        html += `
+            <div class="dispatcher-links">
+                <a href="{% url 'find_doctor' %}?query=${query}" class="dispatcher-link">
+                    <i class="ri-arrow-right-circle-line"></i> See all Doctors for "${query}"
+                </a>
+                <a href="{% url 'find_hospital' %}?query=${query}" class="dispatcher-link">
+                     <i class="ri-arrow-right-circle-line"></i> See all Hospitals for "${query}"
+                </a>
+            </div>
+        `;
+
+        resultsBox.innerHTML = html;
+        resultsBox.style.display = 'block';
+    }
+
+    // 3. Main Search Button Click - INLINE ALERT LOGIC
+    function handleSearchClick() {
+        const query = searchInput.value.trim();
+        
+        if (!query) {
+            searchInput.focus();
+            return;
+        }
+
+        // Ensuring dropdown is open to show choices
+        if (resultsBox.style.display === 'none') {
+            searchInput.dispatchEvent(new Event('input'));
+        }
+
+        // Show Inline Alert
+        searchAlert.style.display = 'block';
+        
+        // Optional: Shake animation to grab attention
+        searchAlert.classList.remove('shake');
+        void searchAlert.offsetWidth; // trigger reflow
+        searchAlert.classList.add('shake');
+    }
+
+    // 4. Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !resultsBox.contains(e.target) && e.target !== document.querySelector('.search-btn')) {
+            resultsBox.style.display = 'none';
+        }
+    });
+
+    // Add CSS for Shake Animation
+    const style = document.createElement('style');
+    style.innerHTML = `
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+        .shake { animation: shake 0.3s ease-in-out; }
+    `;
+    document.head.appendChild(style);
+</script>
 
             <div class="hero-stats">
                 <div class="stat-item">
@@ -37,11 +185,10 @@
         
         <div class="hero-image-wrapper">
             <div class="image-box">
-                <img src="{% static 'images/photos/homepage_photo.jpg' %}" alt="Doctor Consultation" class="hero-img">
+                <img src="{% static 'images/photos/home_hero_update.png' %}" alt="Doctor Consultation" class="hero-img">
                 
                 <div class="floating-quote">
-                    <p>"The best doctor gives the least medicines."</p>
-                    <span>- Benjamin Franklin</span>
+                    <p>"Expert care, just a click away."</p>
                 </div>
             </div>
         </div>
@@ -49,7 +196,13 @@
 </section>
 
 <section class="services-section">
-
+    <div class="container">
+        <div class="section-header services-header">
+            <h2>Test our facilities</h2>
+            <p>Explore our comprehensive healthcare services</p>
+        </div>
+    </div>
+    
     <div class="services-container">
 
     <a href="{% url 'find_hospital' %}" class="card-link">    

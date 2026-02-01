@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from find_doctor.models import DoctorProfile
 
-
+#Reverse	user.appointments.all()	Gets all appointments belonging to that specific User.
 class Appointment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='appointments')
     
@@ -45,6 +45,46 @@ class Appointment(models.Model):
     ])
     
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    # 5. Video Call Fields
+    is_video_consultation = models.BooleanField(default=True)  # True = Video, False = In-person
+    video_call_link = models.CharField(max_length=255, blank=True, null=True, unique=True)
+    call_access_code = models.CharField(max_length=6, blank=True, null=True)
+    call_link_sent = models.BooleanField(default=False)
+    doctor_approved_call = models.BooleanField(default=False)  # Doctor manually approved sending the link
 
     def __str__(self):
         return f"Appointment: {self.full_name} with {self.doctor.user.first_name}"
+    
+    def save(self, *args, **kwargs):
+        # Generate video call credentials on creation
+        if not self.video_call_link and self.is_video_consultation:
+            import uuid
+            import random
+            self.video_call_link = str(uuid.uuid4())
+            self.call_access_code = str(random.randint(100000, 999999))
+        super().save(*args, **kwargs)
+
+
+class ChatMessage(models.Model):
+    """Real-time chat messages during video consultations"""
+    
+    appointment = models.ForeignKey(
+        Appointment, 
+        on_delete=models.CASCADE, 
+        related_name='chat_messages'
+    )
+    sender_type = models.CharField(
+        max_length=10,
+        choices=[('doctor', 'Doctor'), ('patient', 'Patient')]
+    )
+    sender_name = models.CharField(max_length=255)  # Store name for display
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+    
+    class Meta:
+        ordering = ['timestamp']
+    
+    def __str__(self):
+        return f"{self.sender_name}: {self.message[:50]}"

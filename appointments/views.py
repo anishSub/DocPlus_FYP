@@ -104,3 +104,25 @@ def save_appointment(request):
     }
     
     return render(request, 'appointment/appointment_success.html', context)
+
+
+class VideoCallView(View):
+    """View for accessing video call page"""
+    def get(self, request, appointment_id):
+        # Get the appointment
+        appointment = get_object_or_404(Appointment, id=appointment_id)
+        
+        # Security: Only allow the patient or doctor to access
+        if request.user.is_authenticated:
+            is_patient = appointment.user == request.user
+            is_doctor = appointment.doctor.user == request.user
+            
+            if not (is_patient or is_doctor):
+                return redirect('/')
+        else:
+            return redirect('login')
+        
+        context = {
+            'appointment': appointment,
+        }
+        return render(request, 'appointments/video_call.html', context)

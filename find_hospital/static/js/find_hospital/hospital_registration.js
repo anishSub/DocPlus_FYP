@@ -1,15 +1,15 @@
-var currentTab = 0; 
-showTab(currentTab); 
+var currentTab = 0;
+showTab(currentTab);
 
 function showTab(n) {
     var x = document.getElementsByClassName("form-step");
-    
+
     // Hide all steps
-    for(let i=0; i<x.length; i++) {
+    for (let i = 0; i < x.length; i++) {
         x[i].style.display = "none";
         x[i].classList.remove('active');
     }
-    
+
     // Show current step
     x[n].style.display = "block";
     // Small delay to allow CSS animation to trigger
@@ -35,18 +35,59 @@ function showTab(n) {
 
 function nextPrev(n) {
     var x = document.getElementsByClassName("form-step");
-    
+
     // Validate if pressing Next
     if (n == 1 && !validateForm()) return false;
-    
-    // Submit if at end
+
+    // Submit if at end (Now Step 3 is Review, submit after that)
     if (currentTab + n >= x.length) {
         document.getElementById("hospitalRegForm").submit();
         return false;
     }
-    
+
     currentTab = currentTab + n;
+
+    // If moving to Review Step (Index 3), populate data
+    if (currentTab == 3) {
+        populateReviewSummary();
+    }
+
     showTab(currentTab);
+}
+
+function populateReviewSummary() {
+    // 1. Identity
+    document.getElementById('summary_name').innerText = document.getElementById('rev_name').value;
+    document.getElementById('summary_type').innerText = document.getElementById('rev_type').value;
+    document.getElementById('summary_year').innerText = document.getElementById('rev_year').value;
+    document.getElementById('summary_phone').innerText = document.getElementById('rev_phone').value;
+    document.getElementById('summary_email').innerText = document.getElementById('rev_email').value;
+    document.getElementById('summary_city').innerText = document.getElementById('rev_city').value;
+    document.getElementById('summary_district').innerText = document.getElementById('rev_district').value;
+
+    // 2. Details
+    document.getElementById('summary_beds').innerText = document.getElementById('rev_beds').value;
+
+    // 3. Hours
+    let start = document.getElementById('rev_opd_start').value;
+    let end = document.getElementById('rev_opd_end').value;
+    document.getElementById('summary_hours').innerText = start + ' - ' + end;
+
+    // 4. Emergency
+    let emergency = document.getElementById('emergency_toggle').checked ? "Yes (24/7)" : "No";
+    document.getElementById('summary_emergency').innerText = emergency;
+
+    // 5. Services (Checkboxes)
+    let services = [];
+    document.querySelectorAll('input[name="services"]:checked').forEach((checkbox) => {
+        services.push(checkbox.value);
+    });
+
+    // Add Departments too
+    let depts = document.getElementById('hiddenDeptField').value;
+    if (depts) services.push(...depts.split(','));
+
+    document.getElementById('summary_services').innerText = services.join(', ') || "None Selected";
 }
 
 function validateForm() {
@@ -54,7 +95,7 @@ function validateForm() {
     x = document.getElementsByClassName("form-step");
     // Get all inputs and selects in current tab
     y = x[currentTab].querySelectorAll("input, select, textarea");
-    
+
     for (i = 0; i < y.length; i++) {
         // Check if empty and required
         if (y[i].hasAttribute('required') && y[i].value.trim() == "") {
@@ -68,31 +109,39 @@ function validateForm() {
     // Special Check for Step 1 (Departments)
     if (currentTab == 1) {
         let hiddenDept = document.getElementById("hiddenDeptField");
-        if(hiddenDept.value == "") {
+        if (hiddenDept.value == "") {
             alert("Please add at least one department.");
             valid = false;
         }
     }
 
-    return valid; 
+    return valid;
 }
 
 function updateStepper(n) {
     var steps = document.getElementsByClassName("step");
     var lines = document.getElementsByClassName("line");
 
+    // Define icons for each step (matching HTML)
+    const icons = [
+        '<i class="far fa-building"></i>',       // Step 0: Identity
+        '<i class="fas fa-procedures"></i>',     // Step 1: Capacity
+        '<i class="far fa-image"></i>',          // Step 2: Media
+        '<i class="fas fa-check"></i>'           // Step 3: Review
+    ];
+
     for (var i = 0; i < steps.length; i++) {
         steps[i].classList.remove("active", "completed");
-        
+
+        // Reset to default icon first
+        steps[i].querySelector('.circle').innerHTML = icons[i];
+
         if (i == n) {
             steps[i].classList.add("active");
         } else if (i < n) {
             steps[i].classList.add("completed");
-            // Change circle to checkmark
+            // Completed steps show checkmark
             steps[i].querySelector('.circle').innerHTML = '<i class="fas fa-check"></i>';
-        } else {
-            // Reset numbers if going back
-            steps[i].querySelector('.circle').innerHTML = (i + 1);
         }
     }
 }
@@ -119,10 +168,10 @@ function removeDepartment(value) {
 function renderTags() {
     var container = document.getElementById("deptTagsContainer");
     var hiddenField = document.getElementById("hiddenDeptField");
-    
+
     container.innerHTML = "";
-    
-    departments.forEach(function(dept) {
+
+    departments.forEach(function (dept) {
         var tag = document.createElement("div");
         tag.className = "dept-tag";
         tag.innerHTML = `${dept} <i class="fas fa-times" onclick="removeDepartment('${dept}')"></i>`;
@@ -136,7 +185,7 @@ function renderTags() {
 // File Preview
 function previewFile(input) {
     var file = input.files[0];
-    if(file){
+    if (file) {
         document.getElementById("file-preview-name").innerText = "Selected: " + file.name;
     }
 }
@@ -144,7 +193,7 @@ function previewFile(input) {
 // --- Password Toggle Function ---
 function togglePassword(fieldId, icon) {
     const input = document.getElementById(fieldId);
-    
+
     if (input.type === "password") {
         // Show Password
         input.type = "text";

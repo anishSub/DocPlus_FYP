@@ -6,28 +6,79 @@ from django.db import transaction
 from .models import Hospital, Service, Department 
 from django.shortcuts import get_object_or_404
 from django.db.models import F
-from django.db.models import Q
+from django.db.models import Q, Avg, Count
 
 class FindHospitalView(View):
     def get(self, request):
-        # 1. Get search query from URL (e.g., ?q=Kathmandu)
-        query = request.GET.get('q')
+        # Get search query from URL (e.g., ?q=heart attack)
+        query = request.GET.get('q', '').strip()
+        city_filter = request.GET.get('city', '').strip()
         
-        # 2. Base Query
-        hospitals = Hospital.objects.all().order_by('-id')
-
-        # 3. Apply Search Filter if query exists
+        hospitals = []
+        search_type = 'browse'  # Default
+        total_count = 0
+        
         if query:
-            hospitals = hospitals.filter(
-                Q(name__icontains=query) |
-                Q(city__icontains=query) |
-                Q(district__icontains=query)
-            )
+            # Import recommendation engine
+            from .services import HospitalRecommendationEngine
+            
+            # Initialize recommendation engine
+            engine = HospitalRecommendationEngine()
+            
+            # Check if it's a symptom/condition search
+            if engine.is_symptom_search(query):
+                # Use recommendation engine
+                search_type = 'recommendation'
+                hospitals = engine.recommend_hospitals(
+                    symptoms_text=query,
+                    city=city_filter if city_filter else None,
+                    limit=20
+                )
+                total_count = len(hospitals)
+            else:
+                # Fallback: Name/location search
+                search_type = 'name_search'
+                hospitals = Hospital.objects.filter(
+                    is_verified=True
+                ).filter(
+                    Q(name__icontains=query) |
+                    Q(city__icontains=query) |
+                    Q(district__icontains=query)
+                ).annotate(
+                    avg_rating=Avg('reviews__rating'),
+                    review_count=Count('reviews')
+                ).order_by('-avg_rating', 'name')
+                
+                if city_filter:
+                    hospitals = hospitals.filter(city__iexact=city_filter)
+                
+                total_count = hospitals.count()
+        else:
+            # No query - show all verified hospitals
+            hospitals = Hospital.objects.filter(
+                is_verified=True
+            ).annotate(
+                avg_rating=Avg('reviews__rating'),
+                review_count=Count('reviews')
+            ).order_by('-avg_rating', 'name')
+            
+            if city_filter:
+                hospitals = hospitals.filter(city__iexact=city_filter)
+            
+            total_count = hospitals.count()
+
+        # Get unique cities for filter dropdown
+        cities = Hospital.objects.filter(
+            is_verified=True
+        ).values_list('city', flat=True).distinct().order_by('city')
 
         context = {
             'hospitals': hospitals,
-            'total_count': hospitals.count(),
-            'query': query if query else ''
+            'total_count': total_count,
+            'query': query,
+            'city_filter': city_filter,
+            'cities': cities,
+            'search_type': search_type,
         }
         return render(request, 'find_hospital/find_hospital.html', context)
 

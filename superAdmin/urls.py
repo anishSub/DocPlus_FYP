@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AdminOverviewView, UserManagementView, HospitalsView, VerifyDoctorView, VerifyAppointmentView, VerifyReviewsView, AnalyticsView, SettingsView, approve_doctor, reject_doctor, delete_user
+from .views import AdminOverviewView, UserManagementView, HospitalsView, VerifyDoctorView, VerifyAppointmentView, VerifyReviewsView, AnalyticsView, SettingsView, approve_doctor, reject_doctor, delete_user, ErrorLogListView, ErrorLogDetailView
 
 urlpatterns = [
     path('admin_overview/', AdminOverviewView.as_view(), name='super_admin_overview'),
@@ -19,6 +19,8 @@ urlpatterns = [
     path('verify_reviews/', VerifyReviewsView.as_view(), name='super_admin_verify_reviews'),
     path('analytics/', AnalyticsView.as_view(), name='super_admin_analytics'),
     path('settings/', SettingsView.as_view(), name='super_admin_settings'),
+    path('error-logs/', ErrorLogListView.as_view(), name='super_admin_error_logs'),
+    path('error-logs/<int:pk>/', ErrorLogDetailView.as_view(), name='super_admin_error_detail'),
 ]
 
 # http://127.0.0.1:8000/superAdmin/admin_overview/

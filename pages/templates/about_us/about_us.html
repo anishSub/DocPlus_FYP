@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/about_us/about_us.css' %}">
+<link rel="stylesheet" href="{% static 'css/about_us/about_us.css' %}?v=8">
 
 <section class="about-hero">
     <div class="hero-bg-shapes">
@@ -12,6 +12,32 @@
     <div class="container hero-content" style="text-align: center;">
         <h1>Transforming Healthcare in Nepal</h1>
         <p>We're on a mission to make quality healthcare accessible to every Nepali citizen, regardless of their location or economic status.</p>
+        
+        <!-- Matching height of Find Hospital's Search Bar + Tags -->
+        <div class="hero-stats-wrapper">
+            <div class="glass-stats-container">
+                <div class="stat-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>77 Districts</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <i class="fas fa-user-md"></i>
+                    <span>500+ Doctors</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <i class="fas fa-hospital"></i>
+                    <span>150+ Hospitals</span>
+                </div>
+            </div>
+            
+            <!-- Mimics "Popular Searches" vertical space -->
+            <div class="hero-params">
+                <span class="param-tag"><i class="fas fa-check-circle"></i> Verified Data</span>
+                <span class="param-tag"><i class="fas fa-shield-alt"></i> Trusted Platform</span>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -220,7 +246,7 @@
     <div class="container">
         <h2 class="cta-title">Join Our Healthcare Revolution</h2>
         <p class="cta-text">Whether you're a patient seeking care or a healthcare provider, DocPlus is here to transform your experience.</p>
-        <a href="#" class="btn-white">Get Started Today</a>
+        <a href="{% if user.is_authenticated %}{% url 'find_doctor' %}{% else %}{% url 'register' %}{% endif %}" class="btn-white">Get Started Today</a>
     </div>
 </section>
 

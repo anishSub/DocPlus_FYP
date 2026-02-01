@@ -28,7 +28,7 @@
     <div class="appointments-list">
         
         {% for appt in upcoming_appointments %}
-        <div class="appointment-card">
+        <div class="appointment-card" data-appointment-id="{{ appt.id }}">
             <div class="card-left">
                 <div class="avatar {% cycle 'blue' 'purple' 'orange' 'green' %}">
                     {{ appt.full_name|first|upper }}
@@ -45,6 +45,12 @@
                         <span>
                             <i class="far fa-clock"></i> {{ appt.time_slot_display }}
                         </span>
+                        <span class="meta-contact">
+                            <i class="fas fa-envelope"></i> {{ appt.email }}
+                        </span>
+                        <span class="meta-contact">
+                            <i class="fas fa-phone"></i> {{ appt.phone }}
+                        </span>
 
                         {% if appt.payment_method == 'esewa' %}
                             <span class="tag video" style="background:#e0f2fe; color:#0284c7;">
@@ -55,12 +61,37 @@
                                 <i class="fas fa-money-bill"></i> {{ appt.payment_method|title }}
                             </span>
                         {% endif %}
+                        
+                        {% if appt.is_video_consultation %}
+                            {% if appt.call_link_sent and appt.doctor_approved_call %}
+                                <span class="tag" style="background:#d1fae5; color:#059669;">
+                                    <i class="fas fa-check-circle"></i> Link Sent
+                                </span>
+                            {% else %}
+                                <span class="tag" style="background:#fef3c7; color:#d97706;">
+                                    <i class="fas fa-clock"></i> Link Pending
+                                </span>
+                            {% endif %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
             
             <div class="card-right">
-                {% if appt.date == today_date %} <button class="btn-start" style="background: #10B981;">
+                {% if appt.is_video_consultation %}
+                    {% if appt.call_link_sent and appt.doctor_approved_call %}
+                        <button class="btn-link-sent" disabled style="background: #d1fae5; color: #059669; cursor: default; border: 1px solid #059669;">
+                            <i class="fas fa-check-double"></i> Link Sent
+                        </button>
+                    {% else %}
+                        <button class="btn-send-link" data-appointment-id="{{ appt.id }}" style="background: #0C4D98; color: white;">
+                            <i class="fas fa-paper-plane"></i> Send Link
+                        </button>
+                    {% endif %}
+                {% endif %}
+                
+                {% if appt.date == today_date %}
+                    <button class="btn-start" style="background: #10B981;">
                         <i class="fas fa-video"></i> Join Call
                     </button>
                 {% else %}
@@ -69,7 +100,42 @@
                     </button>
                 {% endif %}
                 
-                <button class="btn-view" title="View Details"><i class="far fa-eye"></i></button>
+                <button class="btn-view btn-toggle-details" title="View Details">
+                    <i class="far fa-eye"></i>
+                </button>
+            </div>
+            
+            <!-- Expandable Details Section -->
+            <div class="appointment-details-expanded" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e7eb; width: 100%;">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                    <div>
+                        <h4 style="font-size: 13px; color: #6b7280; margin-bottom: 5px;">Patient Information</h4>
+                        <p style="margin: 3px 0;"><strong>DOB:</strong> {{ appt.dob|date:"M d, Y" }}</p>
+                        <p style="margin: 3px 0;"><strong>Gender:</strong> {{ appt.gender|title }}</p>
+                        <p style="margin: 3px 0;"><strong>City:</strong> {{ appt.city }}</p>
+                        <p style="margin: 3px 0;"><strong>Address:</strong> {{ appt.address|truncatechars:50 }}</p>
+                    </div>
+                    
+                    {% if appt.is_video_consultation %}
+                    <div>
+                        <h4 style="font-size: 13px; color: #6b7280; margin-bottom: 5px;">Video Call Credentials</h4>
+                        <p style="margin: 3px 0;"><strong>Call Link:</strong> <code style="background: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 11px;">{{ appt.video_call_link|truncatechars:30 }}</code></p>
+                        <p style="margin: 3px 0;"><strong>Access Code:</strong> <code style="background: #f3f4f6; padding: 2px 6px; border-radius: 3px;">{{ appt.call_access_code }}</code></p>
+                        <p style="margin: 3px 0;"><strong>Link Status:</strong> {% if appt.call_link_sent %}✅ Sent{% else %}⏳ Not Sent{% endif %}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <div style="grid-column: 1 / -1;">
+                        <h4 style="font-size: 13px; color: #6b7280; margin-bottom: 5px;">Medical Information</h4>
+                        <p style="margin: 3px 0;"><strong>Reason:</strong> {{ appt.reason }}</p>
+                        {% if appt.symptoms %}
+                        <p style="margin: 3px 0;"><strong>Symptoms:</strong> {{ appt.symptoms }}</p>
+                        {% endif %}
+                        {% if appt.medical_reports %}
+                        <p style="margin: 3px 0;"><strong>Medical Report:</strong> <a href="{{ appt.medical_reports.url }}" target="_blank" style="color: #0C4D98;">View Report</a></p>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
         {% empty %}
@@ -81,4 +147,100 @@
         {% endfor %}
 
     </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle appointment details
+        document.querySelectorAll('.btn-toggle-details').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const card = this.closest('.appointment-card');
+                const details = card.querySelector('.appointment-details-expanded');
+                const icon = this.querySelector('i');
+                
+                if (details.style.display === 'none') {
+                    details.style.display = 'block';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    details.style.display = 'none';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+        
+        // Send video call link
+        document.querySelectorAll('.btn-send-link').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const appointmentId = this.dataset.appointmentId;
+                const button = this;
+                
+                if (confirm('Send video call link to this patient?')) {
+                    // Disable button and show loading
+                    button.disabled = true;
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                    
+                    // Get CSRF token
+                    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                                     getCookie('csrftoken');
+                    
+                    fetch(`/doctor/send-video-link/${appointmentId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrftoken
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            // Update button to show success
+                            button.style.background = '#d1fae5';
+                            button.style.color = '#059669';
+                            button.style.border = '1px solid #059669';
+                            button.innerHTML = '<i class="fas fa-check-double"></i> Link Sent';
+                            
+                            // Update status badge
+                            const card = button.closest('.appointment-card');
+                            const pendingBadge = card.querySelector('.tag[style*="fef3c7"]');
+                            if (pendingBadge) {
+                                pendingBadge.style.background = '#d1fae5';
+                                pendingBadge.style.color = '#059669';
+                                pendingBadge.innerHTML = '<i class="fas fa-check-circle"></i> Link Sent';
+                            }
+                            
+                            alert(data.message);
+                        } else {
+                            button.disabled = false;
+                            button.innerHTML = '<i class="fas fa-paper-plane"></i> Send Link';
+                            alert(data.message || 'Failed to send link');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        button.disabled = false;
+                        button.innerHTML = '<i class="fas fa-paper-plane"></i> Send Link';
+                        alert('An error occurred. Please try again.');
+                    });
+                }
+            });
+        });
+        
+        // Helper function to get CSRF token from cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    });
+    </script>
 {% endblock %}

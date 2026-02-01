@@ -36,6 +36,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',  # Must be at the top for ASGI support
     'accounts',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -60,6 +61,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook', # For Facebook
     
     'django.contrib.humanize',
+    
+    # WebSocket Support
+    'channels',
 ]
 
 SITE_ID = 1  
@@ -67,6 +71,10 @@ SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # EXPLANATION: WhiteNoiseMiddleware allows your Django app to serve its own static files (CSS, JS, Images) efficiently.
+    # PROD REASON: Without this, when you deploy to Render/Heroku, your site will look "broken" (no styles) because 
+    # web servers (like Gunicorn) generally don't serve static files by default. WhiteNoise fixes this.
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -74,7 +82,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
-    
+    'myproject.middleware.ExceptionLoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'myproject.urls'
@@ -96,6 +104,28 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'myproject.wsgi.application'
+
+# ASGI Application for WebSocket Support
+ASGI_APPLICATION = 'myproject.asgi.application'
+
+# Channel Layers Configuration (In-Memory for Development)
+# For production, use Redis: 'channels_redis.core.RedisChannelLayer'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    }
+}
+
+# For production with Redis (uncomment when deploying):
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('127.0.0.1', 6379)],
+#         },
+#     },
+# }
+
 
 
 
@@ -164,6 +194,23 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",     
 ]
+
+# EXPLANATION: This tells Django where to collect all static files when you run 'python manage.py collectstatic'.
+# PROD REASON: In production, all your scattered static files need to be gathered into one folder for WhiteNoise to serve them.
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# EXPLANATION: This configures Django to use WhiteNoise for static file storage.
+# PROD REASON: 'CompressedManifestStaticFilesStorage' does two things:
+# 1. Compresses files (Gzip/Brotli) to make your site load faster.
+# 2. Adds a unique hash to filenames (e.g., style.123abc4.css) for long-term browser caching.
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 LOGIN_REDIRECT_URL = '/'
 

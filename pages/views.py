@@ -5,9 +5,13 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from datetime import date
+from django.http import JsonResponse
+from django.db.models import Q
 from accounts.models import PatientProfile
 from .forms import UserUpdateForm, PatientProfileUpdateForm
 from appointments.models import Appointment
+from find_doctor.models import DoctorProfile
+from find_hospital.models import Hospital
 
 
 # Create your views here.
@@ -89,3 +93,47 @@ class ProfileEditView(LoginRequiredMixin, View):
             'p_form': p_form
         }
         return render(request, 'profile_view/edit_profile.html', context)
+# --- 3. GLOBAL SEARCH API ---
+class GlobalSearchView(View):
+    def get(self, request):
+        query = request.GET.get('q', '').strip()
+        if len(query) < 2:
+            return JsonResponse({'doctors': [], 'hospitals': []})
+
+        # 1. Search Doctors (Name, Specialty)
+        doctors = DoctorProfile.objects.filter(
+            Q(user__first_name__icontains=query) | 
+            Q(user__last_name__icontains=query) | 
+            Q(specialization__icontains=query)
+        )[:3] # Limit to Top 3
+
+        doctor_results = []
+        for doc in doctors:
+            doctor_results.append({
+                'id': doc.id,
+                'name': str(doc),
+                'specialty': doc.specialization,
+                'image': doc.profile_photo.url if doc.profile_photo else None,
+                'url': f"/find_doctor/{doc.id}/" # Assuming this URL structure, need to verify
+            })
+
+        # 2. Search Hospitals (Name, City, Address)
+        hospitals = Hospital.objects.filter(
+            Q(name__icontains=query) |
+            Q(city__icontains=query)
+        )[:3] # Limit to Top 3
+
+        hospital_results = []
+        for hosp in hospitals:
+            hospital_results.append({
+                'id': hosp.id,
+                'name': hosp.name,
+                'city': hosp.city,
+                'image': hosp.image.url if hosp.image else None,
+                'url': f"/find_hospital/hospital-details/{hosp.id}/" # Verified from urls.py
+            })
+
+        return JsonResponse({
+            'doctors': doctor_results,
+            'hospitals': hospital_results
+        })

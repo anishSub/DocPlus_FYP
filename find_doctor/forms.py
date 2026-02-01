@@ -10,7 +10,7 @@ from find_hospital.models import Hospital
 User = get_user_model()
 
 class DoctorRegistrationForm(forms.Form):
-    # --- 1. Personal Info ---
+    # 1. Personal Info 
     full_name = forms.CharField(max_length=100)
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput)
@@ -21,7 +21,7 @@ class DoctorRegistrationForm(forms.Form):
     city = forms.CharField(max_length=50)
     address = forms.CharField(widget=forms.Textarea)
 
-    # --- 2. Professional Info ---
+    # 2. Professional Info 
     specialty = forms.CharField(max_length=100)
     sub_specialty = forms.CharField(required=False)
     license_no = forms.CharField(max_length=50)
@@ -45,7 +45,7 @@ class DoctorRegistrationForm(forms.Form):
     languages = forms.CharField(required=False)
 
 
-# --- NEW: Availability Fields (Added to Form) ---
+#  NEW: Availability Fields (Added to Form) 
     DAYS_CHOICES = [
         ('Mon', 'Monday'), ('Tue', 'Tuesday'), ('Wed', 'Wednesday'),
         ('Thu', 'Thursday'), ('Fri', 'Friday'), ('Sat', 'Saturday'), ('Sun', 'Sunday')
@@ -60,20 +60,20 @@ class DoctorRegistrationForm(forms.Form):
     available_time_end = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
     
     
-    # --- 3. Education ---
+    # 3. Education 
     degree = forms.CharField(max_length=100)
     university = forms.CharField(max_length=150)
     grad_year = forms.IntegerField()
     fee = forms.IntegerField()
     bio = forms.CharField(widget=forms.Textarea, required=False)
 
-    # --- 4. Documents ---
+    # 4. Documents 
     cv = forms.FileField()
     license_doc = forms.FileField()
     degree_doc = forms.FileField()
     profile_photo = forms.ImageField() 
 
-    # --- VALIDATIONS ---
+    #  VALIDATIONS 
     def clean(self):
         """
         Custom validation to ensure at least ONE hospital info is provided.
@@ -83,6 +83,7 @@ class DoctorRegistrationForm(forms.Form):
         manual_name = cleaned_data.get('hospital_name_manual')
 
         # Logic: Either select from dropdown OR type a name. Both cannot be empty.
+
         if not affiliation and not manual_name:
             raise forms.ValidationError("Please either select a Registered Hospital or type your Hospital Name manually.")
         

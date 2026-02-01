@@ -2,26 +2,40 @@
 {% load static %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/find_hospital/find_hospital.css' %}">
+    <link rel="stylesheet" href="{% static 'css/find_hospital/find_hospital.css' %}?v=4">
 {% endblock %}
 
 {% block content %}
 <section class="hospitals-hero">
     <div class="container hero-content">
-        <h1>Available Hospitals</h1>
-        <p>Explore verified healthcare facilities across Nepal</p>
+        <h1>Find Hospitals</h1>
+        <p>Search by symptoms, conditions, or hospital name across Nepal</p>
         
         <form method="GET" action="." class="search-wrapper">
             <div class="search-bar">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" name="q" value="{{ query }}" placeholder="Search by hospital name or location...">
+                <input type="text" name="q" value="{{ query }}" placeholder="Search by symptoms (e.g., 'heart attack') or hospital name...">
             </div>
+            <select name="city" class="city-filter">
+                <option value="">All Cities</option>
+                {% for city in cities %}
+                    <option value="{{ city }}" {% if city == city_filter %}selected{% endif %}>{{ city }}</option>
+                {% endfor %}
+            </select>
             <button type="submit" class="btn-filter">
                 <i class="fas fa-search"></i> Search
             </button>
         </form>
-    </div>
-</section>
+
+        <div class="search-examples">
+            <span class="example-label">Popular searches:</span>
+            <a href="?q=Bir Hospital" class="example-tag">Bir Hospital</a>
+            <a href="?q=Teaching Hospital" class="example-tag">Teaching Hospital</a>
+            <a href="?q=Grande" class="example-tag">Grande</a>
+            <a href="?q=Norvic" class="example-tag">Norvic</a>
+            <a href="?q=Civil" class="example-tag">Civil</a>
+        </div>
+    </div></section>
 
 <section class="section-padding bg-gray">
     <div class="container">
@@ -48,7 +62,15 @@
                             <div class="type-badge badge-private">{{ hospital.hospital_type }}</div>
                         {% endif %}
 
-                        <div class="rating-badge"><i class="fas fa-star text-yellow"></i> 4.5</div>
+                        {% if hospital.avg_rating %}
+                            <div class="rating-badge"><i class="fas fa-star text-yellow"></i> {{ hospital.avg_rating|floatformat:1 }}</div>
+                        {% else %}
+                            <div class="rating-badge"><i class="fas fa-star text-yellow"></i> New</div>
+                        {% endif %}
+                        
+                        {% if hospital.recommendation_score %}
+                            <div class="match-score">{{ hospital.recommendation_score|floatformat:0 }}% Match</div>
+                        {% endif %}
                         
                         <div class="image-footer-info">
                             <span class="info-pill"><i class="fas fa-certificate"></i> Est. {{ hospital.established_year|date:"Y" }}</span>
@@ -59,8 +81,17 @@
                     <div class="card-body">
                         <div class="card-main-info">
                             <h3>{{ hospital.name }}</h3>
+                            {% if hospital.match_reason %}
+                                <p class="match-reason"><i class="fas fa-check-circle"></i> {{ hospital.match_reason }}</p>
+                            {% endif %}
                             <p class="location"><i class="fas fa-map-marker-alt"></i> {{ hospital.city }}, {{ hospital.district }}</p>
-                            <p class="review-count">{{ hospital.total_views }} views</p>
+                            <p class="review-count">
+                                {% if hospital.review_count %}
+                                    {{ hospital.review_count }} review{% if hospital.review_count != 1 %}s{% endif %}
+                                {% else %}
+                                    {{ hospital.total_views }} views
+                                {% endif %}
+                            </p>
                         </div>
                         
                         <div class="divider"></div>
