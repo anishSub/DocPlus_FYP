@@ -190,8 +190,128 @@ class AnalyticsView(TemplateView):
     template_name = 'superAdmin/analytics.html'
 
     def get_context_data(self, **kwargs):
+        import json
+        from datetime import timedelta
+        from django.db.models import Count, Avg
+        from django.db.models.functions import TruncMonth
+        from find_hospital.models import Hospital
+        from find_doctor.models import DoctorReview
+
         context = super().get_context_data(**kwargs)
-        # Add your context data here if needed
+        today = timezone.now().date()
+
+        # ── 1. Revenue metrics (real data) ──
+        week_start = today - timedelta(days=today.weekday())
+        month_start = today.replace(day=1)
+
+        revenue_today = Appointment.objects.filter(
+            status='completed', date=today
+        ).aggregate(Sum('amount'))['amount__sum'] or 0
+
+        revenue_week = Appointment.objects.filter(
+            status='completed', date__gte=week_start
+        ).aggregate(Sum('amount'))['amount__sum'] or 0
+
+        revenue_month = Appointment.objects.filter(
+            status='completed', date__gte=month_start
+        ).aggregate(Sum('amount'))['amount__sum'] or 0
+
+        revenue_total = Appointment.objects.filter(
+            status='completed'
+        ).aggregate(Sum('amount'))['amount__sum'] or 0
+
+        context['revenue_today'] = revenue_today
+        context['revenue_week'] = revenue_week
+        context['revenue_month'] = revenue_month
+        context['revenue_total'] = revenue_total
+
+        # ── 2. User activity metrics (real data) ──
+        context['active_today'] = User.objects.filter(last_login__date=today).count()
+        context['new_signups_today'] = User.objects.filter(date_joined__date=today).count()
+        context['total_users'] = User.objects.count()
+
+        # ── 3. Appointment metrics (real data) ──
+        total_appts = Appointment.objects.count()
+        completed_count = Appointment.objects.filter(status='completed').count()
+        cancelled_count = Appointment.objects.filter(status='cancelled').count()
+        completion_rate = round((completed_count / total_appts * 100), 1) if total_appts else 0
+        cancellation_rate = round((cancelled_count / total_appts * 100), 1) if total_appts else 0
+
+        # Average doctor rating
+        avg_rating = DoctorReview.objects.aggregate(Avg('rating'))['rating__avg']
+        avg_rating = round(avg_rating, 1) if avg_rating else 0
+
+        context['completion_rate'] = completion_rate
+        context['cancellation_rate'] = cancellation_rate
+        context['avg_rating'] = avg_rating
+
+        # ══════════════ CHART DATA ══════════════
+
+        # Chart 1 – User Role Distribution (Doughnut)
+        role_counts = list(
+            User.objects.values('role')
+            .annotate(count=Count('id'))
+            .order_by('role')
+        )
+        context['chart_user_roles'] = json.dumps(
+            {item['role']: item['count'] for item in role_counts}
+        )
+
+        # Chart 2 – Appointment Status Breakdown (Doughnut)
+        status_counts = list(
+            Appointment.objects.values('status')
+            .annotate(count=Count('id'))
+            .order_by('status')
+        )
+        context['chart_appt_status'] = json.dumps(
+            {item['status'].capitalize(): item['count'] for item in status_counts}
+        )
+
+        # Chart 3 – Hospital Type Distribution (Doughnut)
+        hospital_types = list(
+            Hospital.objects.values('hospital_type')
+            .annotate(count=Count('id'))
+            .order_by('hospital_type')
+        )
+        context['chart_hospital_types'] = json.dumps(
+            {item['hospital_type']: item['count'] for item in hospital_types}
+        )
+
+        # Chart 4 – Top Doctor Specializations (Horizontal Bar)
+        spec_counts = list(
+            DoctorProfile.objects.values('specialization')
+            .annotate(count=Count('id'))
+            .order_by('-count')[:8]
+        )
+        context['chart_specializations'] = json.dumps(
+            {item['specialization']: item['count'] for item in spec_counts}
+        )
+
+        # Chart 5 – Monthly Appointments (last 6 months, Vertical Bar)
+        six_months_ago = today - timedelta(days=180)
+        monthly_appts = list(
+            Appointment.objects.filter(date__gte=six_months_ago)
+            .annotate(month=TruncMonth('date'))
+            .values('month')
+            .annotate(count=Count('id'))
+            .order_by('month')
+        )
+        context['chart_monthly_appts'] = json.dumps(
+            {item['month'].strftime('%b %Y'): item['count'] for item in monthly_appts}
+        )
+
+        # Chart 6 – Revenue by Month (last 6 months, Vertical Bar)
+        monthly_rev = list(
+            Appointment.objects.filter(date__gte=six_months_ago, status='completed')
+            .annotate(month=TruncMonth('date'))
+            .values('month')
+            .annotate(total=Sum('amount'))
+            .order_by('month')
+        )
+        context['chart_monthly_revenue'] = json.dumps(
+            {item['month'].strftime('%b %Y'): float(item['total']) for item in monthly_rev}
+        )
+
         return context
     
 class SettingsView(TemplateView):

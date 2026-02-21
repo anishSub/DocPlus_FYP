@@ -34,6 +34,9 @@
     font-weight: 600;
     color: #1f2937;
     margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .revenue-grid {
@@ -131,7 +134,49 @@
 .number.red { color: #dc2626; }
 .number.yellow { color: #d97706; }
 
-/* --- 4. Export Reports --- */
+/* ═══════════ 4. CHARTS ═══════════ */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 8px;
+}
+
+.chart-card {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    transition: box-shadow 0.2s ease;
+}
+
+.chart-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.chart-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 260px;
+}
+
+.bar-wrapper {
+    height: 280px;
+}
+
+/* Wide card spans 2 columns (used for horizontal bar) */
+.chart-card.wide {
+    grid-column: span 1;
+}
+
+/* --- 5. Export Reports --- */
 .export-section h3 {
     font-size: 18px;
     font-weight: 600;
@@ -173,6 +218,15 @@
 .export-info p { font-size: 12px; opacity: 0.8; }
 
 /* --- RESPONSIVENESS --- */
+@media (max-width: 1024px) {
+    .charts-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .chart-card.wide {
+        grid-column: span 2;
+    }
+}
+
 @media (max-width: 768px) {
     /* Revenue Grid Stack */
     .revenue-grid {
@@ -189,6 +243,14 @@
     /* Stack Metrics */
     .metrics-grid {
         grid-template-columns: 1fr;
+    }
+
+    /* Single column charts on mobile */
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+    .chart-card.wide {
+        grid-column: span 1;
     }
     
     /* Stack Export Buttons */
