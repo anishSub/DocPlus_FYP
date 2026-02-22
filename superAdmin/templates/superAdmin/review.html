@@ -11,83 +11,110 @@
     <!-- Header -->
     <div class="reviews-header">
         <h2>Review Moderation</h2>
-        <span class="badge-flagged">1 Flagged</span>
+        {% if flagged_count > 0 %}
+        <span class="badge-flagged">{{ flagged_count }} Pending</span>
+        {% endif %}
     </div>
 
-    <!-- Reviews List -->
+    <!-- Search -->
+    <form method="GET" style="margin-bottom: 20px;">
+        <div class="search-wrapper" style="display: flex; align-items: center; gap: 8px; background: #1e2a3a; border-radius: 8px; padding: 8px 16px; max-width: 400px;">
+            <i class="fas fa-search" style="color: #888;"></i>
+            <input type="text" name="q" placeholder="Search reviews..." value="{{ search_query }}" style="background: transparent; border: none; color: #fff; outline: none; width: 100%; font-size: 14px;">
+        </div>
+    </form>
+
+    <!-- Doctor Reviews Section -->
+    <h3 style="color: #fff; margin-bottom: 16px;"><i class="fas fa-user-md"></i> Doctor Reviews</h3>
     <div class="reviews-list">
-        
-        <!-- Card 1: Approved -->
-        <div class="review-card">
+        {% for review in doctor_reviews %}
+        <div class="review-card {% if not review.is_approved %}flagged{% endif %}">
             <div class="card-body">
                 <div class="reviewer-profile">
-                    <div class="avatar blue">R</div>
+                    <div class="avatar blue">{{ review.user.first_name|first|upper }}</div>
                     <div class="info">
-                        <h3>Rajesh Kumar</h3>
-                        <span class="sub-text">Review for Dr. Arjun Sharma</span>
+                        <h3>{{ review.user.first_name }} {{ review.user.last_name }}</h3>
+                        <span class="sub-text">Review for Dr. {{ review.doctor.user.first_name }} {{ review.doctor.user.last_name }}</span>
                     </div>
                 </div>
                 <div class="review-meta">
                     <div class="stars">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= review.rating %}
+                                <i class="fas fa-star"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
                     </div>
-                    <span class="date">2024-11-20</span>
+                    <span class="date">{{ review.created_at|date:"Y-m-d" }}</span>
                 </div>
             </div>
-            <p class="review-text">Excellent doctor! Very professional and caring.</p>
-            <div class="status-row approved">
-                <i class="fas fa-check-circle"></i> Approved
-            </div>
-        </div>
-
-        <!-- Card 2: Flagged / Pending (Yellow Style) -->
-        <div class="review-card flagged">
-            <div class="card-body">
-                <div class="reviewer-profile">
-                    <div class="avatar blue">S</div>
-                    <div class="info">
-                        <h3>Sita Sharma</h3>
-                        <span class="sub-text">Review for Dr. Priya Singh</span>
-                    </div>
-                </div>
-                <div class="review-meta">
-                    <div class="stars">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                    <span class="date">2024-11-19</span>
-                </div>
-            </div>
-            <p class="review-text">Good experience. Long waiting time though.</p>
+            <p class="review-text">{{ review.comment|default:"No comment provided." }}</p>
             
-            <!-- Action Buttons for Flagged Review -->
-            <div class="action-buttons">
-                <button class="btn btn-approve"><i class="fas fa-check"></i> Approve</button>
-                <button class="btn btn-reject"><i class="fas fa-times"></i> Reject</button>
+            {% if review.is_approved %}
+            <div class="status-row approved">
+                <i class="fas fa-check-circle"></i> Approved
             </div>
+            {% else %}
+            <div class="action-buttons">
+                <a href="{% url 'approve_review' 'doctor' review.pk %}" class="btn btn-approve"><i class="fas fa-check"></i> Approve</a>
+                <a href="{% url 'reject_review' 'doctor' review.pk %}" class="btn btn-reject" onclick="return confirm('Are you sure you want to reject this review?')"><i class="fas fa-times"></i> Reject</a>
+            </div>
+            {% endif %}
         </div>
+        {% empty %}
+        <div style="text-align: center; padding: 40px; color: #888;">
+            <i class="far fa-comment-dots" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
+            <p>No doctor reviews found.</p>
+        </div>
+        {% endfor %}
+    </div>
 
-        <!-- Card 3: Approved -->
-        <div class="review-card">
+    <!-- Hospital Reviews Section -->
+    <h3 style="color: #fff; margin: 32px 0 16px;"><i class="far fa-hospital"></i> Hospital Reviews</h3>
+    <div class="reviews-list">
+        {% for review in hospital_reviews %}
+        <div class="review-card {% if not review.is_approved %}flagged{% endif %}">
             <div class="card-body">
                 <div class="reviewer-profile">
-                    <div class="avatar blue">R</div>
+                    <div class="avatar blue">{{ review.user.first_name|first|upper }}</div>
                     <div class="info">
-                        <h3>Ram Bahadur</h3>
-                        <span class="sub-text">Review for Dr. Amit Thapa</span>
+                        <h3>{{ review.user.first_name }} {{ review.user.last_name }}</h3>
+                        <span class="sub-text">Review for {{ review.hospital.name }}</span>
                     </div>
                 </div>
                 <div class="review-meta">
                     <div class="stars">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= review.rating %}
+                                <i class="fas fa-star"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
                     </div>
-                    <span class="date">2024-11-18</span>
+                    <span class="date">{{ review.created_at|date:"Y-m-d" }}</span>
                 </div>
             </div>
-            <p class="review-text">Very knowledgeable and friendly doctor.</p>
+            <p class="review-text">{{ review.comment|default:"No comment provided." }}</p>
+            
+            {% if review.is_approved %}
             <div class="status-row approved">
                 <i class="fas fa-check-circle"></i> Approved
             </div>
+            {% else %}
+            <div class="action-buttons">
+                <a href="{% url 'approve_review' 'hospital' review.pk %}" class="btn btn-approve"><i class="fas fa-check"></i> Approve</a>
+                <a href="{% url 'reject_review' 'hospital' review.pk %}" class="btn btn-reject" onclick="return confirm('Are you sure you want to reject this review?')"><i class="fas fa-times"></i> Reject</a>
+            </div>
+            {% endif %}
         </div>
-
+        {% empty %}
+        <div style="text-align: center; padding: 40px; color: #888;">
+            <i class="far fa-comment-dots" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
+            <p>No hospital reviews found.</p>
+        </div>
+        {% endfor %}
     </div>
 {% endblock %}

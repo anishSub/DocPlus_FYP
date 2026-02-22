@@ -90,6 +90,7 @@ class HospitalReview(models.Model):
     
     rating = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
     comment = models.TextField(blank=True, null=True)
+    is_approved = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

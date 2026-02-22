@@ -14,78 +14,92 @@
             <h2>Platform Settings</h2>
         </div>
 
-        <!-- 1. General Settings -->
-        <div class="settings-section">
-            <h3>General Settings</h3>
-            
-            <div class="setting-item">
-                <div class="info">
-                    <h4>Maintenance Mode</h4>
-                    <p>Enable platform maintenance mode (users cannot login)</p>
+        {% if messages %}
+        <div style="margin-bottom: 16px;">
+            {% for message in messages %}
+            <div style="padding: 12px 16px; border-radius: 8px; margin-bottom: 8px; {% if message.tags == 'success' %}background: rgba(76, 175, 80, 0.15); color: #4caf50; border: 1px solid rgba(76, 175, 80, 0.3);{% else %}background: rgba(244, 67, 54, 0.15); color: #f44336; border: 1px solid rgba(244, 67, 54, 0.3);{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="POST" action="{% url 'super_admin_settings' %}">
+            {% csrf_token %}
+
+            <!-- 1. General Settings -->
+            <div class="settings-section">
+                <h3>General Settings</h3>
+                
+                <div class="setting-item">
+                    <div class="info">
+                        <h4>Maintenance Mode</h4>
+                        <p>Enable platform maintenance mode (users cannot login)</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" name="maintenance_mode" {% if platform_settings.maintenance_mode %}checked{% endif %}>
+                        <span class="slider round"></span>
+                    </label>
                 </div>
-                <label class="switch">
-                    <input type="checkbox">
-                    <span class="slider round"></span>
-                </label>
+
+                <div class="setting-item">
+                    <div class="info">
+                        <h4>New User Registration</h4>
+                        <p>Allow new users (patients) to register</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" name="allow_registration" {% if platform_settings.allow_registration %}checked{% endif %}>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <div class="setting-item">
+                    <div class="info">
+                        <h4>Auto-Approve Reviews</h4>
+                        <p>Automatically approve patient reviews without moderation</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" name="auto_approve_reviews" {% if platform_settings.auto_approve_reviews %}checked{% endif %}>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
             </div>
 
-            <div class="setting-item">
-                <div class="info">
-                    <h4>New User Registration</h4>
-                    <p>Allow new users (patients) to register</p>
+            <!-- 2. Notification Settings -->
+            <div class="settings-section">
+                <h3>Notification Settings</h3>
+                
+                <div class="setting-item">
+                    <div class="info">
+                        <h4>Email Notifications</h4>
+                        <p>Send email notifications to admins for critical alerts</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" name="email_notifications" {% if platform_settings.email_notifications %}checked{% endif %}>
+                        <span class="slider round"></span>
+                    </label>
                 </div>
-                <label class="switch">
-                    <input type="checkbox" checked> <!-- Checked = Blue -->
-                    <span class="slider round"></span>
-                </label>
             </div>
 
-            <div class="setting-item">
-                <div class="info">
-                    <h4>Auto-Approve Reviews</h4>
-                    <p>Automatically approve patient reviews without moderation</p>
-                </div>
-                <label class="switch">
-                    <input type="checkbox">
-                    <span class="slider round"></span>
-                </label>
+            <!-- 3. Security Settings (Links) -->
+            <div class="settings-section">
+                <h3>Security Settings</h3>
+                
+                <a href="#" class="security-link">
+                    <span>Change Admin Password</span>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+
+                <a href="#" class="security-link">
+                    <span>Two-Factor Authentication</span>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
             </div>
-        </div>
 
-        <!-- 2. Notification Settings -->
-        <div class="settings-section">
-            <h3>Notification Settings</h3>
-            
-            <div class="setting-item">
-                <div class="info">
-                    <h4>Email Notifications</h4>
-                    <p>Send email notifications to admins for critical alerts</p>
-                </div>
-                <label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider round"></span>
-                </label>
+            <!-- Save Button -->
+            <div class="settings-footer">
+                <button type="submit" class="save-btn">Save All Settings</button>
             </div>
-        </div>
-
-        <!-- 3. Security Settings (Links) -->
-        <div class="settings-section">
-            <h3>Security Settings</h3>
-            
-            <a href="#" class="security-link">
-                <span>Change Admin Password</span>
-                <i class="fas fa-chevron-right"></i>
-            </a>
-
-            <a href="#" class="security-link">
-                <span>Two-Factor Authentication</span>
-                <i class="fas fa-chevron-right"></i>
-            </a>
-        </div>
-
-        <!-- Save Button -->
-        <div class="settings-footer">
-            <button class="save-btn">Save All Settings</button>
-        </div>
+        </form>
     </div>
 {% endblock %}

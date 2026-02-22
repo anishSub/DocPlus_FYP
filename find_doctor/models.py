@@ -120,6 +120,10 @@ class DoctorProfile(models.Model):
     is_approved = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # --- Consultation Settings ---------------------------------------------
+    enable_video_consultations = models.BooleanField(default=True)
+    auto_accept_appointments = models.BooleanField(default=False)
+
     def __str__(self):
         return f"Dr. {self.user.first_name} {self.user.last_name}"
     
@@ -162,6 +166,7 @@ class DoctorReview(models.Model):
     doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE, related_name='reviews')
     rating = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
     comment = models.TextField(blank=True, null=True)
+    is_approved = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

@@ -221,7 +221,21 @@ class DoctorScheduleView(LoginRequiredMixin, TemplateView):
             })
             
         context['weekly_schedule'] = weekly_schedule
+        context['doctor'] = doctor
         return context
+
+    def post(self, request, *args, **kwargs):
+        if not hasattr(request.user, 'doctor_profile'):
+            return redirect('doctor_schedule')
+        
+        doctor = request.user.doctor_profile
+        doctor.enable_video_consultations = 'enable_video_consultations' in request.POST
+        doctor.auto_accept_appointments = 'auto_accept_appointments' in request.POST
+        doctor.save()
+        
+        from django.contrib import messages
+        messages.success(request, "Consultation settings saved.")
+        return redirect('doctor_schedule')
     
     
     

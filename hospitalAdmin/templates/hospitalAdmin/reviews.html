@@ -1,0 +1,94 @@
+{% extends 'base/admin_base.html' %}
+{% load static %}
+
+{% block title %}Reviews - {{ hospital.name }}{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/hospitalAdmin/overview.css' %}">
+    <style>
+        .reviews-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .reviews-header h2 { color: #1a1a2e; font-size: 1.5rem; }
+        .aggregate-box { display: flex; align-items: center; gap: 12px; background: #f8f9fa; padding: 12px 20px; border-radius: 12px; }
+        .aggregate-box .big-num { font-size: 2rem; font-weight: 700; color: #f59e0b; }
+        .aggregate-box .sub { color: #6b7280; font-size: 0.85rem; }
+
+        .stars-breakdown { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+        .star-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .star-row .label { width: 50px; font-size: 0.85rem; color: #374151; font-weight: 500; }
+        .star-row .bar-bg { flex: 1; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+        .star-row .bar-fill { height: 100%; background: #f59e0b; border-radius: 4px; transition: width 0.3s; }
+        .star-row .count { width: 30px; text-align: right; font-size: 0.85rem; color: #6b7280; }
+
+        .review-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+        .review-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .reviewer-info { display: flex; align-items: center; gap: 12px; }
+        .reviewer-info .avatar { width: 40px; height: 40px; border-radius: 50%; background: #EBF5FF; color: #0E82FD; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 1rem; }
+        .reviewer-info .name { font-weight: 600; color: #1a1a2e; }
+        .reviewer-info .date { font-size: 0.8rem; color: #9ca3af; }
+        .star-rating i { color: #f59e0b; font-size: 0.85rem; }
+        .star-rating i.empty { color: #d1d5db; }
+        .review-comment { color: #4b5563; line-height: 1.6; margin: 0; }
+        .empty-state { text-align: center; padding: 60px 20px; color: #9ca3af; }
+        .empty-state i { font-size: 48px; margin-bottom: 16px; display: block; }
+    </style>
+{% endblock %}
+
+{% block admin_content %}
+
+<div class="reviews-header">
+    <h2>Patient Reviews</h2>
+    <div class="aggregate-box">
+        <span class="big-num"><i class="fas fa-star"></i> {{ avg_rating }}</span>
+        <span class="sub">Based on {{ total_reviews }} review{{ total_reviews|pluralize }}</span>
+    </div>
+</div>
+
+<!-- Star Distribution -->
+{% if total_reviews > 0 %}
+<div class="stars-breakdown">
+    {% for star_info in stars_data %}
+    <div class="star-row">
+        <span class="label">{{ star_info.star }} <i class="fas fa-star" style="color: #f59e0b; font-size: 0.75rem;"></i></span>
+        <div class="bar-bg">
+            <div class="bar-fill" style="width: {{ star_info.percentage }}%;"></div>
+        </div>
+        <span class="count">{{ star_info.count }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Reviews List -->
+<div class="reviews-list">
+    {% for review in reviews %}
+    <div class="review-card">
+        <div class="review-top">
+            <div class="reviewer-info">
+                <div class="avatar">{{ review.user.first_name|first|upper }}</div>
+                <div>
+                    <div class="name">{{ review.user.first_name }} {{ review.user.last_name }}</div>
+                    <div class="date">{{ review.created_at|date:"M d, Y" }}</div>
+                </div>
+            </div>
+            <div class="star-rating">
+                {% for i in "12345" %}
+                    {% if forloop.counter <= review.rating %}
+                        <i class="fas fa-star"></i>
+                    {% else %}
+                        <i class="far fa-star empty"></i>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <p class="review-comment">{{ review.comment|default:"No comment provided." }}</p>
+    </div>
+    {% empty %}
+    <div class="empty-state">
+        <i class="far fa-star"></i>
+        <h3>No Reviews Yet</h3>
+        <p>When patients leave reviews for your hospital, they will appear here.</p>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

@@ -3,7 +3,7 @@
 # --- Security (Never upload these!) ---
 .env
 .DS_Store
-
+.txt
 # --- Python ---
 __pycache__/
 *.py[cod]

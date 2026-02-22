@@ -2,11 +2,13 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
-from find_doctor.models import DoctorProfile
+from find_doctor.models import DoctorProfile, DoctorReview
+from find_hospital.models import Hospital, HospitalReview
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from django.db.models import Q,Sum
+from django.db.models import Q, Sum
 from appointments.models import Appointment
+from .models import PlatformSettings
 
 
 User = get_user_model()
@@ -93,7 +95,24 @@ class HospitalsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Add your context data here if needed
+
+        # Search logic
+        search_query = self.request.GET.get('q')
+        hospitals = Hospital.objects.all().order_by('-created_at')
+        if search_query:
+            hospitals = hospitals.filter(
+                Q(name__icontains=search_query) |
+                Q(city__icontains=search_query) |
+                Q(district__icontains=search_query)
+            )
+
+        # Separate pending (unverified) vs approved hospitals
+        context['pending_hospitals'] = hospitals.filter(is_verified=False)
+        context['pending_count'] = context['pending_hospitals'].count()
+        context['approved_hospitals'] = hospitals.filter(is_verified=True)
+        context['total_hospitals'] = Hospital.objects.count()
+        context['search_query'] = search_query or ''
+
         return context
 
 
@@ -136,6 +155,21 @@ def reject_doctor(request, pk):
     
     messages.error(request, f"Application for Dr. {name} has been rejected and removed.")
     return redirect('super_admin_verify_doctor')
+
+
+def approve_hospital(request, pk):
+    hospital = get_object_or_404(Hospital, pk=pk)
+    hospital.is_verified = True
+    hospital.save()
+    messages.success(request, f"'{hospital.name}' has been approved.")
+    return redirect('super_admin_hospitals')
+
+def reject_hospital(request, pk):
+    hospital = get_object_or_404(Hospital, pk=pk)
+    name = hospital.name
+    hospital.delete()
+    messages.error(request, f"'{name}' has been rejected and removed.")
+    return redirect('super_admin_hospitals')
 
 def delete_user(request, pk):
     # Get the user or show 404
@@ -183,8 +217,52 @@ class VerifyReviewsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Add your context data here if needed
+
+        doctor_reviews = DoctorReview.objects.all().select_related('user', 'doctor__user').order_by('-created_at')
+        hospital_reviews = HospitalReview.objects.all().select_related('user', 'hospital').order_by('-created_at')
+
+        # Search
+        search_query = self.request.GET.get('q')
+        if search_query:
+            doctor_reviews = doctor_reviews.filter(
+                Q(user__first_name__icontains=search_query) |
+                Q(doctor__user__first_name__icontains=search_query) |
+                Q(comment__icontains=search_query)
+            )
+            hospital_reviews = hospital_reviews.filter(
+                Q(user__first_name__icontains=search_query) |
+                Q(hospital__name__icontains=search_query) |
+                Q(comment__icontains=search_query)
+            )
+
+        context['doctor_reviews'] = doctor_reviews
+        context['hospital_reviews'] = hospital_reviews
+        context['pending_doctor_reviews'] = doctor_reviews.filter(is_approved=False).count()
+        context['pending_hospital_reviews'] = hospital_reviews.filter(is_approved=False).count()
+        context['flagged_count'] = context['pending_doctor_reviews'] + context['pending_hospital_reviews']
+        context['search_query'] = search_query or ''
+
         return context
+
+
+def approve_review(request, review_type, pk):
+    if review_type == 'doctor':
+        review = get_object_or_404(DoctorReview, pk=pk)
+    else:
+        review = get_object_or_404(HospitalReview, pk=pk)
+    review.is_approved = True
+    review.save()
+    messages.success(request, "Review has been approved.")
+    return redirect('super_admin_verify_reviews')
+
+def reject_review(request, review_type, pk):
+    if review_type == 'doctor':
+        review = get_object_or_404(DoctorReview, pk=pk)
+    else:
+        review = get_object_or_404(HospitalReview, pk=pk)
+    review.delete()
+    messages.error(request, "Review has been rejected and removed.")
+    return redirect('super_admin_verify_reviews')
     
 class AnalyticsView(TemplateView):
     template_name = 'superAdmin/analytics.html'
@@ -319,8 +397,18 @@ class SettingsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Add your context data here if needed
+        context['platform_settings'] = PlatformSettings.load()
         return context
+
+    def post(self, request, *args, **kwargs):
+        settings_obj = PlatformSettings.load()
+        settings_obj.maintenance_mode = 'maintenance_mode' in request.POST
+        settings_obj.allow_registration = 'allow_registration' in request.POST
+        settings_obj.auto_approve_reviews = 'auto_approve_reviews' in request.POST
+        settings_obj.email_notifications = 'email_notifications' in request.POST
+        settings_obj.save()
+        messages.success(request, "Settings saved successfully.")
+        return redirect('super_admin_settings')
 
 from .models import ErrorLog
 from django.views.generic import ListView, DetailView

@@ -18,3 +18,27 @@ class ErrorLog(models.Model):
 
     def __str__(self):
         return f"Error at {self.timestamp}: {self.message[:50]}..."
+
+
+class PlatformSettings(models.Model):
+    maintenance_mode = models.BooleanField(default=False)
+    allow_registration = models.BooleanField(default=True)
+    auto_approve_reviews = models.BooleanField(default=False)
+    email_notifications = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Platform Settings"
+        verbose_name_plural = "Platform Settings"
+
+    def save(self, *args, **kwargs):
+        # Singleton pattern: only one row allowed
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __str__(self):
+        return "Platform Settings"
