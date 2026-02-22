@@ -104,8 +104,21 @@
             
             {% if user.is_authenticated %}
             <div class="write-review-card white-card mb-16" style="padding: 24px; margin-bottom: 30px;">
-                <h3 style="margin-bottom: 5px;">Rate Dr. {{ doctor.user.last_name }}</h3>
-                <p style="color: #6B7280; font-size: 14px; margin-bottom: 15px;">Share your experience with us</p>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h3 style="margin-bottom: 5px;">Rate Dr. {{ doctor.user.last_name }}</h3>
+                        {% if has_reviewed %}
+                        <p style="color: #6B7280; font-size: 14px; margin-bottom: 15px;">You have already reviewed this doctor.</p>
+                        {% else %}
+                        <p style="color: #6B7280; font-size: 14px; margin-bottom: 15px;">Share your experience with us</p>
+                        {% endif %}
+                    </div>
+                    {% if has_reviewed %}
+                    <span style="color: #dc2626; font-size: 12px; font-weight: 600; background: #fee2e2; padding: 6px 12px; border-radius: 20px; border: 1px solid #f87171;"><i class="fas fa-ban"></i> Cannot rate again</span>
+                    {% endif %}
+                </div>
+                
+                {% if not has_reviewed %}
                 <form method="POST" action="{% url 'doctor_detail' doctor.pk %}">
                     {% csrf_token %}
                     <div class="rating-input-wrapper" style="margin-bottom: 20px;">
@@ -124,6 +137,7 @@
                     
                     <button type="submit" class="btn btn-primary" style="width: auto; padding: 10px 40px;">Submit Rating</button>
                 </form>
+                {% endif %}
             </div>
             {% endif %}
 

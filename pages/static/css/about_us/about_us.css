@@ -361,9 +361,21 @@ p {
     box-shadow: 0px 2px 4px -2px rgba(0, 0, 0, 0.10);
 }
 
-.emoji-icon {
-    font-size: 36px;
-    margin-bottom: 16px;
+.barrier-icon {
+    font-size: 28px;
+    color: #111827;
+    /* Dark (nearly black) color */
+    background-color: #f3f4f6;
+    /* Light gray background */
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    /* Subtle depth */
 }
 
 /* --- Solution --- */

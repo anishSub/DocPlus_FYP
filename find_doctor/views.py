@@ -168,6 +168,10 @@ class DcotorDetailsView(View):
             ).first()
             
             context['upcoming_appointment'] = upcoming_appointment
+            
+            # Check if user has already reviewed this doctor
+            has_reviewed = DoctorReview.objects.filter(user=request.user, doctor=doctor).exists()
+            context['has_reviewed'] = has_reviewed
         
         return render(request, 'find_doctor/doctor_detail.html', context)
 

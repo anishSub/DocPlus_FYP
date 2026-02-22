@@ -45,16 +45,24 @@
     .method-DELETE { background-color: #f93e3e; }
     
     .view-btn {
-        padding: 6px 12px;
-        background-color: #eff2f5;
-        color: #333;
-        border-radius: 6px;
+        padding: 8px 16px;
+        background-color: white;
+        color: #0092b8;
+        border: 1px solid #0092b8;
+        border-radius: 8px;
         text-decoration: none;
-        font-size: 0.9em;
+        font-size: 13px;
+        font-weight: 500;
         transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        white-space: nowrap;
     }
     .view-btn:hover {
-        background-color: #e0e4e8;
+        background-color: #0092b8;
+        color: white;
     }
 </style>
 {% endblock %}
@@ -95,7 +103,9 @@
                         {{ error.message }}
                     </td>
                     <td>
-                        <a href="{% url 'super_admin_error_detail' error.pk %}" class="view-btn">View Details</a>
+                        <a href="{% url 'super_admin_error_detail' error.pk %}" class="view-btn">
+                            <i class="far fa-eye"></i> View Details
+                        </a>
                     </td>
                 </tr>
                 {% empty %}

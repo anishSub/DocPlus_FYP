@@ -543,13 +543,14 @@ textarea:focus {
 .faq-header h4 {
     font-size: 18px;
     font-weight: 600;
-    color: var(--primary);
+    color: #0C4D98;
+    /* Deeper blue instead of teal */
     margin: 0;
 }
 
 .faq-icon {
     font-size: 18px;
-    color: var(--primary);
+    color: #0C4D98;
     transition: transform 0.3s ease;
 }
 
@@ -572,7 +573,7 @@ textarea:focus {
 
 /* --- Active State for FAQ (Toggled by JS) --- */
 .faq-item.active {
-    border-color: var(--primary);
+    border-color: #0C4D98;
     box-shadow: var(--shadow-sm);
 }
 
