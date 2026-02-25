@@ -39,10 +39,19 @@ class Appointment(models.Model):
     payment_method = models.CharField(max_length=20)
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=900.00)
     status = models.CharField(max_length=20, default='scheduled', choices=[
+        ('pending_payment', 'Pending Payment'),
         ('scheduled', 'Scheduled'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
     ])
+    
+    # 5. Khalti Payment Fields
+    payment_status = models.CharField(max_length=20, default='pending', choices=[
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+    ])
+    khalti_pidx = models.CharField(max_length=100, blank=True, null=True)
     
     created_at = models.DateTimeField(auto_now_add=True)
     

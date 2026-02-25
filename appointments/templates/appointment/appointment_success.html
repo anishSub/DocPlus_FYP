@@ -2,29 +2,134 @@
 {% load static %}
 
 {% block extra_css %}
-<!-- Reusing the same CSS file because it handles layout well, 
-     or you can create a specific success.css -->
 <link rel="stylesheet" href="{% static 'css/appointment/appointment_success.css' %}">
+<style>
+    /* Payment Status Badges */
+    .payment-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    .payment-badge.verified {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    .payment-badge.failed {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    .payment-badge.pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
 
+    /* Error Card */
+    .error-card {
+        text-align: center;
+        padding: 40px 20px;
+    }
+    .error-card .icon-container i {
+        font-size: 60px;
+        color: #ef4444;
+    }
+    .error-card h1 {
+        color: #991b1b;
+        margin: 16px 0 8px;
+    }
+    .error-card p {
+        color: #6b7280;
+        max-width: 400px;
+        margin: 0 auto 24px;
+    }
+
+    /* Pending Card */
+    .pending-card .icon-container i {
+        color: #f59e0b;
+    }
+    .pending-card h1 {
+        color: #92400e;
+    }
+
+    .transaction-id {
+        font-family: 'Courier New', monospace;
+        background: #f3f4f6;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        color: #374151;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="appointment-container">
     <div class="success-wrapper">
         <div class="success-card">
-            
-            <!-- SUCCESS ICON -->
+
+            {% if payment_failed %}
+            <!-- PAYMENT FAILED STATE -->
+            <div class="error-card">
+                <div class="icon-container">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="success-header">
+                    <h1>Payment Failed</h1>
+                    <p>{{ error_message }}</p>
+                </div>
+                <div class="action-buttons" style="display:flex; gap:10px; justify-content: center;">
+                    <a href="{% url 'appointment_page' %}" class="btn btn-primary" style="flex:0 1 auto; justify-content:center;">
+                        <i class="fas fa-redo"></i> Try Again
+                    </a>
+                    <a href="{% url 'home' %}" class="btn btn-secondary" style="flex:0 1 auto; justify-content:center;">
+                        Back to Home
+                    </a>
+                </div>
+            </div>
+
+            {% elif payment_pending %}
+            <!-- PAYMENT PENDING STATE -->
+            <div class="error-card pending-card">
+                <div class="icon-container">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="success-header">
+                    <h1>Payment Processing</h1>
+                    <p>{{ error_message }}</p>
+                </div>
+                {% if patient_name %}
+                <div class="details-box">
+                    <div class="detail-item">
+                        <span class="label">Patient Name</span>
+                        <span class="value">{{ patient_name }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Doctor</span>
+                        <span class="value">{{ doctor_name }}</span>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="action-buttons" style="display:flex; gap:10px; justify-content: center;">
+                    <a href="{% url 'home' %}" class="btn btn-primary" style="flex:0 1 auto; justify-content:center;">
+                        Back to Home
+                    </a>
+                </div>
+            </div>
+
+            {% else %}
+            <!-- SUCCESS STATE -->
             <div class="icon-container">
                 <i class="fas fa-check-circle"></i>
             </div>
 
-            <!-- MAIN HEADING -->
             <div class="success-header">
                 <h1>Appointment Confirmed!</h1>
                 <p>Your online video consultation has been successfully booked.</p>
             </div>
 
-            <!-- DETAILS BOX -->
             <div class="details-box">
                 <h3 style="margin-top:0; color:#0092b8;">Appointment Details</h3>
                 
@@ -58,18 +163,38 @@
                     <span class="value">{{ fee }}</span>
                 </div>
 
+                {% if payment_verified %}
+                <div class="detail-item">
+                    <span class="label">Payment Status</span>
+                    <span class="value">
+                        <span class="payment-badge verified">
+                            <i class="fas fa-check-circle"></i> Payment Verified
+                        </span>
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if transaction_id %}
+                <div class="detail-item">
+                    <span class="label">Transaction ID</span>
+                    <span class="value">
+                        <span class="transaction-id">{{ transaction_id }}</span>
+                    </span>
+                </div>
+                {% endif %}
+
             </div>
 
-            <!-- NOTIFICATION TEXT -->
             <div class="notification-text" style="background:#ecfeff; padding:15px; border-radius:8px; color:#4a5565; margin-bottom:24px;">
                 <p><i class="fas fa-envelope"></i> Confirmation sent to <strong>{{ email }}</strong></p>
                 <p><i class="fas fa-video"></i> Video link will arrive 10 mins before time.</p>
             </div>
 
-            <!-- ACTION BUTTONS -->
             <div class="action-buttons" style="display:flex; gap:10px;">
                 <a href="{% url 'home' %}" class="btn btn-primary" style="flex:1; justify-content:center;">Back to Home</a>
             </div>
+
+            {% endif %}
 
         </div>
     </div>
