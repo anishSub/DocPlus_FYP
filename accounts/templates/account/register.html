@@ -61,26 +61,41 @@
                                 <div class="input-wrapper">
                                     <input type="text" name="last_name" placeholder="Last Name" required 
                                         value="{{ form.last_name.value|default:'' }}">
+                                    <i class="fas fa-user input-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="field-label">Username & Date of Birth</label>
+                            <div class="row-input">
+                                <div class="input-wrapper">
+                                    <input type="text" name="username" placeholder="Username" required 
+                                        value="{{ form.username.value|default:'' }}">
+                                    <i class="fas fa-user input-icon"></i>
+                                </div>
+                                <div class="input-wrapper">
+                                    <input type="date" name="date_of_birth" required 
+                                        value="{{ form.date_of_birth.value|default:'' }}"
+                                        max="{% now 'Y-m-d' %}">
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="field-label">Username</label>
+                            <label class="field-label">Gender</label>
                             <div class="input-wrapper">
-                                <input type="text" name="username" placeholder="Choose a username" required 
-                                    value="{{ form.username.value|default:'' }}">
-                                <i class="fas fa-at input-icon"></i>
+                                <select name="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="M" {% if form.gender.value == 'M' %}selected{% endif %}>Male</option>
+                                    <option value="F" {% if form.gender.value == 'F' %}selected{% endif %}>Female</option>
+                                    <option value="O" {% if form.gender.value == 'O' %}selected{% endif %}>Other</option>
+                                </select>
+                                <i class="fas fa-venus-mars input-icon"></i>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="field-label">Date of Birth</label>
-                            <div class="input-wrapper">
-                                <input type="date" name="date_of_birth" required 
-                                    value="{{ form.date_of_birth.value|default:'' }}"
-                                    max="{% now 'Y-m-d' %}"> </div>
-                        </div>
 
                         <div class="form-group">
                             <label class="field-label">Email Address</label>
@@ -101,24 +116,18 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="field-label">Password</label>
-                            <div class="input-wrapper">
-                                <input type="password" name="password1" id="reg_pass1" placeholder="Create a strong password" required>
-                                
-                                <i class="fas fa-lock input-icon"></i>
-                                
-                                <i class="fas fa-eye toggle-password-btn" onclick="togglePassword('reg_pass1', this)"></i>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="field-label">Confirm Password</label>
-                            <div class="input-wrapper">
-                                <input type="password" name="password2" id="reg_pass2" placeholder="Re-enter your password" required>
-                                
-                                <i class="fas fa-lock input-icon"></i>
-                                
-                                <i class="fas fa-eye toggle-password-btn" onclick="togglePassword('reg_pass2', this)"></i>
+                            <label class="field-label">Password & Confirm Password</label>
+                            <div class="row-input">
+                                <div class="input-wrapper">
+                                    <input type="password" name="password1" id="reg_pass1" placeholder="Password" required>
+                                    <i class="fas fa-lock input-icon"></i>
+                                    <i class="fas fa-eye toggle-password-btn" onclick="togglePassword('reg_pass1', this)"></i>
+                                </div>
+                                <div class="input-wrapper">
+                                    <input type="password" name="password2" id="reg_pass2" placeholder="Confirm Password" required>
+                                    <i class="fas fa-lock input-icon"></i>
+                                    <i class="fas fa-eye toggle-password-btn" onclick="togglePassword('reg_pass2', this)"></i>
+                                </div>
                             </div>
                         </div>
 

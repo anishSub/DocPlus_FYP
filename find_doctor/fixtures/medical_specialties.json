@@ -1,0 +1,287 @@
+[
+  {
+    "model": "find_doctor.medicalspecialty",
+    "pk": 1,
+    "fields": {
+      "name": "Cardiology",
+      "description": "Deals with disorders of the heart and blood vessels",
+      "keywords": [
+        "chest pain",
+        "heart attack",
+        "heart disease",
+        "hypertension",
+        "high blood pressure",
+        "arrhythmia",
+        "palpitations",
+        "irregular heartbeat",
+        "angina",
+        "coronary artery disease",
+        "heart failure",
+        "cardiac arrest"
+      ],
+      "sub_specialties": [
+        "Interventional Cardiology",
+        "Electrophysiology",
+        "Heart Failure"
+      ],
+      "priority": 10
+    }
+  },
+  {
+    "model": "find_doctor.medicalspecialty",
+    "pk": 2,
+    "fields": {
+      "name": "Neurology",
+      "description": "Focuses on disorders of the nervous system",
+      "keywords": [
+        "headache",
+        "migraine",
+        "seizure",
+        "epilepsy",
+        "stroke",
+        "paralysis",
+        "memory loss",
+        "dizziness",
+        "vertigo",
+        "tremor",
+        "parkinson",
+        "alzheimer",
+        "nerve pain",
+        "neuropathy",
+        "numbness",
+        "tingling"
+      ],
+      "sub_specialties": [
+        "Stroke",
+        "Movement Disorders",
+        "Epilepsy"
+      ],
+      "priority": 9
+    }
+  },
+  {
+    "model": "find_doctor.medicalspecialty",
+    "pk": 3,
+    "fields": {
+      "name": "Orthopedics",
+      "description": "Treats musculoskeletal system disorders",
+      "keywords": [
+        "joint pain",
+        "arthritis",
+        "fracture",
+        "broken bone",
+        "back pain",
+        "neck pain",
+        "knee pain",
+        "shoulder pain",
+        "sprain",
+        "ligament tear",
+        "sports injury",
+        "bone pain",
+        "osteoporosis",
+        "scoliosis"
+      ],
+      "sub_specialties": [
+        "Sports Medicine",
+        "Spine Surgery",
+        "Joint Replacement"
+      ],
+      "priority": 8
+    }
+  },
+  {
+    "model": "find_doctor.medicalspecialty",
+    "pk": 4,
+    "fields": {
+      "name": "Gastroenterology",
+      "description": "Deals with the digestive system and its disorders",
+      "keywords": [
+        "stomach pain",
+        "abdominal pain",
+        "diarrhea",
+        "constipation",
+        "acid reflux",
+        "heartburn",
+        "ulcer",
+        "gastritis",
+        "ibs",
+        "irritable bowel syndrome",
+        "bloating",
+        "nausea",
+        "vomiting",
+        "liver disease",
+        "hepatitis",
+        "jaundice"
+      ],
+      "sub_specialties": [
+        "Hepatology",
+        "Inflammatory Bowel Disease"
+      ],
+      "priority": 8
+    }
+  },
+  {
+    "model": "find_doctor.medicalspecialty",
+    "pk": 5,
+    "fields": {
+      "name": "Pulmonology",
+      "description": "Specializes in respiratory system diseases",
+      "keywords": [
+        "asthma",
+        "breathing difficulty",
+        "shortness of breath",
+        "cough",
+        "chronic cough",
+        "pneumonia",
+        "copd",
+        "bronchitis",
+        "lung disease",
+        "tuberculosis",
+        "tb",
+        "wheezing",
+        "chest congestion"
+      ],
+      "sub_specialties": [
+        "Critical Care",
+        "Sleep Medicine"
+      ],
+      "priority": 9
+    }
+  },
+  {
+    "model": "find_doctor.medicalspecialty",
+    "pk": 6,
+    "fields": {
+      "name": "Endocrinology",
+      "description": "Treats hormone-related disorders",
+      "keywords": [
+        "diabetes",
+        "thyroid",
+        "thyroid disorder",
+        "hormone imbalance",
+        "obesity",
+        "weight gain",
+        "weight loss",
+        "growth disorder",
+        "pcos",
+        "metabolic disorder",
+        "sugar",
+        "high sugar",
+        "blood sugar"
+      ],
+      "sub_specialties": [
+        "Diabetes",
+        "Thyroid Disorders"
+      ],
+      "priority": 8
+    }
+  },
+  {
+    "model": "find_doctor.medicalspecialty",
+    "pk": 7,
+    "fields": {
+      "name": "Dermatology",
+      "description": "Focuses on skin, hair, and nail conditions",
+      "keywords": [
+        "skin rash",
+        "acne",
+        "pimples",
+        "eczema",
+        "psoriasis",
+        "skin infection",
+        "hair loss",
+        "dandruff",
+        "nail problem",
+        "skin allergy",
+        "itching",
+        "hives",
+        "moles",
+        "warts"
+      ],
+      "sub_specialties": [
+        "Cosmetic Dermatology",
+        "Pediatric Dermatology"
+      ],
+      "priority": 7
+    }
+  },
+  {
+    "model": "find_doctor.medicalspecialty",
+    "pk": 8,
+    "fields": {
+      "name": "Nephrology",
+      "description": "Specializes in kidney-related diseases",
+      "keywords": [
+        "kidney disease",
+        "kidney failure",
+        "kidney stone",
+        "urinary problem",
+        "blood in urine",
+        "protein in urine",
+        "dialysis",
+        "renal failure",
+        "swelling",
+        "edema"
+      ],
+      "sub_specialties": [
+        "Dialysis",
+        "Kidney Transplant"
+      ],
+      "priority": 8
+    }
+  },
+  {
+    "model": "find_doctor.medicalspecialty",
+    "pk": 9,
+    "fields": {
+      "name": "Psychiatry",
+      "description": "Deals with mental health disorders",
+      "keywords": [
+        "depression",
+        "anxiety",
+        "stress",
+        "panic attack",
+        "bipolar",
+        "schizophrenia",
+        "ocd",
+        "ptsd",
+        "insomnia",
+        "sleep problem",
+        "mood disorder",
+        "mental health",
+        "suicidal thoughts"
+      ],
+      "sub_specialties": [
+        "Child Psychiatry",
+        "Addiction Medicine"
+      ],
+      "priority": 9
+    }
+  },
+  {
+    "model": "find_doctor.medicalspecialty",
+    "pk": 10,
+    "fields": {
+      "name": "Gynecology",
+      "description": "Focuses on women's reproductive health",
+      "keywords": [
+        "menstrual problem",
+        "period pain",
+        "irregular period",
+        "pregnancy",
+        "infertility",
+        "uterine problem",
+        "ovarian cyst",
+        "pelvic pain",
+        "vaginal discharge",
+        "menopause",
+        "fibroids"
+      ],
+      "sub_specialties": [
+        "Obstetrics",
+        "Reproductive Endocrinology"
+      ],
+      "priority": 8
+    }
+  }
+]

@@ -84,6 +84,11 @@
                     <span>Analytics</span>
                 </a>
 
+                <a href="{% url 'super_admin_error_logs' %}" class="nav-item {% if 'error' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>System Errors</span>
+                </a>
+
                 <a href="{% url 'super_admin_settings' %}" class="nav-item  {% if request.resolver_match.url_name == 'super_admin_settings' %}active{% endif %}">
                     <i class="fas fa-sliders-h"></i>
                     <span>Settings</span>
@@ -100,5 +105,8 @@
 
     <!-- Sidebar Logic -->
     <script src="{% static 'js/superAdmin/sidebar.js' %}"></script>
+
+    <!-- Page Specific JS -->
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

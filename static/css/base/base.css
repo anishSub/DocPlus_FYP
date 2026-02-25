@@ -1,12 +1,17 @@
 /* Reset & Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
 
 :root {
     --primary: #0092B8;
     --secondary: #1C398E;
-    --gradient: linear-gradient(135deg, #0092B8 0%, #155DFC 100%);
+    --gradient: linear-gradient(90deg, #0092B8 0%, #1447E6 50%, #1C398E 100%);
     --text-dark: #101828;
     --text-gray: #4A5565;
     --bg-light: #F9FAFB;
@@ -15,17 +20,31 @@
     --yellow-hover: #D97706;
 }
 
-body { background: var(--white); color: var(--text-dark); padding-top: 80px; }
-a { text-decoration: none; color: inherit; transition: 0.3s; }
-ul { list-style: none; }
+body {
+    background: var(--white);
+    color: var(--text-dark);
+    padding-top: 80px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: 0.3s;
+}
+
+ul {
+    list-style: none;
+}
 
 /* --- HEADER --- */
 .header {
     position: fixed;
-    top: 0; left: 0; width: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 80px;
     background: white;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     z-index: 1000;
     display: flex;
     align-items: center;
@@ -47,27 +66,33 @@ ul { list-style: none; }
 }
 
 .logo-link {
-    display: block; 
-    line-height: 0; 
+    display: block;
+    line-height: 0;
 }
 
 .logo-img {
-    height: 70px; 
+    height: 70px;
     width: auto;
     object-fit: contain;
     display: block;
 }
 
 /* --- NAVIGATION (MODERN HOVER) --- */
-.nav-links { display: flex; gap: 30px; }
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
 
 .nav-item {
     color: var(--text-gray);
     font-weight: 500;
     font-size: 16px;
-    position: relative; /* Needed for the pseudo-element */
-    padding: 4px 0; /* Adds slight breathing room */
-    transition: color 0.3s ease, transform 0.2s ease; /* Added transform for zoom */
+    position: relative;
+    /* Needed for the pseudo-element */
+    padding: 4px 0;
+    /* Adds slight breathing room */
+    transition: color 0.3s ease, transform 0.2s ease;
+    /* Added transform for zoom */
 }
 
 /* The Animated Line */
@@ -79,18 +104,22 @@ ul { list-style: none; }
     bottom: 0;
     left: 50%;
     background-color: var(--primary);
-    transform: translateX(-50%); /* Centers the line */
-    transition: width 0.3s ease-in-out; /* Smooth expansion */
+    transform: translateX(-50%);
+    /* Centers the line */
+    transition: width 0.3s ease-in-out;
+    /* Smooth expansion */
 }
 
 /* Hover State */
 .nav-item:hover {
     color: var(--primary);
-    transform: scale(1.1); /* Zoom in effect */
+    transform: scale(1.1);
+    /* Zoom in effect */
 }
 
 .nav-item:hover::after {
-    width: 100%; /* Expands to full width */
+    width: 100%;
+    /* Expands to full width */
 }
 
 /* Active State (Keep line visible) */
@@ -103,7 +132,11 @@ ul { list-style: none; }
 }
 
 /* --- RIGHT ACTIONS --- */
-.header-actions { display: flex; align-items: center; gap: 20px; }
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
 
 .menu-toggle {
     display: none;
@@ -128,7 +161,8 @@ ul { list-style: none; }
 }
 
 .btn:active {
-    transform: scale(0.98); /* Click effect */
+    transform: scale(0.98);
+    /* Click effect */
 }
 
 .btn-primary {
@@ -136,13 +170,17 @@ ul { list-style: none; }
     color: white;
     border: none;
 }
-.btn-primary:hover { opacity: 0.9; }
+
+.btn-primary:hover {
+    opacity: 0.9;
+}
 
 .btn-yellow {
     background-color: var(--yellow);
     color: white;
     border: none;
 }
+
 .btn-yellow:hover {
     background-color: var(--yellow-hover);
 }
@@ -156,120 +194,273 @@ ul { list-style: none; }
 }
 
 .profile-circle {
-    width: 40px; height: 40px;
-    background: #E0F2FE; color: var(--primary);
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 18px; border: 2px solid white;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    width: 40px;
+    height: 40px;
+    background: #E0F2FE;
+    color: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .user-name-text {
-    font-weight: 500; color: var(--text-dark); font-size: 15px;
+    font-weight: 500;
+    color: var(--text-dark);
+    font-size: 15px;
 }
 
-.logout-form { margin: 0; padding: 0; }
-.logout-form button { font-family: 'Inter', sans-serif; }
+.logout-form {
+    margin: 0;
+    padding: 0;
+}
+
+.logout-form button {
+    font-family: 'Inter', sans-serif;
+}
 
 /* --- FOOTER --- */
-.footer-logo-img { height: 80px; width: auto; object-fit: contain; }
+.footer-logo-img {
+    height: 80px;
+    width: auto;
+    object-fit: contain;
+}
 
 .footer {
     background: linear-gradient(135deg, #101828 0%, #1C398E 50%, #101828 100%);
-    color: white; padding-top: 48px; width: 100%;
+    color: white;
+    padding-top: 48px;
+    width: 100%;
 }
 
 .footer-container {
-    width: 90%; max-width: 1200px; margin: 0 auto; padding-bottom: 20px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 20px;
 }
 
 .footer-top {
-    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin-bottom: 40px;
 }
 
-.footer-brand { flex: 1.5; min-width: 250px; }
+.footer-brand {
+    flex: 1.5;
+    min-width: 250px;
+}
+
 .footer-brand p {
-    font-size: 14px; color: #99A1AF; line-height: 1.6; margin-bottom: 20px; max-width: 300px;
+    font-size: 14px;
+    color: #99A1AF;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    max-width: 300px;
 }
 
-.social-icons { display: flex; gap: 15px; }
-.social-icons a i { font-size: 24px; color: #99A1AF; transition: 0.3s; }
-.social-icons a:hover i { color: white; }
+.social-icons {
+    display: flex;
+    gap: 15px;
+}
 
-.footer-col { flex: 1; min-width: 180px; }
-.footer-col h3 { font-size: 16px; margin-bottom: 20px; color: white; font-weight: 600; }
-.footer-col ul li { margin-bottom: 12px; }
-.footer-col ul li a { color: #99A1AF; font-size: 14px; }
-.footer-col ul li a:hover { color: white; }
+.social-icons a i {
+    font-size: 24px;
+    color: #99A1AF;
+    transition: 0.3s;
+}
 
-.contact-list li { display: flex; gap: 12px; align-items: flex-start; color: #99A1AF; font-size: 14px; }
-.contact-list i { color: #00D3F2; font-size: 18px; margin-top: 2px; }
+.social-icons a:hover i {
+    color: white;
+}
+
+.footer-col {
+    flex: 1;
+    min-width: 180px;
+}
+
+.footer-col h3 {
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: white;
+    font-weight: 600;
+}
+
+.footer-col ul li {
+    margin-bottom: 12px;
+}
+
+.footer-col ul li a {
+    color: #99A1AF;
+    font-size: 14px;
+}
+
+.footer-col ul li a:hover {
+    color: white;
+}
+
+.contact-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    color: #99A1AF;
+    font-size: 14px;
+}
+
+.contact-list i {
+    color: #00D3F2;
+    font-size: 18px;
+    margin-top: 2px;
+}
 
 .footer-bottom {
-    border-top: 1px solid #1E2939; padding-top: 20px;
-    display: flex; justify-content: space-between; font-size: 14px; color: #99A1AF;
+    border-top: 1px solid #1E2939;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #99A1AF;
 }
 
-.legal-links { display: flex; gap: 24px; }
-.legal-links a { color: #99A1AF; }
+.legal-links {
+    display: flex;
+    gap: 24px;
+}
+
+.legal-links a {
+    color: #99A1AF;
+}
+
+/* =========================================
+   RESPONSIVE - MEDIUM SCREENS (Tablet/Small Laptop)
+   Reduces spacing between 900-1100px to prevent overlap
+   ========================================= */
+@media (max-width: 1100px) and (min-width: 900px) {
+    .nav-links {
+        gap: 18px;
+        /* Reduced from 30px */
+    }
+
+    .nav-item {
+        font-size: 14px;
+        /* Reduced from 16px */
+    }
+
+    .header-actions {
+        gap: 12px;
+        /* Reduced from 20px */
+    }
+
+    .btn {
+        padding: 7px 14px;
+        /* Reduced from 8px 18px */
+        font-size: 14px;
+        /* Reduced from 15px */
+    }
+
+    .user-name-text {
+        display: none;
+        /* Hide username text to save space */
+    }
+}
 
 /* =========================================
    RESPONSIVE HEADER (TABLET & MOBILE)
+   Hamburger menu for screens 1100px and below
    ========================================= */
-@media (max-width: 1024px) {
-    .menu-toggle { display: block; }
+@media (max-width: 1100px) {
+    .menu-toggle {
+        display: block;
+    }
 
-    .nav-links, .header-actions {
+    .nav-links,
+    .header-actions {
         position: absolute;
-        top: 80px; left: 0; width: 100%;
+        top: 80px;
+        left: 0;
+        width: 100%;
         background: white;
         flex-direction: column;
         align-items: center;
         gap: 0;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         overflow: hidden;
-        max-height: 0; 
+        max-height: 0;
         transition: max-height 0.3s ease-out;
         display: none;
     }
 
     .nav-item {
-        width: 100%; text-align: center; padding: 15px 0; border-bottom: 1px solid #f0f0f0;
+        width: 100%;
+        text-align: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #f0f0f0;
     }
 
     /* Remove the underline effect on mobile as it looks odd on full-width items */
-    .nav-item::after { display: none; }
-    
-    .nav-item:hover, .nav-item.active {
-        background-color: #f9fafb; /* Subtle background change instead */
+    .nav-item::after {
+        display: none;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+        background-color: #f9fafb;
+        /* Subtle background change instead */
         color: var(--primary);
-        transform: none; /* Disable zoom on mobile */
+        transform: none;
+        /* Disable zoom on mobile */
     }
 
     /* Header Actions Mobile Style */
     .header-actions {
-        top: auto; box-shadow: none;
+        top: auto;
+        box-shadow: none;
         background: white;
         padding: 20px;
-        gap: 15px; 
+        gap: 15px;
         border-top: 1px solid #f0f0f0;
     }
 
-    .nav-links.active, .header-actions.active {
-        display: flex; max-height: 500px;
+    .nav-links.active,
+    .header-actions.active {
+        display: flex;
+        max-height: 500px;
     }
 
     .header-actions.active {
-        position: absolute; top: 290px;
-        box-shadow: 0 10px 10px rgba(0,0,0,0.05);
+        position: absolute;
+        top: 290px;
+        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.05);
     }
-    
+
     .user-profile-display {
-        flex-direction: column; margin-right: 0; margin-bottom: 10px;
+        flex-direction: column;
+        margin-right: 0;
+        margin-bottom: 10px;
     }
-    .user-name-text { color: var(--text-dark); font-size: 16px; }
-    
-    .footer-top { flex-direction: column; gap: 30px; }
-    .footer-bottom { flex-direction: column; gap: 15px; text-align: center; align-items: center; }
+
+    .user-name-text {
+        color: var(--text-dark);
+        font-size: 16px;
+    }
+
+    .footer-top {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+        align-items: center;
+    }
 }
 
 
@@ -279,28 +470,36 @@ ul { list-style: none; }
 
 /* 1. Container: Floats on top of everything */
 #message-container {
-    position: fixed;       /* This prevents pushing the page down */
-    top: 100px;            /* Distance from top */
+    position: fixed;
+    /* This prevents pushing the page down */
+    top: 100px;
+    /* Distance from top */
     left: 50%;
     transform: translateX(-50%);
-    z-index: 10000;        /* Ensures it sits ABOVE everything */
+    z-index: 10000;
+    /* Ensures it sits ABOVE everything */
     display: flex;
     flex-direction: column;
     gap: 15px;
     width: 90%;
     max-width: 450px;
-    pointer-events: none;  /* Click through the empty space */
+    pointer-events: none;
+    /* Click through the empty space */
 }
 
 /* 2. The Message Card (Glassmorphism) */
 .custom-toast {
-    pointer-events: auto;  /* Enable clicking the card */
-    background: rgba(251, 237, 216, 0.95); /* Dark background */
-    backdrop-filter: blur(10px);        /* Blur effect behind */
+    pointer-events: auto;
+    /* Enable clicking the card */
+    background: rgba(251, 237, 216, 0.95);
+    /* Dark background */
+    backdrop-filter: blur(10px);
+    /* Blur effect behind */
     color: #1b1e69;
     padding: 16px 20px;
     border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3); /* deep shadow */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    /* deep shadow */
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -309,14 +508,31 @@ ul { list-style: none; }
     font-weight: 500;
     opacity: 0;
     animation: slideDownFade 0.5s forwards;
-    border-left: 5px solid #fff; /* Default border */
+    border-left: 5px solid #fff;
+    /* Default border */
 }
 
 /* 3. Color Variations */
-.custom-toast.success { border-color: #10B981; } /* Green */
-.custom-toast.error   { border-color: #EF4444; } /* Red */
-.custom-toast.info    { border-color: #3B82F6; } /* Blue */
-.custom-toast.warning { border-color: #F59E0B; } /* Yellow */
+.custom-toast.success {
+    border-color: #10B981;
+}
+
+/* Green */
+.custom-toast.error {
+    border-color: #EF4444;
+}
+
+/* Red */
+.custom-toast.info {
+    border-color: #3B82F6;
+}
+
+/* Blue */
+.custom-toast.warning {
+    border-color: #F59E0B;
+}
+
+/* Yellow */
 
 /* 4. Text & Icon Alignment */
 .custom-toast span {
@@ -336,10 +552,21 @@ ul { list-style: none; }
     transition: 0.2s;
     line-height: 1;
 }
-.toast-close:hover { color: #fff; transform: scale(1.1); }
+
+.toast-close:hover {
+    color: #fff;
+    transform: scale(1.1);
+}
 
 /* 6. Animation */
 @keyframes slideDownFade {
-    from { opacity: 0; transform: translateY(-30px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

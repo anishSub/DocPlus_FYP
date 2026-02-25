@@ -101,6 +101,46 @@
     <div id="overview-section" class="container main-content-grid fade-in">
         
         <div class="details-column">
+            
+            {% if user.is_authenticated %}
+            <div class="write-review-card white-card mb-16" style="padding: 24px; margin-bottom: 30px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h3 style="margin-bottom: 5px;">Rate Dr. {{ doctor.user.last_name }}</h3>
+                        {% if has_reviewed %}
+                        <p style="color: #6B7280; font-size: 14px; margin-bottom: 15px;">You have already reviewed this doctor.</p>
+                        {% else %}
+                        <p style="color: #6B7280; font-size: 14px; margin-bottom: 15px;">Share your experience with us</p>
+                        {% endif %}
+                    </div>
+                    {% if has_reviewed %}
+                    <span style="color: #dc2626; font-size: 12px; font-weight: 600; background: #fee2e2; padding: 6px 12px; border-radius: 20px; border: 1px solid #f87171;"><i class="fas fa-ban"></i> Cannot rate again</span>
+                    {% endif %}
+                </div>
+                
+                {% if not has_reviewed %}
+                <form method="POST" action="{% url 'doctor_detail' doctor.pk %}">
+                    {% csrf_token %}
+                    <div class="rating-input-wrapper" style="margin-bottom: 20px;">
+                        <div class="star-rating">
+                            <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 stars">★</label>
+                            <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 stars">★</label>
+                            <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 stars">★</label>
+                            <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 stars">★</label>
+                            <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 star">★</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 15px; text-align: left;">
+                        <textarea name="comment" rows="3" class="form-control" placeholder="Write a review (optional)..." style="width:100%; padding:12px; border:1px solid #E5E7EB; border-radius:10px; resize: none; font-size: 14px;"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: auto; padding: 10px 40px;">Submit Rating</button>
+                </form>
+                {% endif %}
+            </div>
+            {% endif %}
+
             <div class="content-section">
                 <h3 class="section-title">Dr. {{ doctor.user.first_name }}</h3>
                 <p class="bio-text">
@@ -136,32 +176,47 @@
 
         <div class="sidebar-column">
             <div class="booking-card">
-                <h3>Book Appointment</h3>
-                
-                <div class="booking-step">
-                    <label>Select Available Day</label>
-                    <div class="day-selector" id="day-container">
-                        <span class="text-muted text-sm">Loading schedule...</span>
-                    </div>
-                    <p id="selected-date-display" style="font-size:13px; color:#0C4D98; margin-top:5px; font-weight:600;"></p>
-                </div>
-                
-                <div class="booking-step">
-                    <label>Select Time Slot</label>
-                    <div class="time-grid" id="time-container">
-                        <span class="text-muted text-sm">Select a day first</span>
-                    </div>
-                </div>
-
-                <form id="booking-form" action="{% url 'appointment_page' %}" method="GET">
-                    <input type="hidden" name="doctor" value="{{ doctor.id }}">
-                    <input type="hidden" name="appointment_date" id="input_date">
-                    <input type="hidden" name="time_slot" id="input_time">
+                {% if upcoming_appointment %}
+                    <!-- User has an appointment - Show Join Call Button -->
+                    <h3 style="color: #10b981;">Appointment Booked</h3>
+                    <p style="font-size: 14px; color:#6b7280; margin-bottom: 15px;">
+                        {{ upcoming_appointment.date|date:"M d, Y" }} at {{ upcoming_appointment.start_time|time:"h:i A" }}
+                    </p>
+                    <a href="{% url 'video_call' upcoming_appointment.id %}" class="btn-join-call">
+                        <i class="fas fa-video"></i> Join Video Call
+                    </a>
+                    <p style="font-size: 12px; color:#9ca3af; margin-top:10px; text-align:center;">
+                        Access Code: <strong>{{ upcoming_appointment.call_access_code }}</strong>
+                    </p>
+                {% else %}
+                    <!-- No appointment - Show Booking Form -->
+                    <h3>Book Appointment</h3>
                     
-                    <button type="submit" class="btn-confirm-booking" id="btn-book" disabled style="opacity:0.6; cursor:not-allowed;">
-                        <i class="far fa-calendar-check"></i> Proceed to Book
-                    </button>
-                </form>
+                    <div class="booking-step">
+                        <label>Select Available Day</label>
+                        <div class="day-selector" id="day-container">
+                            <span class="text-muted text-sm">Loading schedule...</span>
+                        </div>
+                        <p id="selected-date-display" style="font-size:13px; color:#0C4D98; margin-top:5px; font-weight:600;"></p>
+                    </div>
+                    
+                    <div class="booking-step">
+                        <label>Select Time Slot</label>
+                        <div class="time-grid" id="time-container">
+                            <span class="text-muted text-sm">Select a day first</span>
+                        </div>
+                    </div>
+
+                    <form id="booking-form" action="{% url 'appointment_page' %}" method="GET">
+                        <input type="hidden" name="doctor" value="{{ doctor.id }}">
+                        <input type="hidden" name="appointment_date" id="input_date">
+                        <input type="hidden" name="time_slot" id="input_time">
+                        
+                        <button type="submit" class="btn-confirm-booking" id="btn-book" disabled style="opacity:0.6; cursor:not-allowed;">
+                            <i class="far fa-calendar-check"></i> Proceed to Book
+                        </button>
+                    </form>
+                {% endif %}
                 
                 <div class="contact-info-box">
                     <label>Hospital Contact</label>
@@ -177,6 +232,35 @@
 
     <div id="reviews-section" class="container fade-in" style="display: none;">
         <div class="reviews-wrapper">
+            
+
+            
+            <style>
+                /* Star Rating Improved CSS */
+                .star-rating {
+                    display: flex;
+                    flex-direction: row-reverse;
+                    justify-content: flex-end; /* Left align (reversed) */
+                    float: left; /* Ensure it stays left */
+                    gap: 8px;
+                }
+                .star-rating input { display: none; }
+                .star-rating label {
+                    font-size: 35px; /* Bigger stars */
+                    color: #D1D5DB; /* Lighter gray default */
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+                }
+                .star-rating label:hover,
+                .star-rating label:hover ~ label {
+                    color: #FBBF24; /* Brighter Gold Hover */
+                    transform: scale(1.1);
+                }
+                .star-rating input:checked ~ label {
+                    color: #F59E0B; /* Deep Gold Selected */
+                }
+            </style>
             
             <div class="review-summary-card">
                 <div class="summary-left">

@@ -60,28 +60,34 @@
     <div class="settings-section">
         <h3>Consultation Settings</h3>
         
-        <div class="settings-list">
-            <div class="setting-item">
-                <div class="setting-info">
-                    <h4>Enable Video Consultations</h4>
-                    <p>Allow patients to book online video calls</p>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="settings-list">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h4>Enable Video Consultations</h4>
+                        <p>Allow patients to book online video calls</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" name="enable_video_consultations" {% if doctor.enable_video_consultations %}checked{% endif %}>
+                        <span class="slider round"></span>
+                    </label>
                 </div>
-                <label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider round"></span>
-                </label>
-            </div>
 
-            <div class="setting-item">
-                <div class="setting-info">
-                    <h4>Auto-Accept Appointments</h4>
-                    <p>Automatically accept appointment requests</p>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h4>Auto-Accept Appointments</h4>
+                        <p>Automatically accept appointment requests</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" name="auto_accept_appointments" {% if doctor.auto_accept_appointments %}checked{% endif %}>
+                        <span class="slider round"></span>
+                    </label>
                 </div>
-                <label class="switch">
-                    <input type="checkbox">
-                    <span class="slider round"></span>
-                </label>
             </div>
-        </div>
+            <button type="submit" style="margin-top: 12px; padding: 8px 20px; background: #0E82FD; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9rem;">
+                Save Settings
+            </button>
+        </form>
     </div>
 {% endblock %}

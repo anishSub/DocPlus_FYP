@@ -14,32 +14,31 @@
         <p>Comprehensive insights and statistics</p>
     </div>
 
-    <!-- 2. Revenue Overview -->
+    <!-- 2. Revenue Overview (Real Data) -->
     <div class="section-container">
         <h3>Revenue Overview</h3>
         <div class="revenue-grid">
             <div class="revenue-item">
                 <span class="label">Today</span>
-                <span class="value">Rs 85,000</span>
+                <span class="value">Rs {{ revenue_today|floatformat:0 }}</span>
             </div>
             <div class="revenue-item">
                 <span class="label">This Week</span>
-                <span class="value">Rs 5.4L</span>
+                <span class="value">Rs {{ revenue_week|floatformat:0 }}</span>
             </div>
             <div class="revenue-item">
                 <span class="label">This Month</span>
-                <span class="value">Rs 24.5L</span>
+                <span class="value">Rs {{ revenue_month|floatformat:0 }}</span>
             </div>
             <div class="revenue-item">
                 <span class="label">Total</span>
-                <span class="value">Rs 3.2Cr</span>
+                <span class="value">Rs {{ revenue_total|floatformat:0 }}</span>
             </div>
         </div>
     </div>
 
-    <!-- 3. Metrics Grid (User Activity & Appointment Metrics) -->
+    <!-- 3. Metrics Grid (Real Data) -->
     <div class="metrics-grid">
-        
         <!-- Card 1: User Activity -->
         <div class="metric-card">
             <div class="card-header">
@@ -48,16 +47,16 @@
             </div>
             <div class="metric-list">
                 <div class="metric-row">
-                    <span>Daily Active Users</span>
-                    <span class="number">2,156</span>
+                    <span>Total Users</span>
+                    <span class="number">{{ total_users }}</span>
+                </div>
+                <div class="metric-row">
+                    <span>Active Today</span>
+                    <span class="number">{{ active_today }}</span>
                 </div>
                 <div class="metric-row">
                     <span>New Sign-ups Today</span>
-                    <span class="number">143</span>
-                </div>
-                <div class="metric-row">
-                    <span>Avg. Session Duration</span>
-                    <span class="number">8m 32s</span>
+                    <span class="number">{{ new_signups_today }}</span>
                 </div>
             </div>
         </div>
@@ -71,22 +70,80 @@
             <div class="metric-list">
                 <div class="metric-row">
                     <span>Completion Rate</span>
-                    <span class="number green">94.2%</span>
+                    <span class="number green">{{ completion_rate }}%</span>
                 </div>
                 <div class="metric-row">
                     <span>Cancellation Rate</span>
-                    <span class="number red">5.8%</span>
+                    <span class="number red">{{ cancellation_rate }}%</span>
                 </div>
                 <div class="metric-row">
-                    <span>Avg. Rating</span>
-                    <span class="number yellow">4.7/5.0</span>
+                    <span>Avg. Doctor Rating</span>
+                    <span class="number yellow">{{ avg_rating }}/5.0</span>
                 </div>
             </div>
         </div>
-
     </div>
 
-    <!-- 4. Export Reports -->
+    <!-- ═══════════ 4. CHARTS SECTION ═══════════ -->
+    <div class="section-container">
+        <h3><i class="fas fa-chart-pie icon-blue"></i> Distribution Charts</h3>
+        <div class="charts-grid">
+            <!-- Doughnut 1: User Roles -->
+            <div class="chart-card">
+                <h4>User Role Distribution</h4>
+                <div class="chart-wrapper">
+                    <canvas id="chartUserRoles"></canvas>
+                </div>
+            </div>
+
+            <!-- Doughnut 2: Appointment Status -->
+            <div class="chart-card">
+                <h4>Appointment Status</h4>
+                <div class="chart-wrapper">
+                    <canvas id="chartApptStatus"></canvas>
+                </div>
+            </div>
+
+            <!-- Doughnut 3: Hospital Types -->
+            <div class="chart-card">
+                <h4>Hospital Types</h4>
+                <div class="chart-wrapper">
+                    <canvas id="chartHospitalTypes"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-container">
+        <h3><i class="fas fa-chart-bar icon-blue"></i> Trend Charts</h3>
+        <div class="charts-grid">
+            <!-- Bar 1: Doctor Specializations -->
+            <div class="chart-card wide">
+                <h4>Top Doctor Specializations</h4>
+                <div class="chart-wrapper bar-wrapper">
+                    <canvas id="chartSpecializations"></canvas>
+                </div>
+            </div>
+
+            <!-- Bar 2: Monthly Appointments -->
+            <div class="chart-card">
+                <h4>Monthly Appointments (Last 6 Months)</h4>
+                <div class="chart-wrapper bar-wrapper">
+                    <canvas id="chartMonthlyAppts"></canvas>
+                </div>
+            </div>
+
+            <!-- Bar 3: Monthly Revenue -->
+            <div class="chart-card">
+                <h4>Monthly Revenue (Last 6 Months)</h4>
+                <div class="chart-wrapper bar-wrapper">
+                    <canvas id="chartMonthlyRevenue"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Export Reports -->
     <div class="export-section">
         <h3>Export Reports</h3>
         <div class="export-grid">
@@ -115,4 +172,24 @@
             </button>
         </div>
     </div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chart.js v4 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Inject Django context data as JS objects -->
+<script>
+    window.chartData = {
+        userRoles:      {{ chart_user_roles|safe }},
+        apptStatus:     {{ chart_appt_status|safe }},
+        hospitalTypes:  {{ chart_hospital_types|safe }},
+        specializations:{{ chart_specializations|safe }},
+        monthlyAppts:   {{ chart_monthly_appts|safe }},
+        monthlyRevenue: {{ chart_monthly_revenue|safe }},
+    };
+</script>
+
+<!-- Custom chart init logic -->
+<script src="{% static 'js/superAdmin/analytics.js' %}"></script>
 {% endblock %}

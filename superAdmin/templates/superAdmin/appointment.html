@@ -84,7 +84,19 @@
                     <td class="amount">Rs {{ appointment.amount }}</td>
                     
                     <td>
-                        <button class="icon-btn view" title="View Details"><i class="far fa-eye"></i></button>
+                        <button class="icon-btn view" title="View Details"
+                            data-patient="{{ appointment.full_name }}"
+                            data-email="{{ appointment.email }}"
+                            data-phone="{{ appointment.phone }}"
+                            data-dob="{{ appointment.dob|date:'Y-m-d' }}"
+                            data-gender="{{ appointment.gender }}"
+                            data-city="{{ appointment.city }}"
+                            data-address="{{ appointment.address }}"
+                            data-reason="{{ appointment.reason|escapejs }}"
+                            data-symptoms="{{ appointment.symptoms|escapejs }}"
+                            onclick="openAppointmentModal(this)">
+                            <i class="far fa-eye"></i>
+                        </button>
                     </td>
                 </tr>
                 {% empty %}
@@ -98,4 +110,81 @@
             </tbody>
         </table>
     </div>
+
+    <!-- Appointment Details Modal -->
+    <div id="appointmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Appointment Details</h3>
+                <button class="close-btn" onclick="closeAppointmentModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-group">
+                    <strong>Patient Name:</strong>
+                    <span id="modal-patient"></span>
+                </div>
+                <div class="detail-group">
+                    <strong>Email:</strong>
+                    <span id="modal-email"></span>
+                </div>
+                <div class="detail-group">
+                    <strong>Phone:</strong>
+                    <span id="modal-phone"></span>
+                </div>
+                <div class="detail-group">
+                    <strong>DOB:</strong>
+                    <span id="modal-dob"></span>
+                </div>
+                <div class="detail-group">
+                    <strong>Gender:</strong>
+                    <span id="modal-gender"></span>
+                </div>
+                <div class="detail-group">
+                    <strong>City / Address:</strong>
+                    <span id="modal-address"></span>
+                </div>
+                
+                <div class="detail-group full-width" style="margin-top: 10px; border-top: 1px solid #e5e7eb; padding-top: 10px;">
+                    <strong>Reason for Visit:</strong>
+                    <p id="modal-reason" style="margin-top: 4px;"></p>
+                </div>
+                <div class="detail-group full-width">
+                    <strong>Symptoms:</strong>
+                    <p id="modal-symptoms" style="margin-top: 4px; color: #4b5563;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openAppointmentModal(button) {
+            document.getElementById('modal-patient').innerText = button.getAttribute('data-patient') || 'N/A';
+            document.getElementById('modal-email').innerText = button.getAttribute('data-email') || 'N/A';
+            document.getElementById('modal-phone').innerText = button.getAttribute('data-phone') || 'N/A';
+            document.getElementById('modal-dob').innerText = button.getAttribute('data-dob') || 'N/A';
+            document.getElementById('modal-gender').innerText = button.getAttribute('data-gender') || 'N/A';
+            
+            const city = button.getAttribute('data-city') || '';
+            const address = button.getAttribute('data-address') || '';
+            const fullAddress = city + (address ? ', ' + address : '');
+            document.getElementById('modal-address').innerText = fullAddress || 'N/A';
+            
+            document.getElementById('modal-reason').innerText = button.getAttribute('data-reason') || 'None provided';
+            document.getElementById('modal-symptoms').innerText = button.getAttribute('data-symptoms') || 'None reported';
+            
+            document.getElementById('appointmentModal').style.display = 'flex';
+        }
+
+        function closeAppointmentModal() {
+            document.getElementById('appointmentModal').style.display = 'none';
+        }
+
+        // Close when clicking outside of modal
+        window.onclick = function(event) {
+            var modal = document.getElementById('appointmentModal');
+            if (event.target == modal) {
+                closeAppointmentModal();
+            }
+        }
+    </script>
 {% endblock %}

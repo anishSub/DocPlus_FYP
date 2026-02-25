@@ -15,6 +15,7 @@ from django.db.models import Sum, Avg, Count
 from datetime import date,timedelta
 from appointments.models import Appointment
 from find_doctor.models import DoctorReview
+from appointments.email_utils import send_video_call_link_email
 
 
 
@@ -107,7 +108,8 @@ class DoctorAdminAppointments(LoginRequiredMixin, TemplateView):
         context.update({
             'upcoming_appointments': upcoming_appointments,
             'past_appointments': past_appointments,
-            'today_count': upcoming_appointments.filter(date=today).count()
+            'today_count': upcoming_appointments.filter(date=today).count(),
+            'today_date': today  # Pass today's date for template comparisons
         })
         
         return context
@@ -219,7 +221,21 @@ class DoctorScheduleView(LoginRequiredMixin, TemplateView):
             })
             
         context['weekly_schedule'] = weekly_schedule
+        context['doctor'] = doctor
         return context
+
+    def post(self, request, *args, **kwargs):
+        if not hasattr(request.user, 'doctor_profile'):
+            return redirect('doctor_schedule')
+        
+        doctor = request.user.doctor_profile
+        doctor.enable_video_consultations = 'enable_video_consultations' in request.POST
+        doctor.auto_accept_appointments = 'auto_accept_appointments' in request.POST
+        doctor.save()
+        
+        from django.contrib import messages
+        messages.success(request, "Consultation settings saved.")
+        return redirect('doctor_schedule')
     
     
     
@@ -233,8 +249,15 @@ class HospitalView(LoginRequiredMixin, TemplateView):
         
         # Safety Check
         if hasattr(self.request.user, 'doctor_profile'):
-            context['doctor'] = self.request.user.doctor_profile
+            doctor = self.request.user.doctor_profile
+            context['doctor'] = doctor
             
+            # Optional: Fetch hospital-specific stats if affiliated
+            if doctor.hospital_affiliation:
+                hospital = doctor.hospital_affiliation
+                # Example: Count other doctors in this same hospital
+                # context['colleagues_count'] = hospital.affiliated_doctors.exclude(id=doctor.id).count()
+                
         return context
     
     
@@ -292,12 +315,51 @@ class DoctorEarningsView(LoginRequiredMixin, TemplateView):
         return context
     
     
-class DoctorRatingsView(TemplateView):
+class DoctorRatingsView(LoginRequiredMixin, TemplateView):
     template_name = 'doctorAdmin/ratings.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Add your context data here if needed
+        
+        # Safety Check
+        if not hasattr(self.request.user, 'doctor_profile'):
+            return context
+
+        doctor = self.request.user.doctor_profile
+        
+        # 1. Fetch Reviews
+        reviews = DoctorReview.objects.filter(doctor=doctor).order_by('-created_at')
+        
+        # 2. Aggregates
+        total_reviews = reviews.count()
+        avg_rating = reviews.aggregate(Avg('rating'))['rating__avg'] or 0.0
+        
+        # 3. Star Distribution (for Progress Bars)
+        # Result: <QuerySet [{'rating': 5, 'count': 10}, {'rating': 4, 'count': 2}, ...]>
+        star_distribution = reviews.values('rating').annotate(count=Count('rating'))
+        
+        # Convert to a dictionary: {5: 10, 4: 2, ...}
+        star_counts = {item['rating']: item['count'] for item in star_distribution}
+        
+        # Ensure all stars 5 to 1 are present (even if 0) for the template loop
+        # We can pass them individually or as a structured object
+        stars_data = []
+        for star in range(5, 0, -1):
+            count = star_counts.get(star, 0)
+            percentage = (count / total_reviews * 100) if total_reviews > 0 else 0
+            stars_data.append({
+                'star': star,
+                'count': count,
+                'percentage': round(percentage, 1)
+            })
+
+        context.update({
+            'doctor': doctor,
+            'reviews': reviews,
+            'total_reviews': total_reviews,
+            'avg_rating': round(avg_rating, 1),
+            'stars_data': stars_data
+        })
         return context
     
 
@@ -384,3 +446,67 @@ def delete_schedule(request):
             doctor.save()
 
     return JsonResponse({'status': 'success'})
+
+
+# 4. SEND VIDEO CALL LINK (Doctor Admin Feature)
+@login_required
+@require_http_methods(["POST"])
+def send_video_call_link(request, appointment_id):
+    """
+    Allow doctor to manually send video call link to patient.
+    This marks the link as sent and triggers email notification.
+    """
+    try:
+        # Ensure the doctor is logged in and owns this appointment
+        if not hasattr(request.user, 'doctor_profile'):
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Only doctors can send video call links'
+            }, status=403)
+        
+        doctor = request.user.doctor_profile
+        
+        # Get the appointment and verify ownership
+        appointment = get_object_or_404(
+            Appointment,
+            id=appointment_id,
+            doctor=doctor
+        )
+        
+        # Verify it's a video consultation
+        if not appointment.is_video_consultation:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'This is not a video consultation appointment'
+            }, status=400)
+        
+        # Check if link was already sent
+        if appointment.call_link_sent and appointment.doctor_approved_call:
+            return JsonResponse({
+                'status': 'warning',
+                'message': 'Video call link has already been sent to this patient'
+            })
+        
+        # Mark as sent and doctor approved
+        appointment.call_link_sent = True
+        appointment.doctor_approved_call = True
+        appointment.save()
+        
+        # Send email notification (currently prints to terminal)
+        send_video_call_link_email(appointment)
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': f'Video call link sent to {appointment.full_name} ({appointment.email})'
+        })
+        
+    except Appointment.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Appointment not found'
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'An error occurred: {str(e)}'
+        }, status=500)

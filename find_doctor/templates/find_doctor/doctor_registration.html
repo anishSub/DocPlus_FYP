@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'find_doctor/css/doctor_registration.css' %}">
+    <link rel="stylesheet" href="{% static 'find_doctor/css/doctor_registration.css' %}?v=2">
 {% endblock %}
 
 {% block content %}
@@ -209,7 +209,10 @@
                     </div>
                     <div class="form-group">
                         <label>Grad Year *</label>
-                        <input type="number" name="grad_year" id="grad_year" required>
+                        <select name="grad_year" id="grad_year" required>
+                            <option value="">Select Year</option>
+                            <!-- Years will be populated by JavaScript -->
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Fee (NPR) *</label>
@@ -288,31 +291,91 @@
 
             <div class="form-step" id="step-4">
                 <h2 class="step-title">Review Application</h2>
+                <p class="step-desc" style="margin-bottom: 20px;">Please review all your information before submitting</p>
 
+                <!-- Personal Info -->
                 <div class="review-block">
-                    <h3 class="review-heading"><i class="far fa-user"></i> Personal Info</h3>
+                    <h3 class="review-heading"><i class="far fa-user"></i> Personal Information</h3>
                     <div class="review-grid">
-                        <div><label>Name</label><p id="rev_name">-</p></div>
+                        <div><label>Full Name</label><p id="rev_name">-</p></div>
                         <div><label>Email</label><p id="rev_email">-</p></div>
                         <div><label>Phone</label><p id="rev_phone">-</p></div>
+                        <div><label>Date of Birth</label><p id="rev_dob">-</p></div>
+                        <div><label>Gender</label><p id="rev_gender">-</p></div>
+                        <div><label>City</label><p id="rev_city">-</p></div>
+                        <div style="grid-column: 1 / -1;"><label>Address</label><p id="rev_address">-</p></div>
                     </div>
                 </div>
 
+                <!-- Professional Info -->
                 <div class="review-block">
-                    <h3 class="review-heading"><i class="fas fa-stethoscope"></i> Professional Info</h3>
+                    <h3 class="review-heading"><i class="fas fa-stethoscope"></i> Professional Information</h3>
                     <div class="review-grid">
-                        <div><label>Specialty</label><p id="rev_specialty">-</p></div>
-                        <div><label>License</label><p id="rev_license">-</p></div>
+                        <div><label>Specialization</label><p id="rev_specialty">-</p></div>
+                        <div><label>Sub-Specialty</label><p id="rev_sub_specialty">-</p></div>
+                        <div><label>License Number</label><p id="rev_license">-</p></div>
+                        <div><label>Registration Number</label><p id="rev_reg_no">-</p></div>
+                        <div><label>Council</label><p id="rev_council">-</p></div>
+                        <div><label>Experience</label><p id="rev_experience">-</p></div>
+                        <div><label>Hospital</label><p id="rev_hospital">-</p></div>
+                        <div><label>Position</label><p id="rev_position">-</p></div>
+                        <div><label>Languages</label><p id="rev_languages">-</p></div>
                         <div><label>Available Days</label><p id="rev_days">-</p></div>
-                        <div><label>Timing</label><p id="rev_time">-</p></div>
-                        
-
+                        <div><label>Availability</label><p id="rev_time">-</p></div>
                     </div>
                 </div>
 
+                <!-- Education & Financial -->
+                <div class="review-block">
+                    <h3 class="review-heading"><i class="fas fa-graduation-cap"></i> Education & Financial</h3>
+                    <div class="review-grid">
+                        <div><label>Medical Degree</label><p id="rev_degree">-</p></div>
+                        <div><label>University</label><p id="rev_university">-</p></div>
+                        <div><label>Graduation Year</label><p id="rev_grad_year">-</p></div>
+                        <div><label>Consultation Fee</label><p id="rev_fee">-</p></div>
+                        <div style="grid-column: 1 / -1;"><label>Bio</label><p id="rev_bio">-</p></div>
+                    </div>
+                </div>
+
+                <!-- Documents -->
+                <div class="review-block">
+                    <h3 class="review-heading"><i class="far fa-file-alt"></i> Uploaded Documents</h3>
+                    <div class="review-grid">
+                        <div><label>CV/Resume</label><p id="rev_cv_file" style="color: #059669;">-</p></div>
+                        <div><label>Profile Photo</label><p id="rev_photo_file" style="color: #059669;">-</p></div>
+                        <div><label>License Document</label><p id="rev_license_file" style="color: #059669;">-</p></div>
+                        <div><label>Degree Certificate</label><p id="rev_degree_file" style="color: #059669;">-</p></div>
+                    </div>
+                </div>
+
+                <!-- Terms & Conditions -->
                 <div class="terms-box">
                     <h3 class="terms-title">Terms & Conditions</h3>
-                    <p class="terms-text">I certify that all information provided is accurate and true.</p>
+                    <div class="terms-content" style="max-height: 200px; overflow-y: auto; background: #f9fafb; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <p style="font-size: 14px; line-height: 1.6; color: #4a5568;">
+                            By registering as a doctor on DocPlus, you agree to:
+                        </p>
+                        <ul style="font-size: 13px; color: #4a5568; line-height: 1.8; padding-left: 20px;">
+                            <li>Provide accurate and truthful information</li>
+                            <li>Maintain valid medical licenses and certifications</li>
+                            <li>Comply with DocPlus's code of conduct and medical ethics</li>
+                            <li>Respect patient privacy and confidentiality</li>
+                            <li>Keep profile information up-to-date</li>
+                            <li>Respond to patient appointments in a timely manner</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="checkbox-wrapper" style="display: flex; align-items: start; gap: 10px; margin-top: 15px;">
+                        <input type="checkbox" 
+                               name="terms_agreed" 
+                               id="terms_agreed" 
+                               required
+                               style="margin-top: 4px; width: 18px; height: 18px; cursor: pointer;">
+                        <label for="terms_agreed" style="cursor: pointer; font-size: 14px; color: #364153;">
+                            I have read and agree to the Terms and Conditions and certify that all information provided is accurate and true. *
+                        </label>
+                    </div>
+                    <small id="termsError" style="color: #ef4444; display: none; margin-top: 8px; display: block;">⚠️ You must agree to the terms to proceed</small>
                 </div>
             </div>
 
@@ -330,6 +393,18 @@
 <script>
     var currentTab = 0; 
     showTab(currentTab); 
+
+    // Populate Graduation Year Dropdown
+    (function() {
+        const yearSelect = document.getElementById('grad_year');
+        const currentYear = new Date().getFullYear();
+        for(let year = currentYear; year >= currentYear - 50; year--) {
+            let option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearSelect.appendChild(option);
+        }
+    })(); 
 
     function showTab(n) {
         var x = document.getElementsByClassName("form-step");
@@ -433,8 +508,21 @@
             nextBtn.disabled = false;
         }
 
+
         // 4. Submit if finished
         if (currentTab + n >= x.length) {
+            // CHECK TERMS CHECKBOX BEFORE SUBMISSION
+            let termsCheckbox = document.getElementById('terms_agreed');
+            let termsError = document.getElementById('termsError');
+            
+            if (!termsCheckbox.checked) {
+                termsError.style.display = 'block';
+                termsCheckbox.focus();
+                return false; // Prevent submission
+            } else {
+                termsError.style.display = 'none';
+            }
+
             document.getElementById("regForm").submit();
             return false;
         }
@@ -505,37 +593,65 @@
     }
 
     function populateReview() {
-        // Simple helpers to safely get values
+        // Helper functions
         const getVal = (id) => document.getElementById(id) ? document.getElementById(id).value : '-';
-        const setVal = (id, val) => { if(document.getElementById(id)) document.getElementById(id).innerText = val; };
+        const setVal = (id, val) => { if(document.getElementById(id)) document.getElementById(id).innerText = val || '-'; };
+        const getFileName = (id) => {
+            let input = document.getElementById(id);
+            return (input && input.files && input.files[0]) ? input.files[0].name : 'Not uploaded';
+        };
 
+        // Personal Information
         setVal('rev_name', getVal('full_name'));
         setVal('rev_email', getVal('email'));
         setVal('rev_phone', getVal('phone'));
+        setVal('rev_dob', getVal('dob'));
+        setVal('rev_gender', getVal('gender'));
         setVal('rev_city', getVal('city'));
+        setVal('rev_address', getVal('address'));
+
+        // Professional Information
         setVal('rev_specialty', getVal('specialty'));
+        setVal('rev_sub_specialty', getVal('sub_specialty') || 'None');
         setVal('rev_license', getVal('license_no'));
-        
-        // Available Days
+        setVal('rev_reg_no', getVal('reg_no'));
+        setVal('rev_council', getVal('council'));
+        let exp = getVal('experience');
+        setVal('rev_experience', exp ? exp + ' years' : '-');
+        setVal('rev_position', getVal('position') || 'Not specified');
+        setVal('rev_languages', getVal('languages') || 'Not specified');
+
+        // Hospital Affiliation
+        let drop = document.querySelector('[name="hospital_affiliation"]');
+        let manual = document.getElementById('hospital_name_manual');
+        let hospName = "-";
+        if (drop && drop.value) hospName = drop.options[drop.selectedIndex].text;
+        else if (manual && manual.value) hospName = manual.value;
+        setVal('rev_hospital', hospName);
+
+        // Availability
         let checkboxes = document.querySelectorAll('input[name="available_days"]:checked');
         let days = [];
         checkboxes.forEach((c) => days.push(c.value));
         setVal('rev_days', days.length > 0 ? days.join(", ") : "None");
 
-        // Time
         let s = getVal('available_time_start');
         let e = getVal('available_time_end');
         setVal('rev_time', (s && e) ? `${s} - ${e}` : '-');
 
-        // Hospital Logic
-        let drop = document.querySelector('[name="hospital_affiliation"]');
-        let manual = document.getElementById('hospital_name_manual');
-        let hospName = "-";
-        
-        if (drop && drop.value) hospName = drop.options[drop.selectedIndex].text;
-        else if (manual && manual.value) hospName = manual.value;
-        
-        setVal('rev_hospital', hospName);
+        // Education & Financial
+        setVal('rev_degree', getVal('degree'));
+        setVal('rev_university', getVal('university'));
+        setVal('rev_grad_year', getVal('grad_year'));
+        let fee = getVal('fee');
+        setVal('rev_fee', fee ? 'NPR ' + fee : '-');
+        setVal('rev_bio', getVal('bio') || 'No bio provided');
+
+        // Uploaded Documents
+        setVal('rev_cv_file', getFileName('cv'));
+        setVal('rev_photo_file', getFileName('profile_photo'));
+        setVal('rev_license_file', getFileName('license_doc'));
+        setVal('rev_degree_file', getFileName('degree_doc'));
     }   
 
     function toggleSpecialty(selectObj) {

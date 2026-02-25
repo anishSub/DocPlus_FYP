@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import DoctorAdminOverview, DoctorAdminAppointments,PatientsListView, DoctorScheduleView,HospitalView,DoctorEarningsView, DoctorRatingsView, edit_doctor_profile, get_schedule, add_schedule, delete_schedule
+from .views import DoctorAdminOverview, DoctorAdminAppointments,PatientsListView, DoctorScheduleView,HospitalView,DoctorEarningsView, DoctorRatingsView, edit_doctor_profile, get_schedule, add_schedule, delete_schedule, send_video_call_link
 urlpatterns = [
     path('doctor_dashboard/', DoctorAdminOverview.as_view(), name='doctor_admin_dashboard'),
     path('doctor_appointments/', DoctorAdminAppointments.as_view(), name='doctor_admin_appointments'),
@@ -14,4 +14,7 @@ urlpatterns = [
     path('schedule/get/', get_schedule, name='get_schedule'),
     path('schedule/add/', add_schedule, name='add_schedule'),
     path('schedule/delete/', delete_schedule, name='delete_schedule'),
+    
+    # Video Call Management
+    path('send-video-link/<int:appointment_id>/', send_video_call_link, name='send_video_link'),
 ]

@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import UpdateView
+from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.urls import reverse_lazy
@@ -13,7 +14,7 @@ from find_doctor.models import DoctorProfile
 
 
 
-class HospitalAdminOverview(LoginRequiredMixin, UserPassesTestMixin):
+class HospitalAdminOverview(LoginRequiredMixin, UserPassesTestMixin, View):
     login_url = '/login/'  # Change this to your actual login url name
 
     def test_func(self):
@@ -70,7 +71,7 @@ class HospitalAdminOverview(LoginRequiredMixin, UserPassesTestMixin):
 
 
 
-class HospitalDoctorManagementView(LoginRequiredMixin, UserPassesTestMixin):
+class HospitalDoctorManagementView(LoginRequiredMixin, UserPassesTestMixin, View):
     login_url = '/login/' # Update with your login URL
 
     def test_func(self):
@@ -132,3 +133,45 @@ class HospitalEditView(LoginRequiredMixin, UpdateView):
     def form_invalid(self, form):
         messages.error(self.request, "Error updating profile. Please check the form.")
         return super().form_invalid(form)
+
+
+class HospitalReviewsView(LoginRequiredMixin, UserPassesTestMixin, View):
+    login_url = '/login/'
+
+    def test_func(self):
+        return self.request.user.role == 'HOSPITAL_ADMIN' and hasattr(self.request.user, 'hospital_profile')
+
+    def handle_no_permission(self):
+        messages.error(self.request, "You are not authorized to view this page.")
+        return redirect('/')
+
+    def get(self, request):
+        hospital = request.user.hospital_profile
+        reviews = HospitalReview.objects.filter(hospital=hospital).select_related('user').order_by('-created_at')
+        
+        total_reviews = reviews.count()
+        avg_rating = reviews.aggregate(Avg('rating'))['rating__avg'] or 0.0
+
+        # Star distribution for progress bars
+        from django.db.models import Count
+        star_distribution = reviews.values('rating').annotate(count=Count('rating'))
+        star_counts = {item['rating']: item['count'] for item in star_distribution}
+        
+        stars_data = []
+        for star in range(5, 0, -1):
+            count = star_counts.get(star, 0)
+            percentage = (count / total_reviews * 100) if total_reviews > 0 else 0
+            stars_data.append({
+                'star': star,
+                'count': count,
+                'percentage': round(percentage, 1)
+            })
+
+        context = {
+            'hospital': hospital,
+            'reviews': reviews,
+            'total_reviews': total_reviews,
+            'avg_rating': round(avg_rating, 1),
+            'stars_data': stars_data,
+        }
+        return render(request, 'hospitalAdmin/reviews.html', context)

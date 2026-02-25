@@ -39,7 +39,8 @@
                     <i class="fas fa-user-md"></i> Active Doctors
                 </a>
 
-                <a href="#" class="nav-link">
+                <a href="{% url 'hospital_reviews' %}" 
+                   class="nav-link {% if request.resolver_match.url_name == 'hospital_reviews' %}active{% endif %}">
                     <i class="far fa-star"></i> Reviews
                 </a>
                 

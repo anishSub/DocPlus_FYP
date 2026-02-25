@@ -1,0 +1,140 @@
+{% extends 'superAdmin/base.html' %}
+{% load humanize %}
+
+{% block title %}System Error Logs{% endblock %}
+
+{% block extra_css %}
+<style>
+    .error-card {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .table-container {
+        overflow-x: auto;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    th, td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+    }
+    th {
+        font-weight: 600;
+        color: #444;
+        background-color: #f8f9fa;
+    }
+    tr:hover {
+        background-color: #f8f9fa;
+    }
+    .badge-method {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8em;
+        font-weight: 600;
+        color: white;
+    }
+    .method-GET { background-color: #61affe; }
+    .method-POST { background-color: #49cc90; }
+    .method-PUT { background-color: #fca130; }
+    .method-DELETE { background-color: #f93e3e; }
+    
+    .view-btn {
+        padding: 8px 16px;
+        background-color: white;
+        color: #0092b8;
+        border: 1px solid #0092b8;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        white-space: nowrap;
+    }
+    .view-btn:hover {
+        background-color: #0092b8;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header-section">
+    <h2>System Error Logs</h2>
+    <p>Monitor runtime exceptions and errors occurring in the application.</p>
+</div>
+
+<div class="error-card">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Method</th>
+                    <th>Path</th>
+                    <th>User</th>
+                    <th>Message</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for error in errors %}
+                <tr>
+                    <td>{{ error.timestamp|date:"M d, Y H:i:s" }}</td>
+                    <td><span class="badge-method method-{{ error.method }}">{{ error.method }}</span></td>
+                    <td style="font-family: monospace; color: #666;">{{ error.path }}</td>
+                    <td>
+                        {% if error.user %}
+                            {{ error.user.email }}
+                        {% else %}
+                            <span style="color: #999;">Anonymous</span>
+                        {% endif %}
+                    </td>
+                    <td style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        {{ error.message }}
+                    </td>
+                    <td>
+                        <a href="{% url 'super_admin_error_detail' error.pk %}" class="view-btn">
+                            <i class="far fa-eye"></i> View Details
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px; color: #888;">
+                        <i class="fas fa-check-circle" style="font-size: 2em; color: #49cc90; margin-bottom: 10px;"></i><br>
+                        No system errors recorded.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="pagination" style="margin-top: 20px; display: flex; justify-content: center; gap: 10px;">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="view-btn">&laquo; Previous</a>
+        {% endif %}
+        
+        <span class="current" style="padding: 6px 12px;">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="view-btn">Next &raquo;</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Video Consultation{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/appointments/video-call.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="video-call-container">
+    <!-- Header Bar -->
+    <div class="call-header">
+        <div class="call-info">
+            <h3>{{ appointment.doctor.user.first_name }} {{ appointment.doctor.user.last_name }}</h3>
+            <span class="call-status">Connecting...</span>
+        </div>
+        <div class="call-timer" id="call-timer">00:00</div>
+    </div>
+
+    <!-- Main Video Area -->
+    <div class="video-main-area">
+        <!-- Remote Video (Doctor/Patient) -->
+        <div class="video-wrapper">
+            <video id="remote-video" autoplay playsinline></video>
+            <div class="participant-name">{{ appointment.doctor.user.first_name }}</div>
+        </div>
+
+        <!-- Local Video (Self) -->
+        <div class="local-video-container">
+            <video id="local-video" autoplay muted playsinline></video>
+        </div>
+
+        <!-- Control Bar -->
+        <div class="control-bar">
+            <button class="control-btn" id="toggle-mic" title="Mute/Unmute">
+                <i class="fas fa-microphone"></i>
+            </button>
+            <button class="control-btn" id="toggle-video" title="Turn Camera Off/On">
+                <i class="fas fa-video"></i>
+            </button>
+            <button class="control-btn" id="toggle-chat" title="Toggle Chat">
+                <i class="fas fa-comment"></i>
+            </button>
+            <button class="control-btn end-call-btn" id="end-call" title="End Call">
+                <i class="fas fa-phone-slash"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Chat Sidebar -->
+    <div class="chat-sidebar" id="chat-sidebar">
+        <div class="chat-header">
+            <h4>Chat</h4>
+            <button class="close-chat" id="close-chat">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <!-- Messages will be dynamically added here via WebSocket -->
+        </div>
+        
+        <div class="chat-input-wrapper">
+            <input type="text" placeholder="Type a message..." id="chat-input">
+            <button class="send-btn" id="send-btn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden Data -->
+<div id="call-data" 
+     data-appointment-id="{{ appointment.id }}" 
+     data-user-role="{% if user == appointment.doctor.user %}doctor{% else %}patient{% endif %}"
+     data-user-name="{% if user == appointment.doctor.user %}Dr. {{ appointment.doctor.user.first_name }} {{ appointment.doctor.user.last_name }}{% else %}{{ appointment.full_name }}{% endif %}"
+     data-video-link="{{ appointment.video_call_link }}">
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/appointments/video-call.js' %}"></script>
+{% endblock %}
