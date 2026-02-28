@@ -252,11 +252,9 @@ AUTHENTICATION_BACKENDS = [
 
 
 SOCIALACCOUNT_LOGIN_ON_GET = True # Skips the "Are you sure?" intermediate screen
-ACCOUNT_LOGIN_METHODS = {'email'}  # Replaces ACCOUNT_AUTHENTICATION_METHOD
-ACCOUNT_EMAIL_REQUIRED = True      # Keep this if you want email to be mandatory
-ACCOUNT_USERNAME_REQUIRED = False
-# this line to AUTO-GENERATE usernames from email
-ACCOUNT_PRESERVE_USERNAME_CASING = False
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']  # replaces deprecated EMAIL_REQUIRED / USERNAME_REQUIRED
+ACCOUNT_LOGIN_METHODS = {'email'}       # login via email only (no username)
+ACCOUNT_EMAIL_VERIFICATION = 'none'    # Social login users (Google/FB) are already verified
 
 # 5. Provider Settings (Put Keys HERE to avoid using Admin Panel)
 SOCIALACCOUNT_PROVIDERS = {
@@ -284,7 +282,14 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# ── Email / SMTP ────────────────────────────────────────────────────────────
+EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST          = 'smtp.gmail.com'
+EMAIL_PORT          = 587
+EMAIL_USE_TLS       = True
+EMAIL_HOST_USER     = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL  = os.getenv('EMAIL_HOST_USER')  # "From:" address for all outgoing mail
 
 # Khalti Payment Gateway (Sandbox)
 KHALTI_SECRET_KEY = os.getenv('KHALTI_SECRET_KEY')

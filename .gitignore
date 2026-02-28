@@ -4,6 +4,8 @@
 .env
 .DS_Store
 .txt
+.md
+
 # --- Python ---
 __pycache__/
 *.py[cod]

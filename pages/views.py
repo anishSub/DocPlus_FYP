@@ -7,6 +7,8 @@ from django.contrib import messages
 from datetime import date
 from django.http import JsonResponse
 from django.db.models import Q
+from django.core.mail import EmailMessage, BadHeaderError
+from django.conf import settings
 from accounts.models import PatientProfile
 from .forms import UserUpdateForm, PatientProfileUpdateForm
 from appointments.models import Appointment
@@ -26,6 +28,56 @@ class AboutUsView(View):
 class ContactUsView(View):
     def get(self, request):
         return render(request, 'contact_us/contact_us.html')
+
+    def post(self, request):
+        full_name = request.POST.get('full_name', '').strip()
+        email     = request.POST.get('email', '').strip()
+        phone     = request.POST.get('phone', '').strip()
+        subject   = request.POST.get('subject', '').strip()
+        message   = request.POST.get('message', '').strip()
+
+        # Basic validation
+        if not all([full_name, email, subject, message]):
+            messages.error(request, 'Please fill in all required fields.')
+            return render(request, 'contact_us/contact_us.html')
+
+        email_subject = f"[DocPlus Contact] {subject} — from {full_name}"
+        email_body = f"""You have a new message via the DocPlus Contact Us form.
+
+From:    {full_name}
+Email:   {email}
+Phone:   {phone or 'Not provided'}
+Subject: {subject}
+
+Message:
+{message}
+
+---
+Reply directly to this email to respond to {full_name}.
+"""
+
+        try:
+            msg = EmailMessage(
+                subject=email_subject,
+                body=email_body,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[settings.EMAIL_HOST_USER],
+                reply_to=[email],
+            )
+            msg.send(fail_silently=False)
+            messages.success(
+                request,
+                f'✅ Thank you, {full_name}! Your message has been sent. We\'ll get back to you soon.'
+            )
+        except BadHeaderError:
+            messages.error(request, 'Invalid header found. Please check your inputs.')
+        except Exception:
+            messages.error(
+                request,
+                '❌ Sorry, we could not send your message right now. Please try again later or call us directly.'
+            )
+
+        return redirect('contact_us')
 
 
 

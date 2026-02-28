@@ -12,6 +12,13 @@ import base64
 import hashlib
 import hmac
 import uuid
+import logging
+from .email_utils import (
+    send_appointment_confirmation_email,
+    send_appointment_cancelled_email,
+)
+
+logger = logging.getLogger(__name__)
 
 
 #esewa
@@ -202,8 +209,14 @@ def save_appointment(request):
         return render(request, 'appointment/esewa_redirect.html', esewa_context)
 
     # ------------------------------------------------------------------ #
-    #  OTHER PAYMENT METHODS (future: cash, etc.)
+    #  OTHER PAYMENT METHODS (cash, etc.)
     # ------------------------------------------------------------------ #
+    # Send confirmation email
+    try:
+        send_appointment_confirmation_email(appointment)
+    except Exception as e:
+        logger.error(f"Failed to send confirmation email for appointment {appointment.id}: {e}")
+
     messages.success(
         request,
         f"🎉 Appointment confirmed with {doctor_name} on {appointment_date} at {time_str}! "
@@ -234,6 +247,11 @@ def khalti_callback(request):
         appointment.payment_status = 'failed'
         appointment.status = 'cancelled'
         appointment.save()
+        # Notify patient that appointment was not confirmed
+        try:
+            send_appointment_cancelled_email(appointment, cancelled_by='patient')
+        except Exception as e:
+            logger.error(f"Failed to send cancellation email for appointment {appointment.id}: {e}")
         messages.error(request, 'Payment was cancelled. Your appointment has not been confirmed.')
         return redirect('home')
 
@@ -260,6 +278,12 @@ def khalti_callback(request):
             appointment.payment_status = 'completed'
             appointment.status         = 'scheduled'
             appointment.save()
+
+            # Send confirmation email to patient
+            try:
+                send_appointment_confirmation_email(appointment)
+            except Exception as e:
+                logger.error(f"Failed to send Khalti confirmation email for appointment {appointment.id}: {e}")
 
             return render(request, 'appointment/appointment_success.html', {
                 'patient_name':     appointment.full_name,
@@ -335,6 +359,12 @@ def esewa_callback(request):
         appointment.status         = 'scheduled'
         appointment.save()
 
+        # Send confirmation email to patient
+        try:
+            send_appointment_confirmation_email(appointment)
+        except Exception as e:
+            logger.error(f"Failed to send eSewa confirmation email for appointment {appointment.id}: {e}")
+
         return render(request, 'appointment/appointment_success.html', {
             'patient_name':     appointment.full_name,
             'doctor_name':      doctor_name,
@@ -356,6 +386,8 @@ def esewa_callback(request):
 
 def esewa_failure(request):
     """Called when eSewa payment fails/is cancelled."""
+    # Best-effort: try to notify patient if we can find the appointment
+    # eSewa sends transaction_uuid in query params on failure
     messages.error(request, 'eSewa payment failed or was cancelled. Your appointment has not been confirmed.')
     return redirect('home')
 

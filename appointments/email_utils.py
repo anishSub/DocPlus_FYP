@@ -1,33 +1,29 @@
 """
 Email Notification Utilities for DocPlus Appointments
 
-This module provides email notification functions that currently print to terminal.
-Once SMTP is configured, these functions can be easily updated to send actual emails.
+Sends real emails via Gmail SMTP (configured in settings.py).
+Terminal output is kept for local debugging alongside the real send.
 """
 
 from datetime import datetime
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 def _print_email_to_terminal(subject, to_email, body, appointment=None):
     """
-    Helper function to print email content to terminal in a formatted way.
-    This simulates sending an email for testing purposes.
-    
-    Args:
-        subject (str): Email subject line
-        to_email (str): Recipient email address
-        body (str): Email body content
-        appointment (Appointment, optional): Related appointment object for additional context
+    Debug helper — prints the email to terminal so you can see it locally.
+    This runs alongside the real send_mail() call.
     """
     print("\n" + "=" * 80)
-    print("📧 EMAIL NOTIFICATION")
+    print("📧 EMAIL NOTIFICATION (also sending via SMTP)")
     print("=" * 80)
     print(f"To: {to_email}")
     print(f"Subject: {subject}")
     print("-" * 80)
     print(body)
     print("=" * 80)
-    
+
     if appointment:
         print(f"[DEBUG] Appointment ID: {appointment.id}")
         print(f"[DEBUG] Call Link Sent: {appointment.call_link_sent}")
@@ -36,15 +32,22 @@ def _print_email_to_terminal(subject, to_email, body, appointment=None):
     print("\n")
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+#  1. Appointment Confirmation
+# ─────────────────────────────────────────────────────────────────────────────
+
 def send_appointment_confirmation_email(appointment):
     """
     Send appointment confirmation email to patient after booking.
-    
+
     Args:
         appointment: Appointment model instance
     """
-    subject = f"Appointment Confirmed with Dr. {appointment.doctor.user.first_name} {appointment.doctor.user.last_name}"
-    
+    subject = (
+        f"Appointment Confirmed with Dr. "
+        f"{appointment.doctor.user.first_name} {appointment.doctor.user.last_name}"
+    )
+
     body = f"""Dear {appointment.full_name},
 
 Thank you for booking an appointment through DocPlus!
@@ -70,7 +73,7 @@ Reason for Visit: {appointment.reason}
 
 {'📱 Video Call Link will be sent by your doctor closer to the appointment time.' if appointment.is_video_consultation else '📍 Please arrive 10 minutes early for your appointment.'}
 
-For any changes or cancellations, please contact us at support@docplus.com
+For any changes or cancellations, please contact us at {settings.EMAIL_HOST_USER}
 
 Best regards,
 The DocPlus Team
@@ -79,32 +82,36 @@ The DocPlus Team
 This is an automated message. Please do not reply to this email.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
-    
-    _print_email_to_terminal(subject, appointment.email, body, appointment)
-    
-    # TODO: Uncomment when SMTP is configured
-    # from django.core.mail import send_mail
-    # send_mail(
-    #     subject,
-    #     body,
-    #     'noreply@docplus.com',
-    #     [appointment.email],
-    #     fail_silently=False,
-    # )
 
+    _print_email_to_terminal(subject, appointment.email, body, appointment)
+
+    send_mail(
+        subject,
+        body,
+        settings.DEFAULT_FROM_EMAIL,
+        [appointment.email],
+        fail_silently=False,
+    )
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  2. Video Call Link
+# ─────────────────────────────────────────────────────────────────────────────
 
 def send_video_call_link_email(appointment):
     """
-    Send video call link email to patient (triggered by doctor).
-    
+    Send video call link email to patient (triggered by doctor from DoctorAdmin).
+
     Args:
         appointment: Appointment model instance
     """
-    subject = f"🎥 Video Call Link - Appointment with Dr. {appointment.doctor.user.first_name} {appointment.doctor.user.last_name}"
-    
-    # Generate the video call URL (adjust based on your actual video call route)
-    video_call_url = f"http://localhost:8000/appointments/video-call/{appointment.video_call_link}/"
-    
+    subject = (
+        f"🎥 Video Call Link - Appointment with Dr. "
+        f"{appointment.doctor.user.first_name} {appointment.doctor.user.last_name}"
+    )
+
+    video_call_url = f"https://docplus.com/appointments/video-call/{appointment.video_call_link}/"
+
     body = f"""Dear {appointment.full_name},
 
 Dr. {appointment.doctor.user.first_name} {appointment.doctor.user.last_name} has shared your video call link!
@@ -129,7 +136,7 @@ Appointment Time: {appointment.start_time.strftime('%I:%M %p')} - {appointment.e
 • Test your camera and microphone before joining
 • Keep your access code ready
 
-For technical support, contact: support@docplus.com
+For technical support, contact: {settings.EMAIL_HOST_USER}
 
 Best regards,
 The DocPlus Team
@@ -138,32 +145,37 @@ The DocPlus Team
 This is an automated message. Please do not reply to this email.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
-    
-    _print_email_to_terminal(subject, appointment.email, body, appointment)
-    
-    # TODO: Uncomment when SMTP is configured
-    # from django.core.mail import send_mail
-    # send_mail(
-    #     subject,
-    #     body,
-    #     'noreply@docplus.com',
-    #     [appointment.email],
-    #     fail_silently=False,
-    # )
 
+    _print_email_to_terminal(subject, appointment.email, body, appointment)
+
+    send_mail(
+        subject,
+        body,
+        settings.DEFAULT_FROM_EMAIL,
+        [appointment.email],
+        fail_silently=False,
+    )
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  3. Appointment Reminder (call via cron / Celery task, 24 hrs before)
+# ─────────────────────────────────────────────────────────────────────────────
 
 def send_appointment_reminder_email(appointment):
     """
     Send appointment reminder email to patient (24 hours before).
-    This would typically be called by a scheduled task/cron job.
-    
+    Typically called by a scheduled task / cron job.
+
     Args:
         appointment: Appointment model instance
     """
-    subject = f"⏰ Reminder: Appointment Tomorrow with Dr. {appointment.doctor.user.first_name} {appointment.doctor.user.last_name}"
-    
-    video_call_url = f"http://localhost:8000/appointments/video-call/{appointment.video_call_link}/"
-    
+    subject = (
+        f"⏰ Reminder: Appointment Tomorrow with Dr. "
+        f"{appointment.doctor.user.first_name} {appointment.doctor.user.last_name}"
+    )
+
+    video_call_url = f"https://docplus.com/appointments/video-call/{appointment.video_call_link}/"
+
     body = f"""Dear {appointment.full_name},
 
 This is a friendly reminder about your upcoming appointment!
@@ -204,7 +216,7 @@ Consultation Type: {'Video Consultation' if appointment.is_video_consultation el
     body += f"""
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Need to reschedule? Contact us at: support@docplus.com
+Need to reschedule? Contact us at: {settings.EMAIL_HOST_USER}
 
 We look forward to seeing you!
 
@@ -215,30 +227,35 @@ The DocPlus Team
 This is an automated message. Please do not reply to this email.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
-    
-    _print_email_to_terminal(subject, appointment.email, body, appointment)
-    
-    # TODO: Uncomment when SMTP is configured
-    # from django.core.mail import send_mail
-    # send_mail(
-    #     subject,
-    #     body,
-    #     'noreply@docplus.com',
-    #     [appointment.email],
-    #     fail_silently=False,
-    # )
 
+    _print_email_to_terminal(subject, appointment.email, body, appointment)
+
+    send_mail(
+        subject,
+        body,
+        settings.DEFAULT_FROM_EMAIL,
+        [appointment.email],
+        fail_silently=False,
+    )
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  4. Appointment Cancellation
+# ─────────────────────────────────────────────────────────────────────────────
 
 def send_appointment_cancelled_email(appointment, cancelled_by='patient'):
     """
-    Send cancellation confirmation email.
-    
+    Send cancellation confirmation email to patient.
+
     Args:
         appointment: Appointment model instance
         cancelled_by: 'patient' or 'doctor'
     """
-    subject = f"Appointment Cancelled - Dr. {appointment.doctor.user.first_name} {appointment.doctor.user.last_name}"
-    
+    subject = (
+        f"Appointment Cancelled - Dr. "
+        f"{appointment.doctor.user.first_name} {appointment.doctor.user.last_name}"
+    )
+
     body = f"""Dear {appointment.full_name},
 
 Your appointment has been cancelled.
@@ -257,12 +274,22 @@ Cancelled By: {cancelled_by.title()}
 
 If you would like to reschedule, please book a new appointment through our platform.
 
-For assistance, contact: support@docplus.com
+For assistance, contact: {settings.EMAIL_HOST_USER}
 
 Best regards,
 The DocPlus Team
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+This is an automated message. Please do not reply to this email.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
-    
-    _print_email_to_terminal(subject, appointment.email, body, appointment)
+
+    _print_email_to_terminal(subject, appointment.email, body)
+
+    send_mail(
+        subject,
+        body,
+        settings.DEFAULT_FROM_EMAIL,
+        [appointment.email],
+        fail_silently=False,
+    )

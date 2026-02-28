@@ -110,3 +110,6 @@ channels-redis==4.1.0
 python-dotenv==1.2.1
 django-allauth==65.14.3
 PyJWT==2.11.0
+
+# Dev / Seeding
+Faker==33.1.0
