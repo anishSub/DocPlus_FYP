@@ -439,3 +439,46 @@
         gap: 12px;
     }
 }
+
+/* --- Pagination Styles (Match Find Doctor) --- */
+.pagination-wrapper {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    /* Slightly tighter gap to match the image */
+}
+
+.btn-page {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.btn-page:hover:not(.active) {
+    background: var(--bg-gray);
+    border-color: #D1D5DB;
+    color: var(--primary);
+}
+
+.btn-page.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.btn-page i {
+    font-size: 14px;
+}

@@ -126,8 +126,8 @@
                         </div>
                         
                         <div class="card-actions">
-                            <span class="btn-view-details">View Details</span>
-                            <span class="btn-view-doctors">View Doctors</span>
+                            <span class="btn-view-details"><i class="fas fa-eye"></i> View Details</span>
+                            <span class="btn-view-doctors"><i class="fas fa-user-md"></i> View Doctors</span>
                         </div>
                     </div>
                 </div>
@@ -145,6 +145,32 @@
 
             {% endfor %}
             </div>
+
+            {% if hospitals.has_other_pages %}
+            <div class="pagination-wrapper">
+                
+                {% if hospitals.has_previous %}
+                    <a href="?page={{ hospitals.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if city_filter %}&city={{ city_filter }}{% endif %}" class="btn-page">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                {% endif %}
+
+                {% for num in hospitals.paginator.page_range %}
+                    {% if hospitals.number == num %}
+                        <span class="btn-page active">{{ num }}</span>
+                    {% else %}
+                        <a href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}{% if city_filter %}&city={{ city_filter }}{% endif %}" class="btn-page">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if hospitals.has_next %}
+                    <a href="?page={{ hospitals.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if city_filter %}&city={{ city_filter }}{% endif %}" class="btn-page">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                {% endif %}
+            </div>
+            {% endif %}
+
     </div>
 </section>
 {% endblock %}

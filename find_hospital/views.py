@@ -72,8 +72,13 @@ class FindHospitalView(View):
             is_verified=True
         ).values_list('city', flat=True).distinct().order_by('city')
 
+        from django.core.paginator import Paginator
+        paginator = Paginator(hospitals, 6) # 6 hospitals per page
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
         context = {
-            'hospitals': hospitals,
+            'hospitals': page_obj,
             'total_count': total_count,
             'query': query,
             'city_filter': city_filter,
@@ -94,25 +99,27 @@ from find_doctor.models import DoctorProfile
 
 class HospitalDetailView(View):
     def get(self, request, pk):
-        # 1. Fetch Hospital
         hospital = get_object_or_404(Hospital, pk=pk)
         
-        # 2. Increment View Counter
+        # Increment View Counter
         Hospital.objects.filter(pk=pk).update(total_views=F('total_views') + 1)
         hospital.refresh_from_db()
         
-        # 3. Get Statistics
-        # Count approved doctors linked to this hospital
         doctor_count = DoctorProfile.objects.filter(
-            hospital_affiliation=hospital, 
+            hospital_affiliation=hospital,
             is_approved=True
         ).count()
         
-        # Get Reviews & Ratings
         reviews = HospitalReview.objects.filter(hospital=hospital).order_by('-created_at')
         review_count = reviews.count()
         avg_rating = reviews.aggregate(Avg('rating'))['rating__avg']
         avg_rating = round(avg_rating, 1) if avg_rating else 0.0
+
+        has_reviewed = False
+        if request.user.is_authenticated:
+            has_reviewed = HospitalReview.objects.filter(
+                user=request.user, hospital=hospital
+            ).exists()
 
         context = {
             'hospital': hospital,
@@ -120,8 +127,38 @@ class HospitalDetailView(View):
             'reviews': reviews,
             'review_count': review_count,
             'avg_rating': avg_rating,
+            'has_reviewed': has_reviewed,
         }
         return render(request, 'find_hospital/hospital_detail.html', context)
+
+    def post(self, request, pk):
+        hospital = get_object_or_404(Hospital, pk=pk)
+
+        if not request.user.is_authenticated:
+            messages.error(request, "You must be logged in to submit a review.")
+            return redirect('login')
+
+        # Prevent duplicate reviews
+        if HospitalReview.objects.filter(user=request.user, hospital=hospital).exists():
+            messages.warning(request, "You have already reviewed this hospital.")
+            return redirect('hospital_detail', pk=pk)
+
+        rating = request.POST.get('rating')
+        comment = request.POST.get('comment', '').strip()
+
+        if not rating or not rating.isdigit() or not (1 <= int(rating) <= 5):
+            messages.error(request, "Please select a valid star rating (1–5).")
+            return redirect('hospital_detail', pk=pk)
+
+        HospitalReview.objects.create(
+            user=request.user,
+            hospital=hospital,
+            rating=int(rating),
+            comment=comment if comment else None,
+            is_approved=True,
+        )
+        messages.success(request, "Thank you! Your review has been submitted.")
+        return redirect('hospital_detail', pk=pk)
     
 
 User = get_user_model()
@@ -220,23 +257,8 @@ class HospitalRegistrationView(View):
 
 
 
-# 1. Update Detail View to Count Page Visits
-class HospitalDetailView(View):
-    def get(self, request, pk):
-        hospital = get_object_or_404(Hospital, pk=pk)
-        
-        # Increment View Counter (F expression avoids race conditions)
-        Hospital.objects.filter(pk=pk).update(total_views=F('total_views') + 1)
-        
-        # Refresh to get new value
-        hospital.refresh_from_db()
-        
-        context = {'hospital': hospital}
-        return render(request, 'find_hospital/hospital_detail.html', context)
 
-
-
-def track_website_click(request, pk):
+def track_hospital_click(request, pk):
     hospital = get_object_or_404(Hospital, pk=pk)
     link_type = request.GET.get('type') # Get the '?type=' parameter from URL
     

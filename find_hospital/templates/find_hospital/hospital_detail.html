@@ -40,7 +40,7 @@
                     </div>
 
                     {% if hospital.appointment_link %}
-                        <a href="{% url 'track_website_click' hospital.pk %}?type=appointment" target="_blank" class="btn-book-header">
+                        <a href="{% url 'track_hospital_click' hospital.pk %}?type=appointment" target="_blank" class="btn-book-header">
                             <i class="far fa-calendar-check"></i> Book Appointment
                         </a>
                     {% else %}
@@ -88,13 +88,13 @@
 
                 <div class="action-buttons">
                     {% if hospital.website %}
-                        <a href="{% url 'track_website_click' hospital.pk %}?type=website" target="_blank" class="btn-header btn-white">
+                        <a href="{% url 'track_hospital_click' hospital.pk %}?type=website" target="_blank" class="btn-header btn-white">
                             <i class="fas fa-globe"></i> Visit Website
                         </a>
                     {% endif %}
 
                     {% if hospital.appointment_link %}
-                        <a href="{% url 'track_website_click' hospital.pk %}?type=appointment" target="_blank" class="btn-header btn-primary">
+                        <a href="{% url 'track_hospital_click' hospital.pk %}?type=appointment" target="_blank" class="btn-header btn-primary">
                             <i class="fas fa-calendar-check"></i> Book Appointment
                         </a>
                     {% endif %}
@@ -235,7 +235,7 @@
                     </div>
                     
                     {% if hospital.website %}
-                    <a href="{% url 'track_website_click' hospital.pk %}?type=website" target="_blank" class="btn-visit">
+                    <a href="{% url 'track_hospital_click' hospital.pk %}?type=website" target="_blank" class="btn-visit">
                         Visit Official Website <i class="fas fa-external-link-alt"></i>
                     </a>
                     {% endif %}
@@ -253,8 +253,58 @@
                     </div>
                     <p class="total-reviews">{{ review_count }} Total Reviews</p>
                 </div>
-                </div>
+            </div>
 
+            <!-- ★ Rating Form -->
+            {% if user.is_authenticated %}
+                {% if has_reviewed %}
+                    <div style="background:#fff3cd; border:1px solid #ffc107; border-radius:10px; padding:16px 20px; margin-bottom:24px; display:flex; align-items:center; gap:10px;">
+                        <i class="fas fa-check-circle" style="color:#ffc107; font-size:1.2rem;"></i>
+                        <span style="color:#856404; font-weight:600;">You have already reviewed this hospital.</span>
+                    </div>
+                {% else %}
+                    <div class="section-card" style="margin-bottom:28px;">
+                        <h3 class="card-title" style="margin-bottom:18px;"><i class="fas fa-star" style="color:#FFC107;"></i> Rate This Hospital</h3>
+                        <form method="POST" action="{% url 'hospital_detail' hospital.pk %}">
+                            {% csrf_token %}
+
+                            <!-- Star Picker -->
+                            <div class="star-rating-widget" style="margin-bottom:16px;">
+                                <p style="font-weight:600; margin-bottom:8px; color:#444;">Your Rating <span style="color:red;">*</span></p>
+                                <div class="stars-input" style="display:flex; gap:6px; font-size:2rem; cursor:pointer; flex-direction:row-reverse; justify-content:flex-end;">
+                                    {% for i in "54321" %}
+                                    <label for="star{{ i }}" title="{{ i }} star{% if i != '1' %}s{% endif %}">
+                                        <input type="radio" name="rating" id="star{{ i }}" value="{{ i }}" style="display:none;" required>
+                                        <i class="fas fa-star" style="color:#ddd; transition:color 0.15s;"></i>
+                                    </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- Comment -->
+                            <div style="margin-bottom:16px;">
+                                <label style="font-weight:600; color:#444; display:block; margin-bottom:6px;">Your Comment <span style="color:#888; font-weight:400;">(optional)</span></label>
+                                <textarea name="comment" rows="4" placeholder="Share your experience at this hospital..." 
+                                    style="width:100%; padding:12px 14px; border:1.5px solid #e0e0e0; border-radius:10px; font-size:0.95rem; resize:vertical; font-family:inherit; outline:none; transition:border-color 0.2s;"
+                                    onfocus="this.style.borderColor='#0E82FD'" onblur="this.style.borderColor='#e0e0e0'"></textarea>
+                            </div>
+
+                            <button type="submit" 
+                                style="background:linear-gradient(135deg,#0E82FD,#0b6cd4); color:#fff; border:none; padding:11px 28px; border-radius:8px; font-size:0.95rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:opacity 0.2s;"
+                                onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">
+                                <i class="fas fa-paper-plane"></i> Submit Review
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div style="background:#f0f4ff; border:1px solid #c7d7ff; border-radius:10px; padding:16px 20px; margin-bottom:24px; text-align:center;">
+                    <i class="fas fa-lock" style="color:#0E82FD; margin-right:6px;"></i>
+                    <a href="{% url 'login' %}?next={{ request.path }}" style="color:#0E82FD; font-weight:600;">Log in</a> to rate this hospital.
+                </div>
+            {% endif %}
+
+            <!-- Existing Reviews -->
             <div class="reviews-list">
                 {% for review in reviews %}
                 <div class="review-card">
@@ -277,6 +327,7 @@
             </div>
         </div>
 
+
     </div>
 </div>
 
@@ -296,6 +347,41 @@
         document.getElementById(tabName).style.display = "block";
         evt.currentTarget.className += " active";
     }
+
+    // ── Star Rating Interactivity ──────────────────────────────────────────
+    (function () {
+        const labels = document.querySelectorAll('.stars-input label');
+        const inputs = document.querySelectorAll('.stars-input input');
+
+        // Update star colours based on selected/hovered value
+        function paintStars(selectedVal) {
+            labels.forEach(function (label) {
+                const val = parseInt(label.getAttribute('for').replace('star', ''));
+                label.querySelector('i').style.color = val <= selectedVal ? '#FFC107' : '#ddd';
+            });
+        }
+
+        // Hover
+        labels.forEach(function (label) {
+            label.addEventListener('mouseenter', function () {
+                const val = parseInt(this.getAttribute('for').replace('star', ''));
+                paintStars(val);
+            });
+        });
+
+        // Mouse leave: revert to selected value
+        document.querySelector('.stars-input') && document.querySelector('.stars-input').addEventListener('mouseleave', function () {
+            const checked = document.querySelector('.stars-input input:checked');
+            paintStars(checked ? parseInt(checked.value) : 0);
+        });
+
+        // Click / change
+        inputs.forEach(function (input) {
+            input.addEventListener('change', function () {
+                paintStars(parseInt(this.value));
+            });
+        });
+    })();
 </script>
 {% endblock %}
 {% endblock %}
