@@ -9,7 +9,9 @@ from django.utils import timezone
 from django.db.models import Q, Sum
 from appointments.models import Appointment
 from .models import PlatformSettings
-from accounts.models import Hospital
+from accounts.models import User
+from find_hospital.models import Hospital
+from find_doctor.models import DoctorProfile
 
 
 User = get_user_model()
