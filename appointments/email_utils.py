@@ -98,32 +98,41 @@ This is an automated message. Please do not reply to this email.
 #  2. Video Call Link
 # ─────────────────────────────────────────────────────────────────────────────
 
-def send_video_call_link_email(appointment):
+def send_video_call_link_email(appointment, request=None):
     """
     Send video call link email to patient (triggered by doctor from DoctorAdmin).
+    When doctor clicks 'Send Link', patient gets an email with join URL.
 
     Args:
         appointment: Appointment model instance
+        request: HttpRequest object (optional, for building absolute URL)
     """
     subject = (
-        f"🎥 Video Call Link - Appointment with Dr. "
+        f"🎥 Dr. "
         f"{appointment.doctor.user.first_name} {appointment.doctor.user.last_name}"
+        f" is calling you - Join Video Consultation Now!"
     )
 
-    video_call_url = f"https://docplus.com/appointments/video-call/{appointment.video_call_link}/"
+    # Build the video call URL using appointment ID
+    if request:
+        video_call_url = request.build_absolute_uri(f"/appointments/video-call/{appointment.id}/")
+    else:
+        # Fallback for testing - use localhost
+        video_call_url = f"http://127.0.0.1:8000/appointments/video-call/{appointment.id}/"
 
     body = f"""Dear {appointment.full_name},
 
-Dr. {appointment.doctor.user.first_name} {appointment.doctor.user.last_name} has shared your video call link!
+Dr. {appointment.doctor.user.first_name} {appointment.doctor.user.last_name} is ready for your video consultation!
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📹 VIDEO CONSULTATION DETAILS
+📹 VIDEO CONSULTATION - JOIN NOW
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+Doctor: Dr. {appointment.doctor.user.first_name} {appointment.doctor.user.last_name}
 Appointment Date: {appointment.date.strftime('%B %d, %Y')}
 Appointment Time: {appointment.start_time.strftime('%I:%M %p')} - {appointment.end_time.strftime('%I:%M %p')}
 
-🔗 JOIN VIDEO CALL:
+🔗 CLICK HERE TO JOIN THE VIDEO CALL:
 {video_call_url}
 
 🔐 ACCESS CODE: {appointment.call_access_code}
@@ -131,9 +140,9 @@ Appointment Time: {appointment.start_time.strftime('%I:%M %p')} - {appointment.e
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ⏰ IMPORTANT INSTRUCTIONS:
-• Please join 5 minutes before your scheduled time
+• Click the link above to join the video call
 • Ensure you have a stable internet connection
-• Test your camera and microphone before joining
+• Allow camera and microphone access when prompted
 • Keep your access code ready
 
 For technical support, contact: {settings.EMAIL_HOST_USER}
