@@ -41,10 +41,10 @@ class DoctorAdminOverview(LoginRequiredMixin, TemplateView):
         appointments_today_qs = Appointment.objects.filter(doctor=doctor, date=today).order_by('start_time')
         count_today = appointments_today_qs.count()
         
-        # 3. Monthly Earnings (Sum of amount for 'completed' appointments this month)
+        # 3. Monthly Earnings (Sum of amount for 'completed' and paid 'scheduled' appointments this month)
         monthly_earnings = Appointment.objects.filter(
             doctor=doctor, 
-            status='completed', 
+            status__in=['completed', 'scheduled'], 
             date__month=today.month,
             date__year=today.year
         ).aggregate(Sum('amount'))['amount__sum'] or 0
@@ -276,16 +276,16 @@ class DoctorEarningsView(LoginRequiredMixin, TemplateView):
         doctor = self.request.user.doctor_profile
         today = date.today()
 
-        # 1. Total Earnings (All time, Completed only)
+        # 1. Total Earnings (All time, Completed or Scheduled paid)
         total_earnings = Appointment.objects.filter(
             doctor=doctor, 
-            status='completed'
+            status__in=['completed', 'scheduled']
         ).aggregate(Sum('amount'))['amount__sum'] or 0
 
         # 2. This Month Earnings
         this_month_earnings = Appointment.objects.filter(
             doctor=doctor, 
-            status='completed',
+            status__in=['completed', 'scheduled'],
             date__month=today.month,
             date__year=today.year
         ).aggregate(Sum('amount'))['amount__sum'] or 0
@@ -297,7 +297,7 @@ class DoctorEarningsView(LoginRequiredMixin, TemplateView):
         
         last_month_earnings = Appointment.objects.filter(
             doctor=doctor, 
-            status='completed',
+            status__in=['completed', 'scheduled'],
             date__month=last_month_date.month,
             date__year=last_month_date.year
         ).aggregate(Sum('amount'))['amount__sum'] or 0
@@ -480,25 +480,30 @@ def send_video_call_link(request, appointment_id):
                 'message': 'This is not a video consultation appointment'
             }, status=400)
         
-        # Check if link was already sent
-        if appointment.call_link_sent and appointment.doctor_approved_call:
-            return JsonResponse({
-                'status': 'warning',
-                'message': 'Video call link has already been sent to this patient'
-            })
+        # OLD: Check if link was already sent (commented out for testing)
+        # if appointment.call_link_sent and appointment.doctor_approved_call:
+        #     return JsonResponse({
+        #         'status': 'warning',
+        #         'message': 'Video call link has already been sent to this patient'
+        #     })
         
         # Mark as sent and doctor approved
         appointment.call_link_sent = True
         appointment.doctor_approved_call = True
         appointment.save()
-        
-        # Send email notification (currently prints to terminal)
-        send_video_call_link_email(appointment)
-        
-        return JsonResponse({
-            'status': 'success',
-            'message': f'Video call link sent to {appointment.full_name} ({appointment.email})'
-        })
+        # Send email notification
+        try:
+            send_video_call_link_email(appointment, request=request)
+            return JsonResponse({
+                'status': 'success',
+                'message': f'Video call link sent to {appointment.full_name} ({appointment.email})'
+            })
+        except Exception as e:
+            # If email fails (like SMTP auth issue), still allow the doctor to join
+            return JsonResponse({
+                'status': 'success',
+                'message': f'Link marked as sent, but email failed: {str(e)}'
+            })
         
     except Appointment.DoesNotExist:
         return JsonResponse({

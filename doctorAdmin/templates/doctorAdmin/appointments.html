@@ -28,81 +28,76 @@
     <div class="appointments-list">
         
         {% for appt in upcoming_appointments %}
-        <div class="appointment-card" data-appointment-id="{{ appt.id }}">
-            <div class="card-left">
-                <div class="avatar {% cycle 'blue' 'purple' 'orange' 'green' %}">
-                    {{ appt.full_name|first|upper }}
-                </div>
-                
-                <div class="patient-details">
-                    <h3>{{ appt.full_name }}</h3>
-                    <p class="reason">{{ appt.reason|truncatechars:40 }}</p>
+        <div class="appointment-card" data-appointment-id="{{ appt.id }}" style="display: flex; flex-direction: column; gap: 15px;">
+            <div class="card-top-row" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px;">
+                <div class="card-left" style="display: flex; gap: 15px; flex: 1; min-width: 300px;">
+                    <div class="avatar {% cycle 'blue' 'purple' 'orange' 'green' %}">
+                        {{ appt.full_name|first|upper }}
+                    </div>
                     
-                    <div class="meta-info">
-                        <span class="meta-date">
-                            <i class="far fa-calendar"></i> {{ appt.date|date:"M d" }}
-                        </span>
-                        <span>
-                            <i class="far fa-clock"></i> {{ appt.time_slot_display }}
-                        </span>
-                        <span class="meta-contact">
-                            <i class="fas fa-envelope"></i> {{ appt.email }}
-                        </span>
-                        <span class="meta-contact">
-                            <i class="fas fa-phone"></i> {{ appt.phone }}
-                        </span>
-
-                        {% if appt.payment_method == 'esewa' %}
-                            <span class="tag video" style="background:#e0f2fe; color:#0284c7;">
-                                <i class="fas fa-wallet"></i> Paid (eSewa)
-                            </span>
-                        {% else %}
-                            <span class="tag in-person" style="background:#f3f4f6; color:#4b5563;">
-                                <i class="fas fa-money-bill"></i> {{ appt.payment_method|title }}
-                            </span>
-                        {% endif %}
+                    <div class="patient-details">
+                        <h3>{{ appt.full_name }}</h3>
+                        <p class="reason" style="margin-bottom: 8px;">{{ appt.reason|truncatechars:40 }}</p>
                         
-                        {% if appt.is_video_consultation %}
-                            {% if appt.call_link_sent and appt.doctor_approved_call %}
-                                <span class="tag" style="background:#d1fae5; color:#059669;">
-                                    <i class="fas fa-check-circle"></i> Link Sent
-                                </span>
-                            {% else %}
-                                <span class="tag" style="background:#fef3c7; color:#d97706;">
-                                    <i class="fas fa-clock"></i> Link Pending
-                                </span>
-                            {% endif %}
-                        {% endif %}
+                        <div class="meta-info" style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 5px;">
+                            <span class="meta-date">
+                                <i class="far fa-calendar"></i> {{ appt.date|date:"M d" }}
+                            </span>
+                            <span>
+                                <i class="far fa-clock"></i> {{ appt.time_slot_display }}
+                            </span>
+                            <span class="meta-contact">
+                                <i class="fas fa-envelope"></i> {{ appt.email }}
+                            </span>
+                            <span class="meta-contact">
+                                <i class="fas fa-phone"></i> {{ appt.phone }}
+                            </span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="card-right">
-                {% if appt.is_video_consultation %}
-                    {% if appt.call_link_sent and appt.doctor_approved_call %}
-                        <button class="btn-link-sent" disabled style="background: #d1fae5; color: #059669; cursor: default; border: 1px solid #059669;">
-                            <i class="fas fa-check-double"></i> Link Sent
-                        </button>
-                    {% else %}
-                        <button class="btn-send-link" data-appointment-id="{{ appt.id }}" style="background: #0C4D98; color: white;">
-                            <i class="fas fa-paper-plane"></i> Send Link
+                
+                <div class="card-right-actions" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                    <button class="btn-toggle-details" title="View Details" style="padding: 8px 16px; border-radius: 8px; border: 1px solid #e5e7eb; background: white; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; color: #4b5563; font-weight: 500;">
+                        <i class="far fa-eye"></i> Details
+                    </button>
+                    {% if appt.is_video_consultation %}
+                        <button class="btn-send-link" data-appointment-id="{{ appt.id }}" data-url="{% url 'send_video_link' appt.id %}" style="background: #0C4D98; color: white; padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; font-weight: 500;">
+                            <i class="fas fa-paper-plane"></i> {% if appt.call_link_sent %}Re-Send Link{% else %}Send Link{% endif %}
                         </button>
                     {% endif %}
-                {% endif %}
-                
-                {% if appt.date == today_date %}
-                    <button class="btn-start" style="background: #10B981;">
+                    
+                    <a href="{% url 'video_call' appt.id %}" class="btn-start" style="background: #10B981; color: white; text-decoration: none; padding: 8px 16px; border-radius: 8px; display: inline-flex; align-items: center; gap: 5px; border: none; cursor: pointer; font-weight: 500;">
                         <i class="fas fa-video"></i> Join Call
-                    </button>
+                    </a>
+                </div>
+            </div>
+
+            <div class="card-bottom-row" style="display: flex; gap: 10px; margin-left: 65px; padding-top: 10px; border-top: 1px dashed #e5e7eb; flex-wrap: wrap;">
+                {% if appt.payment_method == 'esewa' %}
+                    <span class="tag video" style="background:#e0f2fe; color:#0284c7; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+                        <i class="fas fa-wallet"></i> Paid (eSewa)
+                    </span>
+                {% elif appt.payment_method == 'khalti' %}
+                    <span class="tag video" style="background:#f3e8ff; color:#7e22ce; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+                        <i class="fas fa-wallet"></i> Paid (Khalti)
+                    </span>
                 {% else %}
-                    <button class="btn-start" disabled style="background: #e5e7eb; color: #9ca3af; cursor: not-allowed;">
-                        Scheduled
-                    </button>
+                    <span class="tag in-person" style="background:#f3f4f6; color:#4b5563; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+                        <i class="fas fa-money-bill"></i> Optional Paid ({{ appt.payment_method|title }})
+                    </span>
                 {% endif %}
                 
-                <button class="btn-view btn-toggle-details" title="View Details">
-                    <i class="far fa-eye"></i>
-                </button>
+                {% if appt.is_video_consultation %}
+                    {% if appt.call_link_sent and appt.doctor_approved_call %}
+                        <span class="tag" style="background:#d1fae5; color:#059669; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+                            <i class="fas fa-check-circle"></i> Link Sent
+                        </span>
+                    {% else %}
+                        <span class="tag" style="background:#fef3c7; color:#d97706; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+                            <i class="fas fa-clock"></i> Link Pending
+                        </span>
+                    {% endif %}
+                {% endif %}
             </div>
             
             <!-- Expandable Details Section -->
@@ -184,7 +179,10 @@
                     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
                                      getCookie('csrftoken');
                     
-                    fetch(`/doctor/send-video-link/${appointmentId}/`, {
+                    // Get URL from data attribute and ensure it's absolute
+                    const url = window.location.origin + button.dataset.url;
+                    
+                    fetch(url, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -223,6 +221,59 @@
                         alert('An error occurred. Please try again.');
                     });
                 }
+            });
+        });
+        
+        // Search functionality
+        const searchInput = document.querySelector('.search-box input');
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('.appointment-card').forEach(card => {
+                const patientName = card.querySelector('.patient-details h3').textContent.toLowerCase();
+                const reason = card.querySelector('.reason').textContent.toLowerCase();
+                if (patientName.includes(searchTerm) || reason.includes(searchTerm)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Basic Filter functionality (Toggles between showing all, only video link sent, etc)
+        const filterBtn = document.querySelector('.filter-btn');
+        let currentFilter = 'all'; 
+        
+        filterBtn.addEventListener('click', function() {
+            const filters = ['all', 'video_pending', 'paid'];
+            const nextIndex = (filters.indexOf(currentFilter) + 1) % filters.length;
+            currentFilter = filters[nextIndex];
+            
+            // Update button text to show current filter mode
+            if (currentFilter === 'all') {
+                this.innerHTML = '<i class="fas fa-filter"></i> Filter: All';
+            } else if (currentFilter === 'video_pending') {
+                this.innerHTML = '<i class="fas fa-filter"></i> Filter: Pending Links';
+            } else if (currentFilter === 'paid') {
+                this.innerHTML = '<i class="fas fa-filter"></i> Filter: Paid Only';
+            }
+
+            document.querySelectorAll('.appointment-card').forEach(card => {
+                // If 'all', show all
+                if (currentFilter === 'all') {
+                    card.style.display = 'flex';
+                    return;
+                }
+                
+                const htmlContent = card.innerHTML;
+                let shouldShow = false;
+
+                if (currentFilter === 'video_pending' && htmlContent.includes('Link Pending')) {
+                    shouldShow = true;
+                } else if (currentFilter === 'paid' && (htmlContent.includes('eSewa') || htmlContent.includes('Khalti'))) {
+                    shouldShow = true;
+                }
+
+                card.style.display = shouldShow ? 'flex' : 'none';
             });
         });
         
