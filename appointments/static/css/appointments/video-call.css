@@ -108,6 +108,7 @@
     padding: 15px 30px;
     border-radius: 50px;
     backdrop-filter: blur(10px);
+    z-index: 50;
 }
 
 .control-btn {

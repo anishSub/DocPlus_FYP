@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.db.models import Q, Sum
 from appointments.models import Appointment
 from .models import PlatformSettings
+from accounts.models import Hospital
 
 
 User = get_user_model()
@@ -40,6 +41,11 @@ class AdminOverviewView(TemplateView):
         # --- 4. Pending Approvals ---
         context['pending_doctors'] = DoctorProfile.objects.filter(is_approved=False).select_related('user')[:5]
         context['pending_doctors_count'] = DoctorProfile.objects.filter(is_approved=False).count()
+        
+        # --- 5. Hospital Stats ---
+        context['total_hospitals'] = Hospital.objects.count()
+        context['pending_hospitals'] = Hospital.objects.filter(is_approved=False)[:5]
+        context['pending_hospitals_count'] = Hospital.objects.filter(is_approved=False).count()
         
 
         recent_appointments = Appointment.objects.all().order_by('-date', '-start_time')[:5]
