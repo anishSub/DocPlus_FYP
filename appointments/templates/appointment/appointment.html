@@ -286,7 +286,7 @@
 
                     <div class="form-group">
                         <label class="label">Payment Method <span class="required">*</span></label>
-                        <input type="hidden" name="payment_method" id="selectedPaymentMethod" required>
+                        <input type="hidden" name="payment_method" id="selectedPaymentMethod">
                         
                         <div class="payment-options-grid">
                             <div class="payment-option" onclick="selectPayment(this, 'esewa')">
@@ -308,7 +308,7 @@
                     </div>
 
                     <div class="checkbox-container">
-                        <input type="checkbox" name="terms" required>
+                        <input type="checkbox" name="terms">
                         <span>I agree to the <a href="#">Terms and Conditions</a></span>
                     </div>
 
@@ -490,6 +490,31 @@
             }
             
             // UX DECISION: Stay on Step 1. We do NOT call showStep(2).
+        }
+    });
+
+    // --- FORM SUBMISSION VALIDATION (Step 4) ---
+    document.getElementById('bookingForm').addEventListener('submit', function(e) {
+        const paymentMethod = document.getElementById('selectedPaymentMethod').value;
+        const termsChecked = document.querySelector('input[name="terms"]').checked;
+        
+        let errorMessage = '';
+        if (!paymentMethod && !termsChecked) {
+            errorMessage = 'Please select a payment method and agree to the Terms and Conditions.';
+        } else if (!paymentMethod) {
+            errorMessage = 'Please select a payment method (eSewa or Khalti).';
+        } else if (!termsChecked) {
+            errorMessage = 'You must agree to the Terms and Conditions to proceed.';
+        }
+
+        if (errorMessage) {
+            e.preventDefault(); // Halt form submission to prevent data loss/reset
+            Swal.fire({
+                icon: 'error',
+                title: 'Action Required',
+                text: errorMessage,
+                confirmButtonColor: '#0C4D98'
+            });
         }
     });
 </script>

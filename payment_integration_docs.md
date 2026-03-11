@@ -212,8 +212,8 @@ The `.env` file stores secret credentials that should never be hardcoded in code
 **Added lines:**
 ```env
 # Email / SMTP
-EMAIL_HOST_USER='subedianish937@gmail.com'
-EMAIL_HOST_PASSWORD='nbrd mnye mqdr brrh'
+EMAIL_HOST_USER='your_gmail@gmail.com'
+EMAIL_HOST_PASSWORD='your_16_character_app_password'
 ```
 
 - `EMAIL_HOST_USER` — the Gmail account that sends all emails from the app

@@ -272,8 +272,10 @@ class Command(BaseCommand):
                     password=DOCTOR_PASSWORD,
                     first_name=first_name,
                     last_name=last_name,
-                    role='DOCTOR',
                 )
+                # Force the role to DOCTOR (bypasses the save() overwrite)
+                user.role = User.Role.DOCTOR
+                user.save(update_fields=['role'])
 
                 photo_file = self.get_local_image(folder, color, f"doc_{gender_code[:1]}")
 

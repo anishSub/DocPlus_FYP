@@ -8,6 +8,7 @@
 {% endblock %}
 
 {% block content %}
+    <!-- Main Content Container -->
     <div class="reviews-container">
         
         <!-- Header Section with Aggregate Rating -->
@@ -15,58 +16,78 @@
             <h2>Patient Reviews</h2>
             <div class="aggregate-rating">
                 <div class="rating-number">
-                    <i class="fas fa-star"></i> {{ avg_rating }}
+                    <i class="fas fa-star"></i> 4.8
                 </div>
-                <span class="rating-text">Based on {{ total_reviews }} review{{ total_reviews|pluralize }}</span>
+                <span class="rating-text">Based on 247 reviews</span>
             </div>
         </div>
-
-        <!-- Star Distribution -->
-        {% if total_reviews > 0 %}
-        <div style="background: #1e2a3a; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
-            {% for star_info in stars_data %}
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
-                <span style="width: 45px; font-size: 0.85rem; color: #d1d5db;">{{ star_info.star }} <i class="fas fa-star" style="color: #f59e0b; font-size: 0.7rem;"></i></span>
-                <div style="flex: 1; height: 6px; background: #2d3748; border-radius: 3px; overflow: hidden;">
-                    <div style="height: 100%; background: #f59e0b; border-radius: 3px; width: {{ star_info.percentage }}%;"></div>
-                </div>
-                <span style="width: 25px; text-align: right; font-size: 0.8rem; color: #9ca3af;">{{ star_info.count }}</span>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
 
         <!-- Reviews List -->
         <div class="reviews-list">
-            {% for review in reviews %}
+            
+            <!-- Review 1 -->
             <div class="review-card">
                 <div class="card-top">
                     <div class="reviewer-info">
-                        <div class="avatar blue">{{ review.user.first_name|first|upper }}</div>
+                        <div class="avatar blue">R</div>
                         <div class="info-text">
-                            <h4>{{ review.user.first_name }} {{ review.user.last_name }}</h4>
-                            <span class="date">{{ review.created_at|date:"Y-m-d" }}</span>
+                            <h4>Rajesh Kumar</h4>
+                            <span class="date">2024-11-20</span>
                         </div>
                     </div>
                     <div class="star-rating">
-                        {% for i in "12345" %}
-                            {% if forloop.counter <= review.rating %}
-                                <i class="fas fa-star"></i>
-                            {% else %}
-                                <i class="far fa-star"></i>
-                            {% endif %}
-                        {% endfor %}
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
                     </div>
                 </div>
-                <p class="review-comment">{{ review.comment|default:"No comment provided." }}</p>
+                <p class="review-comment">Excellent doctor! Very professional and caring.</p>
             </div>
-            {% empty %}
-            <div style="text-align: center; padding: 60px 20px; color: #9ca3af;">
-                <i class="far fa-star" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
-                <h3 style="color: #d1d5db;">No Reviews Yet</h3>
-                <p>When patients leave reviews, they will appear here.</p>
+
+            <!-- Review 2 -->
+            <div class="review-card">
+                <div class="card-top">
+                    <div class="reviewer-info">
+                        <div class="avatar blue">S</div>
+                        <div class="info-text">
+                            <h4>Sita Sharma</h4>
+                            <span class="date">2024-11-18</span>
+                        </div>
+                    </div>
+                    <div class="star-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                <p class="review-comment">Best cardiologist in Kathmandu. Highly recommended!</p>
             </div>
-            {% endfor %}
+
+            <!-- Review 3 -->
+            <div class="review-card">
+                <div class="card-top">
+                    <div class="reviewer-info">
+                        <div class="avatar blue">R</div>
+                        <div class="info-text">
+                            <h4>Ram Bahadur</h4>
+                            <span class="date">2024-11-15</span>
+                        </div>
+                    </div>
+                    <div class="star-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                <p class="review-comment">Good experience. Very knowledgeable doctor.</p>
+            </div>
+
         </div>
     </div>
 {% endblock %}

@@ -2,111 +2,42 @@
 {% load static %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'find_doctor/css/find_doctor.css' %}?v=5">
+    <link rel="stylesheet" href="{% static 'find_doctor/css/find_doctor.css' %}">
 {% endblock %}
 
 {% block content %}
 <section class="doctors-hero">
     <div class="container hero-content">
-        <h1>Find the Right Doctor</h1>
-        <p class="hero-subtitle">Search by name, specialty, or describe your symptoms</p>
+        <h1>Find Doctors</h1>
+        <p>Connect with qualified and experienced doctors across Nepal</p>
         
-        <form method="GET" action="{% url 'find_doctor' %}" class="search-wrapper" style="position: relative;">
+        <form method="GET" action="{% url 'find_doctor' %}" class="search-wrapper">
             <div class="search-bar">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" 
-                       id="doctorSearchInput"
-                       name="q" 
-                       value="{{ query|default:'' }}" 
-                       placeholder="Try 'chest pain', 'diabetes', 'Dr. Sharma', or 'Cardiologist'..."
-                       autocomplete="off">
+                <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Search doctors by name or specialty...">
             </div>
             <button type="submit" class="btn-filter">
                 Search
             </button>
-            
-            <!-- Search History Dropdown (Clean Implementation) -->
-            <div id="searchHistoryDropdown" class="search-history-dropdown" style="display: none;">
-                <div class="history-section" id="historySection">
-                    <div class="dropdown-header">
-                        <h4><i class="fas fa-history"></i> Recent Searches</h4>
-                        <span class="clear-history" onclick="clearSearchHistory()">Clear All</span>
-                    </div>
-                    <div class="history-tags" id="historyTagsContainer">
-                        <!-- Populated by JS -->
-                    </div>
-                    <div class="divider-line"></div>
-                </div>
-                
-                <div class="popular-section">
-                    <div class="dropdown-header">
-                        <h4><i class="fas fa-fire"></i> Popular Searches</h4>
-                    </div>
-                    <div class="popular-tags">
-                        <span class="pop-tag" onclick="fillAndSearch('Cardiologist')">Cardiologist</span>
-                        <span class="pop-tag" onclick="fillAndSearch('Dermatologist')">Dermatologist</span>
-                        <span class="pop-tag" onclick="fillAndSearch('Gastritis')">Gastritis</span>
-                        <span class="pop-tag" onclick="fillAndSearch('Pediatrician')">Pediatrician</span>
-                        <span class="pop-tag" onclick="fillAndSearch('General Physician')">General Physician</span>
-                    </div>
-                </div>
-            </div>
         </form>
-        
-        <div class="search-examples">
-            <span class="example-label">Popular searches:</span>
-            <a href="?q=diabetes" class="example-tag">Diabetes</a>
-            <a href="?q=chest pain" class="example-tag">Chest Pain</a>
-            <a href="?q=headache" class="example-tag">Headache</a>
-            <a href="?q=Cardiologist" class="example-tag">Cardiologist</a>
-        </div>
     </div>
 </section>
 
 <section class="section-padding bg-gray">
     <div class="container">
         
-        <!-- Toast Notification -->
-        {% if query %}
-        <div class="toast-notification" id="searchToast" data-query="{{ query }}" data-count="{{ total_count }}" data-search-type="{{ search_type }}">
-            <div class="toast-icon">
-                <i class="fas fa-check-circle"></i>
-            </div>
-            <div class="toast-content">
-                <strong class="toast-title"></strong>
-                <p class="toast-message"></p>
-            </div>
-            <button class="toast-close" onclick="closeToast()">
-                <i class="fas fa-times"></i>
-            </button>
+        <div class="results-header">
+            <p>Found <span class="text-dark fw-bold">{{ total_count }}</span> doctors</p>
         </div>
-        {% endif %}
-        
-        <!-- Results Section -->
-        {% if query %}
-            <!-- Specialty Badges (Recommendation Mode Only) -->
-            {% if search_type == 'recommendation' and matched_specialties %}
-            <div class="specialty-badges-container">
-                <span class="badges-label">Matched specialties:</span>
-                {% for specialty in matched_specialties %}
-                <span class="specialty-badge">{{ specialty }}</span>
-                {% endfor %}
-            </div>
-            {% endif %}
-            
-            <!-- Doctor Count -->
-            <p class="results-count">Found {{ total_count }} doctor{{ total_count|pluralize }}</p>
-        {% endif %}
-        
+
         <div class="doctors-grid">
             
             {% for doctor in page_obj %}
+            <a href="{% url 'doctor_detail' doctor.pk %}" class="doctor-card-link">
                 <div class="doctor-card">
                     <div class="doc-header-image">
                         {% if doctor.profile_photo %}
-                            <img src="{{ doctor.profile_photo.url }}" 
-                                alt="Dr. {{ doctor.user.first_name }}"
-                                onerror="this.onerror=null; this.src='{% static 'images/defaults/doctor_default.jpg' %}';">
+                            <img src="{{ doctor.profile_photo.url }}" alt="Dr. {{ doctor.user.first_name }}">
                         {% else %}
                             <img src="{% static 'images/defaults/doctor_default.jpg' %}" alt="Default Doctor">
                         {% endif %}
@@ -169,19 +100,20 @@
                                 <span class="review-count">{{ doctor.review_count|default:"0" }} <br> reviews</span>
                             </div>
                         </div>
-                        
-                        <div class="doc-card-btns-final">
-                            <a href="{% url 'doctor_detail' doctor.pk %}" class="btn-profile-final">
+
+                        <div class="action-buttons">
+                            <button class="btn-view-profile">
                                 <i class="far fa-eye"></i> View Profile
-                            </a>
+                            </button>
                             
-                            <a href="{% url 'appointment_page' %}?doctor={{ doctor.id }}" class="btn-book-final">
+                            <button class="btn-book-now">
                                 <i class="far fa-calendar-check"></i> Book Now
-                            </a>
+                            </button>
                         </div>
                     </div>
+                    </div>
                 </div>
-                </div>
+            </a>
             {% empty %}
             <div class="col-12 text-center py-5" style="grid-column: 1/-1;">
                 <h3>No doctors found matching your criteria.</h3>
@@ -217,156 +149,4 @@
 
     </div>
 </section>
-
-{% endblock %}
-
-
-{% block extra_js %}
-<script>
-
-// TOAST NOTIFICATION SYSTEM
-function showToast() {
-    const toast = document.getElementById('searchToast');
-    if (!toast) return;
-    
-    const query = toast.dataset.query;
-    const count = toast.dataset.count;
-    const searchType = toast.dataset.searchType;
-    
-    const title = toast.querySelector('.toast-title');
-    const message = toast.querySelector('.toast-message');
-    
-    // Set message based on search type
-    if (searchType === 'recommendation') {
-        title.textContent = 'Smart Recommendations';
-        message.textContent = `Found ${count} doctor${count != 1 ? 's' : ''} for "${query}"`;
-    } else if (searchType === 'specialty') {
-        title.textContent = 'Specialty Filter';
-        message.textContent = `Found ${count} ${query} specialist${count != 1 ? 's' : ''}`;
-    } else {
-        title.textContent = 'Search Results';
-        message.textContent = `Found ${count} doctor${count != 1 ? 's' : ''} matching "${query}"`;
-    }
-    
-    // Show toast with animation
-    toast.classList.add('show');
-    
-    // Auto-dismiss after 3 seconds
-    setTimeout(() => {
-        closeToast();
-    }, 3000);
-}
-
-function closeToast() {
-    const toast = document.getElementById('searchToast');
-    if (toast) {
-        toast.classList.remove('show');
-    }
-}
-
-
-// INITIALIZATION
-document.addEventListener('DOMContentLoaded', function() {
-    // Trigger toast on page load if there's a search query
-    if (document.getElementById('searchToast')) {
-        setTimeout(showToast, 300); // Slight delay for smoother appearance
-    }
-});
-</script>
-
-<script>
-
-// SEARCH HISTORY LOGIC (New & Isolated)
-const HISTORY_KEY = 'docplus_doctor_search_history';
-const MAX_HISTORY = 6;
-
-document.addEventListener('DOMContentLoaded', function() {
-    const input = document.getElementById('doctorSearchInput');
-    const dropdown = document.getElementById('searchHistoryDropdown');
-    const form = input.closest('form');
-    
-    // 1. Load & Render History on Load
-    renderHistory();
-    
-    // 2. Show Dropdown on Focus
-    input.addEventListener('focus', function() {
-        dropdown.style.display = 'block';
-    });
-    
-    // 3. Hide Dropdown on Blur (Delayed to allow clicks)
-    input.addEventListener('blur', function() {
-        setTimeout(() => {
-            dropdown.style.display = 'none';
-        }, 200);
-    });
-    
-    // 4. Save Search on Submit
-    form.addEventListener('submit', function() {
-        const query = input.value.trim();
-        if (query) {
-            saveToHistory(query);
-        }
-    });
-
-    // 5. Prevent Dropdown Close when clicking inside
-    dropdown.addEventListener('mousedown', function(e) {
-        e.preventDefault(); // Prevents blur event
-    });
-});
-
-function getHistory() {
-    const stored = localStorage.getItem(HISTORY_KEY);
-    return stored ? JSON.parse(stored) : [];
-}
-
-function saveToHistory(term) {
-    let history = getHistory();
-    // Remove if exists (to move to top)
-    history = history.filter(item => item.toLowerCase() !== term.toLowerCase());
-    // Add to front
-    history.unshift(term);
-    // Limit size
-    if (history.length > MAX_HISTORY) history.pop();
-    
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-}
-
-function renderHistory() {
-    const history = getHistory();
-    const container = document.getElementById('historyTagsContainer');
-    const section = document.getElementById('historySection');
-    
-    if (history.length === 0) {
-        section.style.display = 'none'; // Hide if empty
-        return;
-    }
-    
-    section.style.display = 'block';
-    container.innerHTML = history.map(term => `
-        <span class="history-tag" onclick="fillAndSearch('${term}')">
-            ${term}
-            <i class="fas fa-times" onclick="removeHistoryItem('${term}', event)"></i>
-        </span>
-    `).join('');
-}
-
-function removeHistoryItem(term, event) {
-    event.stopPropagation(); // Prevent triggering the search
-    let history = getHistory();
-    history = history.filter(item => item !== term);
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-    renderHistory();
-}
-
-function clearSearchHistory() {
-    localStorage.removeItem(HISTORY_KEY);
-    renderHistory();
-}
-
-function fillAndSearch(term) {
-    const input = document.getElementById('doctorSearchInput');
-    input.value = term;
-    input.closest('form').submit(); // Auto-submit
-}
-</script>
 {% endblock %}
