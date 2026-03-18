@@ -7,6 +7,9 @@ from .views import (
     esewa_callback,
     esewa_failure,
     VideoCallView,
+    manage_appointment,
+    reschedule_appointment,
+    cancel_and_refund,
 )
 
 urlpatterns = [
@@ -22,4 +25,9 @@ urlpatterns = [
 
     # Video Call
     path('video-call/<int:appointment_id>/', VideoCallView.as_view(), name='video_call'),
+
+    # Reschedule & Refund
+    path('manage/<int:appointment_id>/', manage_appointment, name='manage_appointment'),
+    path('reschedule/<int:appointment_id>/', reschedule_appointment, name='reschedule_appointment'),
+    path('cancel-refund/<int:appointment_id>/', cancel_and_refund, name='cancel_refund'),
 ]

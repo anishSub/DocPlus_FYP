@@ -177,6 +177,12 @@
                 <div class="banner-content">
                     <h4>Next Appointment</h4>
                     <p>You have an appointment with <strong>Dr. {{ upcoming_appt.doctor.user.last_name }}</strong> on {{ upcoming_appt.date|date:"M d, Y" }} at {{ upcoming_appt.start_time }}</p>
+                </div>
+                <div class="banner-action" style="margin-left: auto;">
+                    <a href="{% url 'manage_appointment' upcoming_appt.id %}" class="btn btn-sm btn-light" style="padding: 10px 20px; border-radius: 8px; font-weight: 600; text-decoration: none; color: #0C4D98; display: inline-block; background: white;">
+                        <i class="fas fa-cog mr-1"></i> Manage
+                    </a>
+                </div>
             </div>
             {% else %}
             <div class="next-appointment-banner" style="background:#f3f4f6; border-left: 4px solid #9ca3af;">
@@ -207,7 +213,14 @@
                         </div>
                         <span class="specialty">{{ appt.doctor.specialization }}</span>
                         <p class="diagnosis">Reason: <span>{{ appt.reason|truncatechars:30 }}</span></p>
-                        <span class="status-badge" style="font-size:12px; padding:2px 8px; background:#e5e7eb; border-radius:10px;">{{ appt.status|title }}</span>
+                        <div class="card-footer-actions" style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                            <span class="status-badge" style="font-size:12px; padding:2px 8px; background:#e5e7eb; border-radius:10px;">{{ appt.status|title }}</span>
+                            {% if appt.status == 'scheduled' %}
+                            <a href="{% url 'manage_appointment' appt.id %}" style="font-size: 13px; color: #0C4D98; font-weight: 600; text-decoration: none;">
+                                <i class="fas fa-edit mr-1"></i> Manage
+                            </a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
                 {% empty %}

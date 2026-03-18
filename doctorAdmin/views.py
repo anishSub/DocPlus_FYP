@@ -268,7 +268,7 @@ class DoctorEarningsView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
+
         # Safety Check
         if not hasattr(self.request.user, 'doctor_profile'):
             return context
@@ -278,13 +278,13 @@ class DoctorEarningsView(LoginRequiredMixin, TemplateView):
 
         # 1. Total Earnings (All time, Completed or Scheduled paid)
         total_earnings = Appointment.objects.filter(
-            doctor=doctor, 
+            doctor=doctor,
             status__in=['completed', 'scheduled']
         ).aggregate(Sum('amount'))['amount__sum'] or 0
 
         # 2. This Month Earnings
         this_month_earnings = Appointment.objects.filter(
-            doctor=doctor, 
+            doctor=doctor,
             status__in=['completed', 'scheduled'],
             date__month=today.month,
             date__year=today.year
@@ -294,9 +294,9 @@ class DoctorEarningsView(LoginRequiredMixin, TemplateView):
         # Calculate the previous month/year safely
         first_day_this_month = today.replace(day=1)
         last_month_date = first_day_this_month - timedelta(days=1)
-        
+
         last_month_earnings = Appointment.objects.filter(
-            doctor=doctor, 
+            doctor=doctor,
             status__in=['completed', 'scheduled'],
             date__month=last_month_date.month,
             date__year=last_month_date.year
@@ -306,11 +306,16 @@ class DoctorEarningsView(LoginRequiredMixin, TemplateView):
         # We show all appointments, but status helps differentiate paid/unpaid
         transactions = Appointment.objects.filter(doctor=doctor).order_by('-date')[:10]
 
+        # 5. Fetch Payment Methods (Bank Accounts)
+        from .models import BankAccount
+        payment_methods = BankAccount.objects.filter(doctor=doctor)
+
         context.update({
             'total_earnings': total_earnings,
             'this_month_earnings': this_month_earnings,
             'last_month_earnings': last_month_earnings,
-            'transactions': transactions
+            'transactions': transactions,
+            'payment_methods': payment_methods
         })
         return context
     
@@ -514,4 +519,118 @@ def send_video_call_link(request, appointment_id):
         return JsonResponse({
             'status': 'error',
             'message': f'An error occurred: {str(e)}'
+        }, status=500)
+
+
+# 5. PAYMENT METHOD MANAGEMENT VIEWS
+
+@login_required
+@require_http_methods(["POST"])
+def add_payment_method(request):
+    """Add a new bank account for the doctor"""
+    try:
+        if not hasattr(request.user, 'doctor_profile'):
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Only doctors can add payment methods'
+            }, status=403)
+
+        doctor = request.user.doctor_profile
+        data = json.loads(request.body)
+
+        from .models import BankAccount
+
+        # Create new bank account
+        bank_account = BankAccount.objects.create(
+            doctor=doctor,
+            account_holder_name=data.get('account_holder_name'),
+            bank_name=data.get('bank_name'),
+            account_number=data.get('account_number'),
+            routing_number=data.get('routing_number', ''),
+            account_type=data.get('account_type', 'savings'),
+            is_primary=data.get('is_primary', False)
+        )
+
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Payment method added successfully',
+            'account': {
+                'id': bank_account.id,
+                'bank_name': bank_account.bank_name,
+                'masked_number': bank_account.masked_account_number,
+                'is_primary': bank_account.is_primary
+            }
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Failed to add payment method: {str(e)}'
+        }, status=500)
+
+
+@login_required
+@require_http_methods(["POST"])
+def delete_payment_method(request):
+    """Delete a bank account"""
+    try:
+        if not hasattr(request.user, 'doctor_profile'):
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Unauthorized'
+            }, status=403)
+
+        doctor = request.user.doctor_profile
+        data = json.loads(request.body)
+        account_id = data.get('id')
+
+        from .models import BankAccount
+
+        # Ensure the doctor owns this account
+        account = get_object_or_404(BankAccount, id=account_id, doctor=doctor)
+        account.delete()
+
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Payment method deleted successfully'
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Failed to delete payment method: {str(e)}'
+        }, status=500)
+
+
+@login_required
+@require_http_methods(["POST"])
+def set_primary_payment_method(request):
+    """Set a bank account as primary"""
+    try:
+        if not hasattr(request.user, 'doctor_profile'):
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Unauthorized'
+            }, status=403)
+
+        doctor = request.user.doctor_profile
+        data = json.loads(request.body)
+        account_id = data.get('id')
+
+        from .models import BankAccount
+
+        # Ensure the doctor owns this account
+        account = get_object_or_404(BankAccount, id=account_id, doctor=doctor)
+        account.is_primary = True
+        account.save()  # The model's save method will handle unsetting other primary accounts
+
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Primary payment method updated successfully'
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Failed to update primary payment method: {str(e)}'
         }, status=500)

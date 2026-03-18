@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manage Appointment{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="card shadow-lg border-0 rounded-lg overflow-hidden" style="max-width: 800px; margin: 0 auto;">
+        <div class="card-header bg-primary text-white p-4">
+            <h2 class="mb-0">Manage Your Appointment</h2>
+            <p class="mb-0 text-white-50">Dr. {{ appointment.doctor.user.get_full_name }} | {{ appointment.date }} at {{ appointment.time_slot_display }}</p>
+        </div>
+        
+        <div class="card-body p-4 bg-light">
+            {% if not can_manage %}
+            <div class="alert alert-warning border-0 shadow-sm mb-4">
+                <i class="fas fa-exclamation-triangle mr-2"></i>
+                This appointment is within 24 hours and cannot be rescheduled or refunded online. Please contact the clinic for assistance.
+            </div>
+            {% endif %}
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="h-100 p-4 bg-white rounded shadow-sm">
+                        <h4 class="text-primary mb-3"><i class="fas fa-calendar-alt mr-2"></i> Option 1: Reschedule</h4>
+                        <p class="text-muted">Pick a new date and time for your consultation. No additional payment required.</p>
+                        <hr>
+                        
+                        {% if can_manage %}
+                        <form action="{% url 'reschedule_appointment' appointment.id %}" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group mb-3">
+                                <label class="font-weight-bold">Select New Date</label>
+                                <input type="date" name="appointment_date" class="form-control" required min="{{ today|date:'Y-m-d' }}">
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label class="font-weight-bold">Select New Time Slot</label>
+                                <select name="time_slot" class="form-control" required>
+                                    <option value="">-- Choose a Slot --</option>
+                                    <option value="09:00 AM">09:00 AM</option>
+                                    <option value="10:00 AM">10:00 AM</option>
+                                    <option value="11:00 AM">11:00 AM</option>
+                                    <option value="02:00 PM">02:00 PM</option>
+                                    <option value="03:00 PM">03:00 PM</option>
+                                    <option value="04:00 PM">04:00 PM</option>
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-block py-2">
+                                <i class="fas fa-check-circle mr-2"></i> Confirm Reschedule
+                            </button>
+                        </form>
+                        {% else %}
+                        <button class="btn btn-secondary btn-block py-2 disabled" disabled>Reschedule Unavailable</button>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="h-100 p-4 bg-white rounded shadow-sm border-left border-danger" style="border-left-width: 4px !important;">
+                        <h4 class="text-danger mb-3"><i class="fas fa-undo mr-2"></i> Option 2: Cancel & Refund</h4>
+                        <p class="text-muted">Cancel your appointment and request a refund to your original payment method.</p>
+                        <hr>
+
+                        {% if can_manage %}
+                        <form action="{% url 'cancel_refund' appointment.id %}" method="POST" id="cancelForm">
+                            {% csrf_token %}
+                            <div class="form-group mb-3">
+                                <label class="font-weight-bold">Why are you cancelling?</label>
+                                <textarea name="cancellation_reason" class="form-control" rows="3" placeholder="I'm busy, feeling better, etc." required></textarea>
+                            </div>
+                            
+                            <div class="p-3 bg-light rounded mb-3" style="font-size: 0.9rem;">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Refundable Amount:</span>
+                                    <strong>NPR {{ appointment.amount }}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between text-muted">
+                                    <span>Payment Method:</span>
+                                    <span>{{ appointment.payment_method|title }}</span>
+                                </div>
+                            </div>
+                            
+                            <button type="button" class="btn btn-outline-danger btn-block py-2" onclick="confirmCancellation()">
+                                <i class="fas fa-times-circle mr-2"></i> Cancel & Request Refund
+                            </button>
+                        </form>
+                        {% else %}
+                        <button class="btn btn-secondary btn-block py-2 disabled" disabled>Refund Unavailable</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="{% url 'home' %}" class="text-muted"><i class="fas fa-arrow-left mr-1"></i> Back to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmCancellation() {
+    if (confirm("Are you sure you want to cancel this appointment? This action cannot be undone.")) {
+        document.getElementById('cancelForm').submit();
+    }
+}
+</script>
+
+<style>
+    .bg-primary { background: #0C4D98 !important; }
+    .text-primary { color: #0C4D98 !important; }
+    .btn-primary { background: #0C4D98 !important; border-color: #0C4D98 !important; }
+    .btn-outline-danger:hover { color: white !important; }
+    .shadow-lg { box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important; }
+</style>
+{% endblock %}

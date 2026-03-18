@@ -302,3 +302,35 @@ This is an automated message. Please do not reply to this email.
         [appointment.email],
         fail_silently=False,
     )
+
+
+def send_reschedule_notification_email(new_appointment, old_appointment):
+    """Notify patient that their appointment has been rescheduled"""
+    subject = f"Appointment Rescheduled - Dr. {new_appointment.doctor.user.get_full_name()}"
+    
+    body = f"""Dear {new_appointment.full_name},
+
+Your appointment with Dr. {new_appointment.doctor.user.get_full_name()} has been successfully rescheduled.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+NEW APPOINTMENT DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Date: {new_appointment.date.strftime('%B %d, %Y')}
+Time: {new_appointment.start_time.strftime('%I:%M %p')} - {new_appointment.end_time.strftime('%I:%M %p')}
+Type: {'Video Consultation' if new_appointment.is_video_consultation else 'In-Person Visit'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PREVIOUS APPOINTMENT (CANCELLED)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Date: {old_appointment.date.strftime('%B %d, %Y')}
+Time: {old_appointment.start_time.strftime('%I:%M %p')}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+You can manage your appointment or join the video call (if applicable) through your DocPlus dashboard.
+
+Best regards,
+The DocPlus Team
+"""
+    _print_email_to_terminal(subject, new_appointment.email, body)
+    send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [new_appointment.email])

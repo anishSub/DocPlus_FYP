@@ -61,6 +61,23 @@ class Appointment(models.Model):
     call_access_code = models.CharField(max_length=6, blank=True, null=True)
     call_link_sent = models.BooleanField(default=False)
     doctor_approved_call = models.BooleanField(default=False)  # Doctor manually approved sending the link
+    
+    # 6. Reschedule & Refund Fields
+    rescheduled_from = models.ForeignKey(
+        'self', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='rescheduled_to'
+    )
+    refund_status = models.CharField(max_length=20, default='none', choices=[
+        ('none', 'No Refund'),
+        ('requested', 'Refund Requested'),
+        ('completed', 'Refund Completed'),
+        ('failed', 'Refund Failed'),
+    ])
+    refund_requested_at = models.DateTimeField(null=True, blank=True)
+    cancellation_reason = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"Appointment: {self.full_name} with {self.doctor.user.first_name}"

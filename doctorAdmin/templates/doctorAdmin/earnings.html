@@ -75,22 +75,202 @@
 
     <div class="payment-methods-section">
         <h3>Payment Methods</h3>
-        
-        <div class="payment-card">
-            <div class="payment-info">
-                <div class="icon-box">
-                    <i class="far fa-credit-card"></i>
+
+        {% if payment_methods %}
+            {% for account in payment_methods %}
+            <div class="payment-card" data-account-id="{{ account.id }}">
+                <div class="payment-info">
+                    <div class="icon-box">
+                        <i class="far fa-credit-card"></i>
+                    </div>
+                    <div class="details">
+                        <h4>{{ account.bank_name }}</h4>
+                        <p>{{ account.masked_account_number }}</p>
+                        <small style="color: #6b7280;">{{ account.get_account_type_display }}</small>
+                    </div>
                 </div>
-                <div class="details">
-                    <h4>Bank Account</h4>
-                    <p>**** **** **** 1234</p>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    {% if account.is_primary %}
+                        <span class="badge-primary">Primary</span>
+                    {% else %}
+                        <button class="set-primary-btn" onclick="setPrimaryAccount({{ account.id }})">
+                            Set as Primary
+                        </button>
+                    {% endif %}
+                    <button class="delete-btn" onclick="deleteAccount({{ account.id }})" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </div>
             </div>
-            <span class="badge-primary">Primary</span>
-        </div>
+            {% endfor %}
+        {% else %}
+            <p style="color: #6b7280; text-align: center; padding: 20px;">
+                No payment methods added yet. Add one to receive payments.
+            </p>
+        {% endif %}
 
-        <button class="add-payment-btn">
+        <button class="add-payment-btn" onclick="openAddPaymentModal()">
             <i class="fas fa-plus"></i> Add Payment Method
         </button>
     </div>
+
+    <!-- Add Payment Method Modal -->
+    <div id="addPaymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddPaymentModal()">&times;</span>
+            <h2>Add Payment Method</h2>
+            <form id="addPaymentForm">
+                <div class="form-group">
+                    <label for="account_holder_name">Account Holder Name *</label>
+                    <input type="text" id="account_holder_name" name="account_holder_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="bank_name">Bank Name *</label>
+                    <input type="text" id="bank_name" name="bank_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="account_number">Account Number *</label>
+                    <input type="text" id="account_number" name="account_number" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="routing_number">Routing Number (Optional)</label>
+                    <input type="text" id="routing_number" name="routing_number">
+                </div>
+
+                <div class="form-group">
+                    <label for="account_type">Account Type *</label>
+                    <select id="account_type" name="account_type" required>
+                        <option value="savings">Savings Account</option>
+                        <option value="checking">Checking Account</option>
+                        <option value="business">Business Account</option>
+                    </select>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox" id="is_primary" name="is_primary">
+                        Set as primary payment method
+                    </label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="closeAddPaymentModal()">Cancel</button>
+                    <button type="submit" class="btn-submit">Add Payment Method</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openAddPaymentModal() {
+            document.getElementById('addPaymentModal').style.display = 'block';
+        }
+
+        function closeAddPaymentModal() {
+            document.getElementById('addPaymentModal').style.display = 'none';
+            document.getElementById('addPaymentForm').reset();
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('addPaymentModal');
+            if (event.target == modal) {
+                closeAddPaymentModal();
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('addPaymentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = {
+                account_holder_name: document.getElementById('account_holder_name').value,
+                bank_name: document.getElementById('bank_name').value,
+                account_number: document.getElementById('account_number').value,
+                routing_number: document.getElementById('routing_number').value,
+                account_type: document.getElementById('account_type').value,
+                is_primary: document.getElementById('is_primary').checked
+            };
+
+            try {
+                const response = await fetch('{% url "add_payment_method" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    alert('Payment method added successfully!');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                alert('Failed to add payment method. Please try again.');
+                console.error('Error:', error);
+            }
+        });
+
+        async function deleteAccount(accountId) {
+            if (!confirm('Are you sure you want to delete this payment method?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('{% url "delete_payment_method" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ id: accountId })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    alert('Payment method deleted successfully!');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                alert('Failed to delete payment method. Please try again.');
+                console.error('Error:', error);
+            }
+        }
+
+        async function setPrimaryAccount(accountId) {
+            try {
+                const response = await fetch('{% url "set_primary_payment_method" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ id: accountId })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    alert('Primary payment method updated!');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                alert('Failed to update primary payment method. Please try again.');
+                console.error('Error:', error);
+            }
+        }
+    </script>
 {% endblock %}
