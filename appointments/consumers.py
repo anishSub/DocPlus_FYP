@@ -135,3 +135,49 @@ class ChatConsumer(AsyncWebsocketConsumer):
             }
             for msg in messages
         ]
+
+
+class AppointmentNotificationConsumer(AsyncWebsocketConsumer):
+    """
+    Handles real-time appointment notifications for doctors.
+    Doctors subscribe to a group specific to their doctor ID.
+    """
+    
+    async def connect(self):
+        """Handle WebSocket connection"""
+        user = self.scope['user']
+        
+        # Verify user is a doctor
+        if not user.is_authenticated or not hasattr(user, 'doctor_profile'):
+            await self.close()
+            return
+            
+        self.doctor_id = user.doctor_profile.id
+        self.group_name = f'doctor_notifications_{self.doctor_id}'
+        
+        # Join doctor-specific notification group
+        await self.channel_layer.group_add(
+            self.group_name,
+            self.channel_name
+        )
+        
+        await self.accept()
+        
+    async def disconnect(self, close_code):
+        """Handle WebSocket disconnection"""
+        if hasattr(self, 'group_name'):
+            await self.channel_layer.group_discard(
+                self.group_name,
+                self.channel_name
+            )
+            
+    async def new_appointment(self, event):
+        """
+        Receive appointment notification from group and send to WebSocket.
+        Triggered when a new appointment is saved in views.py.
+        """
+        # Send notification data to the doctor's browser
+        await self.send(text_data=json.dumps({
+            'type': 'new_appointment',
+            'appointment': event['appointment']
+        }))

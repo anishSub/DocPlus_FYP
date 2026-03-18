@@ -145,138 +145,126 @@
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Toggle appointment details
-        document.querySelectorAll('.btn-toggle-details').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const card = this.closest('.appointment-card');
-                const details = card.querySelector('.appointment-details-expanded');
-                const icon = this.querySelector('i');
-                
-                if (details.style.display === 'none') {
-                    details.style.display = 'block';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    details.style.display = 'none';
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
-                }
-            });
-        });
+        // ------------------------------------------------------------------
+        //  REAL-TIME NOTIFICATIONS (WEBSOCKETS)
+        // ------------------------------------------------------------------
         
-        // Send video call link
-        document.querySelectorAll('.btn-send-link').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const appointmentId = this.dataset.appointmentId;
-                const button = this;
-                
-                if (confirm('Send video call link to this patient?')) {
-                    // Disable button and show loading
-                    button.disabled = true;
-                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-                    
-                    // Get CSRF token
-                    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
-                                     getCookie('csrftoken');
-                    
-                    // Get URL from data attribute and ensure it's absolute
-                    const url = window.location.origin + button.dataset.url;
-                    
-                    fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': csrftoken
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === 'success') {
-                            // Update button to show success
-                            button.style.background = '#d1fae5';
-                            button.style.color = '#059669';
-                            button.style.border = '1px solid #059669';
-                            button.innerHTML = '<i class="fas fa-check-double"></i> Link Sent';
-                            
-                            // Update status badge
-                            const card = button.closest('.appointment-card');
-                            const pendingBadge = card.querySelector('.tag[style*="fef3c7"]');
-                            if (pendingBadge) {
-                                pendingBadge.style.background = '#d1fae5';
-                                pendingBadge.style.color = '#059669';
-                                pendingBadge.innerHTML = '<i class="fas fa-check-circle"></i> Link Sent';
-                            }
-                            
-                            alert(data.message);
-                        } else {
-                            button.disabled = false;
-                            button.innerHTML = '<i class="fas fa-paper-plane"></i> Send Link';
-                            alert(data.message || 'Failed to send link');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        button.disabled = false;
-                        button.innerHTML = '<i class="fas fa-paper-plane"></i> Send Link';
-                        alert('An error occurred. Please try again.');
-                    });
-                }
-            });
-        });
-        
-        // Search functionality
-        const searchInput = document.querySelector('.search-box input');
-        searchInput.addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            document.querySelectorAll('.appointment-card').forEach(card => {
-                const patientName = card.querySelector('.patient-details h3').textContent.toLowerCase();
-                const reason = card.querySelector('.reason').textContent.toLowerCase();
-                if (patientName.includes(searchTerm) || reason.includes(searchTerm)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const notificationSocket = new WebSocket(
+            `${protocol}//${window.location.host}/ws/notifications/`
+        );
 
-        // Basic Filter functionality (Toggles between showing all, only video link sent, etc)
-        const filterBtn = document.querySelector('.filter-btn');
-        let currentFilter = 'all'; 
-        
-        filterBtn.addEventListener('click', function() {
-            const filters = ['all', 'video_pending', 'paid'];
-            const nextIndex = (filters.indexOf(currentFilter) + 1) % filters.length;
-            currentFilter = filters[nextIndex];
-            
-            // Update button text to show current filter mode
-            if (currentFilter === 'all') {
-                this.innerHTML = '<i class="fas fa-filter"></i> Filter: All';
-            } else if (currentFilter === 'video_pending') {
-                this.innerHTML = '<i class="fas fa-filter"></i> Filter: Pending Links';
-            } else if (currentFilter === 'paid') {
-                this.innerHTML = '<i class="fas fa-filter"></i> Filter: Paid Only';
+        notificationSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            if (data.type === 'new_appointment') {
+                const appt = data.appointment;
+                showNotification(`🔔 New Appointment: ${appt.full_name}`);
+                addNewAppointmentCard(appt);
             }
+        };
 
-            document.querySelectorAll('.appointment-card').forEach(card => {
-                // If 'all', show all
-                if (currentFilter === 'all') {
-                    card.style.display = 'flex';
-                    return;
-                }
-                
-                const htmlContent = card.innerHTML;
-                let shouldShow = false;
+        notificationSocket.onclose = function(e) {
+            console.error('Notification socket closed unexpectedly');
+            // Optional: implement reconnection logic here
+        };
 
-                if (currentFilter === 'video_pending' && htmlContent.includes('Link Pending')) {
-                    shouldShow = true;
-                } else if (currentFilter === 'paid' && (htmlContent.includes('eSewa') || htmlContent.includes('Khalti'))) {
-                    shouldShow = true;
-                }
+        function showNotification(message) {
+            const toast = document.createElement('div');
+            toast.className = 'realtime-toast';
+            toast.style.cssText = `
+                position: fixed; top: 20px; right: 20px; 
+                background: #0C4D98; color: white; 
+                padding: 15px 25px; border-radius: 12px; 
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                z-index: 9999; animation: slideIn 0.3s ease-out;
+                display: flex; align-items: center; gap: 10px; font-weight: 500;
+            `;
+            toast.innerHTML = `<i class="fas fa-bell"></i> ${message}`;
+            document.body.appendChild(toast);
 
-                card.style.display = shouldShow ? 'flex' : 'none';
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease-in forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        function addNewAppointmentCard(appt) {
+            const list = document.querySelector('.appointments-list');
+            const emptyState = list.querySelector('.empty-state');
+            if (emptyState) emptyState.remove();
+
+            const card = document.createElement('div');
+            card.className = 'appointment-card new-realtime-card';
+            card.dataset.appointmentId = appt.id;
+            card.style.cssText = 'display: flex; flex-direction: column; gap: 15px; animation: fadeInUp 0.5s ease-out;';
+            
+            // Format date for display
+            const rawDate = new Date(appt.date);
+            const formattedDate = rawDate.toLocaleDateString('en-US', { month: 'short', day: '2-digit' });
+
+            card.innerHTML = `
+                <div class="card-top-row" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px;">
+                    <div class="card-left" style="display: flex; gap: 15px; flex: 1; min-width: 300px;">
+                        <div class="avatar blue">${appt.full_name.charAt(0).toUpperCase()}</div>
+                        <div class="patient-details">
+                            <h3>${appt.full_name} <span class="badge-new" style="background:#10B981; color:white; font-size:10px; padding:2px 6px; border-radius:10px; vertical-align:middle; margin-left:5px;">NEW</span></h3>
+                            <p class="reason" style="margin-bottom: 8px;">${appt.reason}</p>
+                            <div class="meta-info" style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 5px;">
+                                <span class="meta-date"><i class="far fa-calendar"></i> ${formattedDate}</span>
+                                <span><i class="far fa-clock"></i> ${appt.time_slot}</span>
+                                <span class="meta-contact"><i class="fas fa-money-bill"></i> ${appt.payment_method.toUpperCase()}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-right-actions" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                        <button class="btn-toggle-details" style="padding: 8px 16px; border-radius: 8px; border: 1px solid #e5e7eb; background: white; cursor: pointer; color: #4b5563; font-weight: 500;">
+                            <i class="far fa-eye"></i> Details
+                        </button>
+                        ${appt.is_video ? `
+                            <button class="btn-send-link" data-appointment-id="${appt.id}" data-url="/doctor-admin/appointment/${appt.id}/send-link/" style="background: #0C4D98; color: white; padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: 500;">
+                                <i class="fas fa-paper-plane"></i> Send Link
+                            </button>
+                            <a href="/appointments/video-call/${appt.id}/" class="btn-start" style="background: #10B981; color: white; text-decoration: none; padding: 8px 16px; border-radius: 8px; display: inline-flex; align-items: center; gap: 5px; font-weight: 500;">
+                                <i class="fas fa-video"></i> Join Call
+                            </a>
+                        ` : ''}
+                    </div>
+                </div>
+                <div class="card-bottom-row" style="display: flex; gap: 10px; margin-left: 65px; padding-top: 10px; border-top: 1px dashed #e5e7eb;">
+                    <span class="tag" style="background:#e0f2fe; color:#0284c7; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+                        <i class="fas fa-sync-alt"></i> Just Added
+                    </span>
+                    ${appt.is_video ? '<span class="tag" style="background:#fef3c7; color:#d97706; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;">Link Pending</span>' : ''}
+                </div>
+            `;
+
+            list.prepend(card);
+            
+            // Re-attach listeners for the new card (basic approach for simplicity)
+            // In a larger app, we'd use event delegation
+            card.querySelector('.btn-toggle-details').addEventListener('click', function() {
+                alert("Please refresh to see full expandable details for newly added rows.");
             });
-        });
-        
+            
+            const sendBtn = card.querySelector('.btn-send-link');
+            if (sendBtn) {
+                sendBtn.addEventListener('click', function() {
+                    // This could be improved by moving the send logic to a shared function
+                    window.location.reload(); 
+                });
+            }
+        }
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+            @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+            @keyframes fadeInUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+            .new-realtime-card { border-left: 4px solid #10B981 !important; background: #f0fff4 !important; }
+        `;
+        document.head.appendChild(style);
+
         // Helper function to get CSRF token from cookies
         function getCookie(name) {
             let cookieValue = null;
