@@ -117,4 +117,51 @@
         </div>
         {% endfor %}
     </div>
+
+    <!-- Platform Reviews Section -->
+    <h3 style="color: #1f2937; margin: 32px 0 16px;"><i class="fas fa-globe"></i> Platform Feedbacks</h3>
+    <div class="reviews-list">
+        {% for review in platform_reviews %}
+        <div class="review-card {% if not review.is_approved %}flagged{% endif %}">
+            <div class="card-body">
+                <div class="reviewer-profile">
+                    <div class="avatar blue">{{ review.user.first_name|first|default:review.user.username|first|upper }}</div>
+                    <div class="info">
+                        <h3>{{ review.user.first_name|default:review.user.username }} {{ review.user.last_name }}</h3>
+                        <span class="sub-text">Platform Feedback</span>
+                    </div>
+                </div>
+                <div class="review-meta">
+                    <div class="stars">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= review.rating %}
+                                <i class="fas fa-star"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <span class="date">{{ review.created_at|date:"Y-m-d" }}</span>
+                </div>
+            </div>
+            <p class="review-text">{{ review.comment|default:"No comment provided." }}</p>
+            
+            {% if review.is_approved %}
+            <div class="status-row approved">
+                <i class="fas fa-check-circle"></i> Approved
+            </div>
+            {% else %}
+            <div class="action-buttons">
+                <a href="{% url 'approve_review' 'platform' review.pk %}" class="btn btn-approve"><i class="fas fa-check"></i> Approve</a>
+                <a href="{% url 'reject_review' 'platform' review.pk %}" class="btn btn-reject" onclick="return confirm('Are you sure you want to reject this feedback?')"><i class="fas fa-times"></i> Reject</a>
+            </div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <div style="text-align: center; padding: 40px; color: #888;">
+            <i class="far fa-comment-dots" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
+            <p>No platform feedbacks found.</p>
+        </div>
+        {% endfor %}
+    </div>
 {% endblock %}

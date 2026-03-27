@@ -29,5 +29,5 @@ urlpatterns = [
     # Reschedule & Refund
     path('manage/<int:appointment_id>/', manage_appointment, name='manage_appointment'),
     path('reschedule/<int:appointment_id>/', reschedule_appointment, name='reschedule_appointment'),
-    path('cancel-refund/<int:appointment_id>/', cancel_and_refund, name='cancel_refund'),
+    path('cancel-refund/<int:appointment_id>/', cancel_and_refund, name='cancel_and_refund'),
 ]

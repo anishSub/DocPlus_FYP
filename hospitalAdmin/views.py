@@ -66,7 +66,7 @@ class HospitalAdminOverview(LoginRequiredMixin, UserPassesTestMixin, View):
                 'occupied_beds': int(total_beds * 0.65), 
             }
         }
-        return render(request, 'find_hospital/dashboard/overview.html', context)
+        return render(request, 'hospitalAdmin/overview.html', context)
 
 
 
@@ -92,7 +92,7 @@ class HospitalDoctorManagementView(LoginRequiredMixin, UserPassesTestMixin, View
             'doctors': doctors,
             'doctor_count': doctors.count()
         }
-        return render(request, 'find_hospital/dashboard/doctor_management.html', context)
+        return render(request, 'hospitalAdmin/management.html', context)
 
     def post(self, request):
         # Handle "Remove Doctor" action

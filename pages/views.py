@@ -16,14 +16,36 @@ from find_doctor.models import DoctorProfile
 from find_hospital.models import Hospital
 
 
+from .models import PlatformTestimonial
+from .forms import PlatformTestimonialForm
+
 # Create your views here.
 class HomeView(View):
     def get(self, request):
-        return render(request, 'home/home.html')
+        # Fetch up to 3 approved testimonials
+        testimonials = PlatformTestimonial.objects.filter(is_approved=True).select_related('user')[:3]
+        return render(request, 'home/home.html', {'testimonials': testimonials})
     
 class AboutUsView(View):
     def get(self, request):
-        return render(request, 'about_us/about_us.html')
+        form = PlatformTestimonialForm()
+        return render(request, 'about_us/about_us.html', {'form': form})
+        
+    def post(self, request):
+        if not request.user.is_authenticated:
+            messages.error(request, 'You must be logged in to submit a review.')
+            return redirect('login')
+            
+        form = PlatformTestimonialForm(request.POST)
+        if form.is_valid():
+            testimonial = form.save(commit=False)
+            testimonial.user = request.user
+            testimonial.save()
+            messages.success(request, 'Thank you! Your review has been submitted and is pending approval.')
+            return redirect('about_us')
+            
+        messages.error(request, 'Please correct the errors below.')
+        return render(request, 'about_us/about_us.html', {'form': form})
     
 class ContactUsView(View):
     def get(self, request):

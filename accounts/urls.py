@@ -7,9 +7,9 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     # Your custom login view (this will override the default)
-    path('accounts/login/', CustomLoginView.as_view(), name='login'),
+    path('login/', CustomLoginView.as_view(), name='login'),
     
-    path('accounts/logout/', CustomLogoutView.as_view(), name='logout'),
+    path('logout/', CustomLogoutView.as_view(), name='logout'),
     
     path('register/', RegisterView.as_view(), name='register'),
     # path('accounts/', include('django.contrib.auth.urls')), #password_reset

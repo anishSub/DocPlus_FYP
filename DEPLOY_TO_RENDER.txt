@@ -1,0 +1,482 @@
+================================================================================
+          COMPLETE GUIDE: DEPLOYING DocPlus (Django) TO RENDER
+              WITH POSTGRESQL DATABASE & MEDIA FILES
+================================================================================
+
+This guide is specifically written for YOUR DocPlus project.
+It covers everything: local changes, production settings, and Render setup.
+
+================================================================================
+                    PART 1: LOCAL CHANGES (Before Deploying)
+================================================================================
+
+STEP 1: UPDATE settings.py FOR PRODUCTION
+--------------------------------------------------------------------------
+Your settings.py is already MOSTLY production-ready! Great job.
+Here are the remaining changes needed:
+
+File: myproject/settings.py
+
+1a) UPDATE ALLOWED_HOSTS (Line 33):
+   ---------------------------------------------------------------
+   CURRENT:
+       ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+   CHANGE TO:
+       ALLOWED_HOSTS = [
+           'localhost',
+           '127.0.0.1',
+           '.onrender.com',        # Allows all Render subdomains
+       ]
+   ---------------------------------------------------------------
+
+1b) UPDATE DATABASE CONFIG TO USE DATABASE_URL (Lines 145-154):
+   ---------------------------------------------------------------
+   CURRENT:
+       DATABASES = {
+           'default': {
+               'ENGINE': 'django.db.backends.postgresql',
+               'NAME': 'docplus_db',
+               'USER': 'macm2',
+               'PASSWORD': '',
+               'HOST': '127.0.0.1',
+               'PORT': '5432',
+           }
+       }
+
+   CHANGE TO:
+       import dj_database_url
+
+       # Use DATABASE_URL from environment if available (Render),
+       # otherwise fall back to local PostgreSQL
+       if os.getenv('DATABASE_URL'):
+           DATABASES = {
+               'default': dj_database_url.config(
+                   default=os.getenv('DATABASE_URL'),
+                   conn_max_age=600
+               )
+           }
+       else:
+           DATABASES = {
+               'default': {
+                   'ENGINE': 'django.db.backends.postgresql',
+                   'NAME': 'docplus_db',
+                   'USER': 'macm2',
+                   'PASSWORD': '',
+                   'HOST': '127.0.0.1',
+                   'PORT': '5432',
+               }
+           }
+   ---------------------------------------------------------------
+   WHY: This way your app uses the cloud database on Render but
+        still works locally with your existing PostgreSQL setup.
+
+1c) ENABLE PASSWORD VALIDATORS (Lines 161-174) - RECOMMENDED:
+   ---------------------------------------------------------------
+   Uncomment the password validators for production security:
+
+       AUTH_PASSWORD_VALIDATORS = [
+           {
+               'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+           },
+           {
+               'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+           },
+           {
+               'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+           },
+           {
+               'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+           },
+       ]
+   ---------------------------------------------------------------
+
+1d) ADD CSRF AND SECURE SETTINGS AT THE BOTTOM OF settings.py:
+   ---------------------------------------------------------------
+   Add these at the end of settings.py:
+
+       # ── Production Security Settings ────────────────────────────
+       if not DEBUG:
+           SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+           CSRF_TRUSTED_ORIGINS = [
+               'https://*.onrender.com',
+           ]
+           SESSION_COOKIE_SECURE = True
+           CSRF_COOKIE_SECURE = True
+   ---------------------------------------------------------------
+
+
+STEP 2: INSTALL REQUIRED PACKAGES
+--------------------------------------------------------------------------
+Run these commands in your terminal:
+
+   cd /Users/macm2/Desktop/DocPlus_FYP
+   source venv/bin/activate
+   pip install dj-database-url gunicorn
+   pip freeze > requirements.txt
+
+What each package does:
+   - dj-database-url : Parses DATABASE_URL into Django's format
+   - gunicorn        : Production WSGI server (replaces runserver)
+
+NOTE: You already have these installed (good job!):
+   ✅ psycopg2-binary (PostgreSQL driver)
+   ✅ whitenoise (static file serving)
+   ✅ python-dotenv (environment variables)
+
+
+STEP 3: CREATE build.sh IN PROJECT ROOT
+--------------------------------------------------------------------------
+Create a new file: /Users/macm2/Desktop/DocPlus_FYP/build.sh
+
+   #!/usr/bin/env bash
+   # Exit on error
+   set -o errexit
+
+   # Install dependencies
+   pip install -r requirements.txt
+
+   # Collect static files
+   python manage.py collectstatic --no-input
+
+   # Run database migrations
+   python manage.py migrate
+
+
+STEP 4: MAKE SURE .gitignore IS CORRECT
+--------------------------------------------------------------------------
+your .gitignore should include (check your existing one):
+
+   venv/
+   .env
+   __pycache__/
+   *.pyc
+   db.sqlite3
+   media/
+   staticfiles/
+   .DS_Store
+
+⚠️  DO NOT push your .env file! Render will have its own env variables.
+
+
+STEP 5: PUSH CODE TO GITHUB
+--------------------------------------------------------------------------
+   cd /Users/macm2/Desktop/DocPlus_FYP
+   git add .
+   git commit -m "Prepare for Render deployment"
+   git push origin main
+
+
+================================================================================
+              PART 2: RENDER SETUP (On render.com Dashboard)
+================================================================================
+
+STEP 6: CREATE A FREE ACCOUNT ON RENDER
+--------------------------------------------------------------------------
+   - Go to https://render.com
+   - Sign up (you can use GitHub login)
+
+
+STEP 7: CREATE A POSTGRESQL DATABASE
+--------------------------------------------------------------------------
+   a) Dashboard → New → PostgreSQL
+   b) Fill in:
+      - Name: docplus-db
+      - Database: docplus_db
+      - User: (auto-generated)
+      - Region: Oregon (or closest to Nepal - Singapore)
+      - Plan: Free (90 days)
+   c) Click "Create Database"
+   d) Wait for it to be ready, then COPY these two URLs:
+      - Internal Database URL  → for connecting your app
+      - External Database URL  → for importing data from your computer
+
+   ⚠️  SAVE BOTH URLs! You'll need them.
+
+
+STEP 8: CREATE A WEB SERVICE (Your Django App)
+--------------------------------------------------------------------------
+   a) Dashboard → New → Web Service
+   b) Connect your GitHub repository (DocPlus_FYP)
+   c) Fill in these settings:
+
+      Name            : docplus
+      Region          : Same region as your database!
+      Branch          : main
+      Runtime         : Python 3
+      Build Command   : sh build.sh
+      Start Command   : gunicorn myproject.wsgi:application
+      Plan            : Free
+
+   NOTE ON START COMMAND:
+   Your project uses Daphne/Channels for WebSockets. If you need
+   WebSocket support in production, use this instead:
+      Start Command : daphne -b 0.0.0.0 -p $PORT myproject.asgi:application
+
+   But for the free plan, gunicorn is simpler and more stable.
+
+
+STEP 9: SET ENVIRONMENT VARIABLES ON RENDER
+--------------------------------------------------------------------------
+   In your Web Service → Environment → Add these variables:
+
+   ┌──────────────────────────┬────────────────────────────────────────┐
+   │ KEY                      │ VALUE                                  │
+   ├──────────────────────────┼────────────────────────────────────────┤
+   │ DATABASE_URL             │ (paste Internal Database URL from      │
+   │                          │  Step 7d)                              │
+   │                          │                                        │
+   │ SECRET_KEY               │ (generate a new one, see below)        │
+   │                          │                                        │
+   │ DEBUG                    │ False                                  │
+   │                          │                                        │
+   │ PYTHON_VERSION           │ 3.11.12                                │
+   │                          │                                        │
+   │ GOOGLE_CLIENT_ID         │ (your Google OAuth client ID)          │
+   │                          │                                        │
+   │ GOOGLE_SECRET            │ (your Google OAuth secret)             │
+   │                          │                                        │
+   │ FACEBOOK_CLIENT_ID       │ (your Facebook OAuth client ID)        │
+   │                          │                                        │
+   │ FACEBOOK_SECRET          │ (your Facebook OAuth secret)           │
+   │                          │                                        │
+   │ EMAIL_HOST_USER          │ (your Gmail address)                   │
+   │                          │                                        │
+   │ EMAIL_HOST_PASSWORD      │ (your Gmail app password)              │
+   │                          │                                        │
+   │ KHALTI_SECRET_KEY        │ (your Khalti secret key)               │
+   │                          │                                        │
+   │ KHALTI_PUBLIC_KEY        │ (your Khalti public key)               │
+   │                          │                                        │
+   │ ESEWA_SECRET_KEY         │ (your eSewa secret key)                │
+   └──────────────────────────┴────────────────────────────────────────┘
+
+   To generate a new SECRET_KEY, run this in your terminal:
+      python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+
+
+STEP 10: DEPLOY!
+--------------------------------------------------------------------------
+   - Click "Create Web Service"
+   - Render will automatically:
+      1. Clone your GitHub repo
+      2. Run build.sh (install packages, collectstatic, migrate)
+      3. Start the server with gunicorn
+   - Wait 3-5 minutes for deployment
+   - Your app will be live at: https://docplus.onrender.com
+
+
+================================================================================
+            PART 3: TRANSFERRING YOUR LOCAL DATABASE (Optional)
+================================================================================
+
+If you want your existing data (doctors, hospitals, users) on Render:
+
+STEP 11: EXPORT YOUR LOCAL DATABASE
+--------------------------------------------------------------------------
+   # Open terminal on your Mac
+   pg_dump -U macm2 docplus_db > backup.sql
+
+   # If it asks for password, press Enter (your local has no password)
+
+
+STEP 12: IMPORT TO RENDER'S DATABASE
+--------------------------------------------------------------------------
+   # Use the EXTERNAL Database URL from Step 7d
+   psql "postgres://render_user:render_pass@render_host:5432/render_db" < backup.sql
+
+   # Replace the URL with your actual Render External Database URL
+
+   ⚠️  POSSIBLE ISSUES:
+   - If you get "relation already exists" errors:
+     Use data-only export instead:
+       pg_dump -U macm2 --data-only docplus_db > data_only_backup.sql
+       psql "your_render_external_url" < data_only_backup.sql
+
+   - If you get permission errors:
+     Some roles may not exist on Render. Add --no-owner flag:
+       pg_dump -U macm2 --no-owner docplus_db > backup.sql
+
+
+================================================================================
+          PART 4: HANDLING MEDIA FILES (User Uploaded Images)
+================================================================================
+
+⚠️  IMPORTANT: Render's free tier has EPHEMERAL storage.
+    This means uploaded files (doctor photos, hospital images) will be
+    DELETED every time your app redeploys or restarts!
+
+SOLUTION: Use Cloudinary (Free) or AWS S3 for media storage.
+
+OPTION A: CLOUDINARY (Easiest, Recommended)
+--------------------------------------------------------------------------
+   a) Sign up at https://cloudinary.com (free tier = 25GB)
+
+   b) Install the package:
+      pip install django-cloudinary-storage cloudinary
+      pip freeze > requirements.txt
+
+   c) Add to INSTALLED_APPS in settings.py:
+      INSTALLED_APPS = [
+          ...
+          'cloudinary_storage',
+          'cloudinary',
+      ]
+
+   d) Add Cloudinary settings in settings.py:
+      if not DEBUG:
+          CLOUDINARY_STORAGE = {
+              'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+              'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+              'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+          }
+          DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+   e) Add env variables on Render:
+      CLOUDINARY_CLOUD_NAME = your_cloud_name
+      CLOUDINARY_API_KEY    = your_api_key
+      CLOUDINARY_API_SECRET = your_api_secret
+
+OPTION B: Keep files locally (NOT recommended for production)
+--------------------------------------------------------------------------
+   Files will work temporarily but will be LOST on redeploy.
+   Only okay for testing, not for real users.
+
+
+================================================================================
+              PART 5: AFTER DEPLOYMENT - IMPORTANT STEPS
+================================================================================
+
+STEP 13: CREATE A SUPERUSER ON RENDER
+--------------------------------------------------------------------------
+   If you did NOT import your database, you need a new superuser.
+
+   Go to Render Dashboard → Your Web Service → Shell tab:
+      python manage.py createsuperuser
+
+   Or use the Render CLI:
+      render ssh → python manage.py createsuperuser
+
+
+STEP 14: UPDATE GOOGLE/FACEBOOK OAUTH REDIRECT URIs
+--------------------------------------------------------------------------
+   Your OAuth login won't work until you update the redirect URLs:
+
+   Google (console.cloud.google.com):
+      - Add redirect URI: https://docplus.onrender.com/accounts/google/login/callback/
+
+   Facebook (developers.facebook.com):
+      - Add redirect URI: https://docplus.onrender.com/accounts/facebook/login/callback/
+      - Update Site URL to: https://docplus.onrender.com
+
+
+STEP 15: UPDATE KHALTI & ESEWA CALLBACK URLs
+--------------------------------------------------------------------------
+   If your payment gateways use callback URLs, update them to use
+   your Render URL instead of localhost.
+
+
+STEP 16: SET UP DJANGO SITES FRAMEWORK
+--------------------------------------------------------------------------
+   Since you use django-allauth with SITE_ID = 1, you need to update
+   the Site in Django admin:
+
+   a) Go to https://docplus.onrender.com/admin/
+   b) Navigate to Sites
+   c) Update the site:
+      Domain: docplus.onrender.com
+      Name:   DocPlus
+
+
+================================================================================
+                    PART 6: CUSTOM DOMAIN (Optional)
+================================================================================
+
+If you have a custom domain (e.g., docplus.com.np):
+
+   a) Render Dashboard → Your Web Service → Settings → Custom Domains
+   b) Add your domain
+   c) Render will give you a CNAME record
+   d) Add the CNAME to your domain's DNS settings
+   e) Update ALLOWED_HOSTS and CSRF_TRUSTED_ORIGINS in settings.py:
+      ALLOWED_HOSTS = [
+          '.onrender.com',
+          'docplus.com.np',
+          'www.docplus.com.np',
+      ]
+
+
+================================================================================
+                      DEPLOYMENT CHECKLIST
+================================================================================
+
+Before deploying, make sure:
+
+   [ ] settings.py - ALLOWED_HOSTS updated
+   [ ] settings.py - DATABASE config uses dj_database_url
+   [ ] settings.py - CSRF_TRUSTED_ORIGINS added
+   [ ] settings.py - Security settings added for production
+   [ ] build.sh created in project root
+   [ ] dj-database-url and gunicorn installed
+   [ ] requirements.txt updated (pip freeze > requirements.txt)
+   [ ] .gitignore includes venv/, .env, media/, staticfiles/
+   [ ] Code pushed to GitHub
+   [ ] Render PostgreSQL database created
+   [ ] Render Web Service created with correct build/start commands
+   [ ] All environment variables set on Render
+   [ ] Database migrated (automatic via build.sh)
+   [ ] Superuser created on Render
+   [ ] OAuth redirect URLs updated (Google, Facebook)
+   [ ] Django Sites updated in admin panel
+   [ ] Media storage configured (Cloudinary/S3)
+
+================================================================================
+                    COMMON ERRORS & FIXES
+================================================================================
+
+ERROR: "DisallowedHost at /"
+FIX:   Add your Render URL to ALLOWED_HOSTS
+
+ERROR: "CSRF verification failed"
+FIX:   Add your URL to CSRF_TRUSTED_ORIGINS
+
+ERROR: "Static files not loading (no CSS/styles)"
+FIX:   Make sure collectstatic runs in build.sh
+       & whitenoise is in MIDDLEWARE
+
+ERROR: "OperationalError: could not connect to server"
+FIX:   Check DATABASE_URL env variable on Render
+       Make sure you used Internal Database URL, not External
+
+ERROR: "ModuleNotFoundError: No module named 'xyz'"
+FIX:   Make sure the package is in requirements.txt
+       Run: pip freeze > requirements.txt and push again
+
+ERROR: "Application failed to respond (timeout)"
+FIX:   Render free tier sleeps after 15 min of inactivity
+       First request after sleep takes 30-60 seconds
+       This is normal on the free plan
+
+ERROR: "Build failed"
+FIX:   Check the build logs on Render Dashboard
+       Common cause: wrong Python version
+       Set PYTHON_VERSION=3.11.12 in env variables
+
+================================================================================
+                         COST SUMMARY
+================================================================================
+
+Service                  | Free Tier Limits
+-------------------------|------------------------------------------
+Render Web Service       | Free (sleeps after 15 min inactivity)
+Render PostgreSQL        | Free for 90 days, then $7/month
+Cloudinary (media)       | 25 GB free
+Google OAuth             | Free
+Facebook OAuth           | Free
+Khalti (sandbox)         | Free for testing
+
+After 90 days, you'll need to either:
+   - Upgrade Render PostgreSQL ($7/month)
+   - OR switch to Supabase/Neon for free PostgreSQL
+
+================================================================================

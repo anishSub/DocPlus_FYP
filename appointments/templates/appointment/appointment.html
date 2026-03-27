@@ -85,7 +85,7 @@
                         <div class="form-group">
                             <label class="label">Phone Number <span class="required">*</span></label>
                             <div class="input-wrapper">
-                                <input type="tel" name="phone" value="{{ user.patient_profile.mobile_number|default:'' }}" placeholder="+977 98XXXXXXXX" required>
+                                <input type="tel" name="phone" value="{{ user.patient_profile.mobile_number|default:'' }}" placeholder="e.g. 9841234567" pattern="^(?:\+?977[- ]?)?[9][78]\d{8}$" title="Enter a valid 10-digit Nepali phone number" required>
                                 <i class="fas fa-phone field-icon"></i>
                             </div>
                         </div>
@@ -93,7 +93,7 @@
                         <div class="form-group">
                             <label class="label">Date of Birth <span class="required">*</span></label>
                             <div class="input-wrapper">
-                                <input type="text" name="dob" value="{{ user.patient_profile.date_of_birth|date:'Y-m-d'|default:'' }}" placeholder="Select date" onfocus="(this.type='date')" onblur="(this.type='text')" required>
+                                <input type="text" name="dob" value="{{ user.patient_profile.date_of_birth|date:'Y-m-d'|default:'' }}" placeholder="Select date" onfocus="(this.type='date')" onblur="(this.type='text')" max="{% now 'Y-m-d' %}" required>
                                 <i class="far fa-calendar field-icon"></i>
                             </div>
                         </div>
@@ -156,6 +156,7 @@
                                             value="{{ doctor.id }}" 
                                             data-fee="{{ doctor.consultation_fee }}"
                                             data-specialty="{{ doctor.specialization }}"
+                                            data-available-days="{{ doctor.available_days|join:',' }}"
                                             {% if doctor.id == pre_doctor_id %}selected{% endif %}
                                         >
                                             Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }} - {{ doctor.specialization }} (NPR {{ doctor.consultation_fee }})
@@ -173,9 +174,11 @@
                             <div class="input-wrapper">
                                 <input type="date" name="appointment_date" id="dateInput" 
                                        value="{{ pre_date|default:'' }}" 
-                                       required onchange="updateSummary()">
+                                       min="{% now 'Y-m-d' %}"
+                                       required onchange="validateDoctorDay(); updateSummary();">
                                 <i class="far fa-calendar field-icon"></i>
                             </div>
+                            <small id="dateError" style="color: red; display: none; margin-top: 5px;"></small>
                         </div>
 
                         <div class="form-group">
@@ -391,26 +394,94 @@
         const section = document.getElementById(`step-content-${step}`);
         const inputs = section.querySelectorAll('input[required], select[required], textarea[required]');
         let isValid = true;
+        let errorMessage = 'Please fill in all required fields to proceed.';
 
         inputs.forEach(input => {
-            if (!input.value) {
+            // Clear previous styles/errors
+            input.style.borderColor = '#d1d5db';
+            
+            // Check HTML5 validity (required, pattern, min, max, etc)
+            if (!input.checkValidity()) {
                 isValid = false;
                 input.style.borderColor = 'red';
-            } else {
-                input.style.borderColor = '#d1d5db';
+                if (input.validationMessage) {
+                    errorMessage = input.validationMessage; // Use browser's specific error if available
+                }
             }
         });
+        
+        // Custom check for Step 2: Time slot and Doctor availability
+        if (step === 2) {
+            const timeSlot = document.getElementById('selectedTimeSlot').value;
+            if (!timeSlot) {
+                isValid = false;
+                errorMessage = "Please select a time slot.";
+                document.querySelector('.time-slot-grid').style.border = '1px solid red';
+            } else {
+                document.querySelector('.time-slot-grid').style.border = 'none';
+            }
+            
+            // Check if day is valid according to doctor's availability
+            const dateError = document.getElementById('dateError');
+            if (dateError.style.display === 'block') {
+                isValid = false;
+                errorMessage = dateError.innerText;
+                document.getElementById('dateInput').style.borderColor = 'red';
+            }
+        }
 
         if (!isValid) {
             Swal.fire({
                 icon: 'warning',
-                title: 'Missing Information',
-                text: 'Please fill in all required fields to proceed.',
+                title: 'Validation Error',
+                text: errorMessage,
                 confirmButtonColor: '#0C4D98' // Matches your brand blue
             });
         }
         return isValid;
     }
+
+    function validateDoctorDay() {
+        const doctorSelect = document.getElementById('doctorSelect');
+        const dateInput = document.getElementById('dateInput');
+        const errorEl = document.getElementById('dateError');
+        
+        if (doctorSelect.selectedIndex <= 0 || !dateInput.value) {
+            errorEl.style.display = 'none';
+            return true;
+        }
+        
+        const selectedOption = doctorSelect.options[doctorSelect.selectedIndex];
+        const rawDays = selectedOption.getAttribute('data-available-days');
+        
+        if (!rawDays) {
+            errorEl.style.display = 'none';
+            return true; // No restriction specified
+        }
+        
+        const availableDays = rawDays.split(',').map(d => d.trim().substring(0, 3));
+        const dateObj = new Date(dateInput.value);
+        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const selectedDayName = dayNames[dateObj.getDay()];
+        
+        if (!availableDays.includes(selectedDayName)) {
+            errorEl.innerText = `The selected doctor is only available on: ${availableDays.join(', ')}.`;
+            errorEl.style.display = 'block';
+            dateInput.style.borderColor = 'red';
+            return false;
+        } else {
+            errorEl.style.display = 'none';
+            dateInput.style.borderColor = '#d1d5db';
+            return true;
+        }
+    }
+    
+    // Bind validateDoctorDay to doctor selection change as well
+    document.getElementById('doctorSelect').addEventListener('change', function() {
+        if(document.getElementById('dateInput').value) {
+            validateDoctorDay();
+        }
+    });
 
     function selectTime(element, time) {
         document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));

@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.decorators.http import require_POST
@@ -17,6 +18,7 @@ import logging
 from .email_utils import (
     send_appointment_confirmation_email,
     send_appointment_cancelled_email,
+    send_reschedule_notification_email,
 )
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
@@ -100,12 +102,51 @@ def save_appointment(request):
     time_str         = request.POST.get('time_slot')
     payment_method   = request.POST.get('payment_method')
 
+    # --- Validations ---
+    import re
+    from datetime import datetime, date
+
+    # 1. Phone validation
+    if phone and not re.match(r'^(?:\+?977[- ]?)?[9][78]\d{8}$', phone):
+        messages.error(request, "Invalid phone number format.")
+        return redirect('appointment') if 'appointment_page' not in [r.name for r in request.resolver_match.url_name] else redirect('appointment_page')
+
+    # 2. DOB validation
+    try:
+        dob_date = datetime.strptime(dob, "%Y-%m-%d").date()
+        if dob_date > date.today():
+            messages.error(request, "Date of birth cannot be in the future.")
+            return redirect('appointment') if 'appointment_page' not in [r.name for r in request.resolver_match.url_name] else redirect('appointment_page')
+    except (ValueError, TypeError):
+        messages.error(request, "Invalid Date of Birth.")
+        return redirect('appointment') if 'appointment_page' not in [r.name for r in request.resolver_match.url_name] else redirect('appointment_page')
+
+    # 3. Appointment Date validation
+    try:
+        appt_date = datetime.strptime(appointment_date, "%Y-%m-%d").date()
+        if appt_date < date.today():
+            messages.error(request, "Appointment date cannot be in the past.")
+            return redirect('appointment') if 'appointment_page' not in [r.name for r in request.resolver_match.url_name] else redirect('appointment_page')
+        
+        # 4. Doctor availability day validation
+        if doctor_obj.available_days:
+            day_name = appt_date.strftime('%a') # e.g., 'Sun', 'Mon'
+            # Convert both to title case just in case
+            avail_days_clean = [d.strip().title()[:3] for d in doctor_obj.available_days]
+            if day_name not in avail_days_clean:
+                messages.error(request, f"Dr. {doctor_obj.user.last_name} is only available on {', '.join(avail_days_clean)}.")
+                return redirect('appointment') if 'appointment_page' not in [r.name for r in request.resolver_match.url_name] else redirect('appointment_page')
+    except (ValueError, TypeError):
+        messages.error(request, "Invalid Appointment Date.")
+        return redirect('appointment') if 'appointment_page' not in [r.name for r in request.resolver_match.url_name] else redirect('appointment_page')
+
     # --- Parse time ---
     try:
         start_dt = datetime.strptime(time_str, "%I:%M %p")
         end_dt   = start_dt + timedelta(minutes=30)
     except (ValueError, TypeError):
-        return redirect('appointment_page')
+        messages.error(request, "Invalid Time Slot selected.")
+        return redirect('appointment') if 'appointment_page' not in [r.name for r in request.resolver_match.url_name] else redirect('appointment_page')
 
     reason          = request.POST.get('reason')
     symptoms        = request.POST.get('symptoms')
@@ -453,6 +494,27 @@ def can_manage_appointment(appointment):
     return diff.total_seconds() >= 86400  # 24 hours
 
 
+def generate_time_slots(doctor):
+    """Generate 1-hour time slots based on doctor's available_time_start and end."""
+    slots = []
+    try:
+        if doctor.available_time_start and doctor.available_time_end:
+            current_time = datetime.combine(datetime.today(), doctor.available_time_start)
+            end_time = datetime.combine(datetime.today(), doctor.available_time_end)
+            
+            while current_time + timedelta(hours=1) <= end_time:
+                slots.append(current_time.strftime("%I:%M %p"))
+                current_time += timedelta(hours=1)
+    except Exception as e:
+        logger.error(f"Error generating time slots for {doctor}: {e}")
+
+    # Fallback to default slots if dynamic generation fails or yields empty list
+    if not slots:
+        slots = ["09:00 AM", "10:00 AM", "11:00 AM", "02:00 PM", "03:00 PM", "04:00 PM"]
+        
+    return slots
+
+
 @login_required
 def manage_appointment(request, appointment_id):
     """Page for patient to reschedule or cancel/refund their appointment"""
@@ -463,11 +525,15 @@ def manage_appointment(request, appointment_id):
     # Get available slots for the doctor (for reschedule)
     doctors = DoctorProfile.objects.filter(is_approved=True).select_related('user')
     
+    # Generate dynamic time slots based on the doctor's scheduled hours
+    available_slots = generate_time_slots(appointment.doctor)
+    
     context = {
         'appointment': appointment,
         'can_manage': can_manage,
         'doctors': doctors, # For selecting new times
         'today': date.today(),
+        'available_slots': available_slots,
     }
     return render(request, 'appointment/manage_appointment.html', context)
 
@@ -524,7 +590,6 @@ def reschedule_appointment(request, appointment_id):
 
     # Send notifications
     try:
-        from .email_utils import send_reschedule_notification_email
         send_reschedule_notification_email(new_appt, old_appt)
         broadcast_appointment_notification(new_appt)
     except Exception as e:
@@ -592,7 +657,6 @@ def cancel_and_refund(request, appointment_id):
     
     # Notify via email
     try:
-        from .email_utils import send_appointment_cancelled_email
         send_appointment_cancelled_email(appointment, cancelled_by='patient')
     except Exception as e:
         import logging

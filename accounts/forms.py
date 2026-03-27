@@ -74,6 +74,34 @@ class CustomUserCreationForm(UserCreationForm):
             )
         
         return username
+
+    def clean_date_of_birth(self):
+        dob = self.cleaned_data.get('date_of_birth')
+        from datetime import date
+        if dob and dob > date.today():
+            raise forms.ValidationError("Date of birth cannot be in the future.")
+        return dob
+
+    def clean_mobile_number(self):
+        mobile = self.cleaned_data.get('mobile_number')
+        import re
+        if mobile and not re.match(r'^(?:\+?977[- ]?)?[9][78]\d{8}$', mobile):
+            raise forms.ValidationError("Please enter a valid 10-digit Nepali phone number.")
+        return mobile
+
+    def clean_first_name(self):
+        name = self.cleaned_data.get('first_name')
+        import re
+        if name and not re.match(r'^[a-zA-Z\s\-]+$', name):
+            raise forms.ValidationError("First name should only contain letters.")
+        return name
+
+    def clean_last_name(self):
+        name = self.cleaned_data.get('last_name')
+        import re
+        if name and not re.match(r'^[a-zA-Z\s\-]+$', name):
+            raise forms.ValidationError("Last name should only contain letters.")
+        return name
     
     def save(self, commit=True):
         # Save the User instance

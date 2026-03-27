@@ -1,0 +1,284 @@
+:root {
+    --primary-gradient: linear-gradient(90deg, #0092B8 0%, #1447E6 50%, #1C398E 100%);
+}
+
+.manage-wrapper {
+    background-color: #f8fafc;
+    min-height: calc(100vh - 160px); /* accounting for header/footer */
+    padding: 60px 20px;
+}
+
+.manage-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Appointment Hero Card */
+.appointment-hero {
+    background: var(--primary-gradient);
+    border-radius: 20px;
+    padding: 40px;
+    color: white;
+    margin-bottom: 40px;
+    box-shadow: 0 15px 35px rgba(0, 146, 184, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.appointment-hero::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 150px;
+    height: 150px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+.hero-info h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+}
+
+.hero-info p {
+    font-size: 18px;
+    opacity: 0.95;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 500;
+}
+
+.status-badge-large {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-weight: 700;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Options Grid */
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+@media (max-width: 850px) {
+    .options-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.option-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    border: 1px solid #eef2f6;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.option-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.option-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    margin-bottom: 24px;
+}
+
+.reschedule-icon {
+    background: linear-gradient(135deg, rgba(0, 146, 184, 0.1) 0%, rgba(20, 71, 230, 0.1) 100%);
+    color: #0092B8;
+}
+
+.refund-icon {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(185, 28, 28, 0.1) 100%);
+    color: #ef4444;
+}
+
+.option-card h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #1e293b;
+}
+
+.option-card p {
+    color: #64748b;
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 30px;
+    flex-grow: 1;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: #f8fafc;
+    color: #334155;
+}
+
+.form-control:focus {
+    border-color: #1447E6;
+    outline: none;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(20, 71, 230, 0.1);
+}
+
+.btn-manage {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 17px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-reschedule {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.btn-reschedule:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(20, 71, 230, 0.3);
+    filter: brightness(1.1);
+}
+
+.btn-refund {
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    color: white;
+}
+
+.btn-refund:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+    filter: brightness(1.1);
+}
+
+.btn-disabled {
+    background: #e2e8f0;
+    cursor: not-allowed;
+    color: #94a3b8;
+    box-shadow: none;
+    transform: none !important;
+}
+
+.policy-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #d97706;
+    font-weight: 700;
+    margin-bottom: 20px;
+    background: #fffbeb;
+    padding: 6px 14px;
+    border-radius: 50px;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #64748b;
+    font-weight: 700;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    transition: all 0.3s;
+    font-size: 15px;
+}
+
+.back-btn:hover {
+    color: #1447E6;
+    transform: translateX(-5px);
+}
+
+.payment-info {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    border: 1px dashed #cbd5e1;
+}
+
+.payment-info div {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
+.payment-info div:last-child {
+    margin-bottom: 0;
+}
+
+.payment-info strong {
+    color: #1e293b;
+    font-weight: 700;
+}
+
+.alert-banner {
+    background: #fff7ed;
+    border-left: 5px solid #f97316;
+    border-radius: 12px;
+    padding: 24px;
+    color: #9a3412;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.05);
+}

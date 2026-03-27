@@ -1,0 +1,219 @@
+================================================================================
+         DEPLOYING DJANGO (DocPlus) TO VERCEL WITH POSTGRESQL DATABASE
+================================================================================
+
+⚠️  IMPORTANT NOTE:
+Vercel is primarily designed for frontend/serverless apps (Next.js, React).
+Django CAN run on Vercel using serverless functions, but it has LIMITATIONS:
+  - No persistent file storage (media uploads won't work natively)
+  - Cold starts on serverless functions
+  - 10-second execution timeout on free plan
+  - No background tasks or WebSocket support
+
+For a full Django app, better alternatives are:
+  → Render (https://render.com) - You already deployed one project here!
+  → Railway (https://railway.app)
+  → DigitalOcean App Platform
+  → AWS EC2
+
+If you still want Vercel, follow the steps below.
+
+================================================================================
+                     OPTION A: DEPLOY DJANGO ON VERCEL
+================================================================================
+
+STEP 1: DATABASE SETUP (PostgreSQL - Use a Cloud Provider)
+--------------------------------------------------------------------------
+Vercel does NOT provide PostgreSQL. Use one of these free-tier options:
+
+a) Supabase (Recommended - Free tier available)
+   - Go to https://supabase.com → Create a new project
+   - Copy the database connection string from:
+     Project Settings → Database → Connection String (URI)
+   - Format: postgres://username:password@host:port/dbname
+
+b) Neon (Free tier available)
+   - Go to https://neon.tech → Create a project
+   - Copy the connection string
+
+c) Railway
+   - Go to https://railway.app → New Project → Add PostgreSQL
+   - Copy the connection string
+
+STEP 2: UPDATE settings.py FOR PRODUCTION
+--------------------------------------------------------------------------
+In your myproject/settings.py, update the database config:
+
+   import dj_database_url
+
+   DATABASES = {
+       'default': dj_database_url.config(
+           default=os.environ.get('DATABASE_URL')
+       )
+   }
+
+   # Also update these settings:
+   DEBUG = False
+   ALLOWED_HOSTS = ['your-project.vercel.app', '*']
+   STATIC_URL = '/static/'
+   STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STEP 3: INSTALL REQUIRED PACKAGES
+--------------------------------------------------------------------------
+Run these commands:
+
+   pip install dj-database-url psycopg2-binary whitenoise
+   pip freeze > requirements.txt
+
+STEP 4: ADD WHITENOISE FOR STATIC FILES
+--------------------------------------------------------------------------
+In settings.py, add WhiteNoise middleware (after SecurityMiddleware):
+
+   MIDDLEWARE = [
+       'django.middleware.security.SecurityMiddleware',
+       'whitenoise.middleware.WhiteNoiseMiddleware',   # <-- Add this
+       ...
+   ]
+
+   STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+STEP 5: CREATE vercel.json IN PROJECT ROOT
+--------------------------------------------------------------------------
+Create a file called vercel.json in DocPlus_FYP/ with this content:
+
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "myproject/wsgi.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "15mb",
+        "runtime": "python3.9"
+      }
+    },
+    {
+      "src": "static/(.*)",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "static/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "myproject/wsgi.py"
+    }
+  ]
+}
+
+STEP 6: UPDATE wsgi.py
+--------------------------------------------------------------------------
+In myproject/wsgi.py, add this at the bottom:
+
+   app = application
+
+(Vercel needs the WSGI app exported as 'app')
+
+STEP 7: CREATE build_files.sh IN PROJECT ROOT
+--------------------------------------------------------------------------
+Create a file called build_files.sh:
+
+   #!/bin/bash
+   pip install -r requirements.txt
+   python manage.py collectstatic --noinput
+   python manage.py migrate
+
+STEP 8: DEPLOY TO VERCEL
+--------------------------------------------------------------------------
+a) Install Vercel CLI:
+   npm install -g vercel
+
+b) Login to Vercel:
+   vercel login
+
+c) Deploy:
+   cd /Users/macm2/Desktop/DocPlus_FYP
+   vercel
+
+d) Set Environment Variables on Vercel Dashboard:
+   - Go to https://vercel.com → Your Project → Settings → Environment Variables
+   - Add these:
+     DATABASE_URL = postgres://user:pass@host:port/dbname
+     SECRET_KEY = your-django-secret-key
+     DEBUG = False
+     (Add any other env variables from your .env file)
+
+e) Redeploy after setting env variables:
+   vercel --prod
+
+================================================================================
+             OPTION B: DEPLOY ON RENDER (RECOMMENDED FOR DJANGO)
+================================================================================
+
+Since you already deployed your E-commerce site on Render, this is easier:
+
+STEP 1: Push your code to GitHub
+
+STEP 2: Go to https://render.com → New → Web Service
+
+STEP 3: Connect your DocPlus GitHub repo
+
+STEP 4: Configure:
+   - Build Command: pip install -r requirements.txt && python manage.py
+                    collectstatic --noinput && python manage.py migrate
+   - Start Command: gunicorn myproject.wsgi:application
+
+STEP 5: Add Environment Variables:
+   - DATABASE_URL (Render provides free PostgreSQL)
+   - SECRET_KEY
+   - DEBUG = False
+
+STEP 6: For Database → New → PostgreSQL
+   - Render gives you a free PostgreSQL database
+   - Copy the Internal Database URL → paste as DATABASE_URL
+
+================================================================================
+                    ABOUT YOUR POSTGRESQL DATABASE
+================================================================================
+
+Q: What happens to my local PostgreSQL data?
+A: Your local database does NOT automatically go to production.
+   You need to either:
+
+   1. MIGRATE (Recommended): Run migrations on the cloud database
+      - The cloud DB starts empty
+      - python manage.py migrate (creates tables)
+      - python manage.py createsuperuser (create admin)
+      - Manually add data through admin panel
+
+   2. EXPORT/IMPORT: Transfer local data to cloud
+      - Export: pg_dump -U your_user your_db_name > backup.sql
+      - Import: psql your_cloud_database_url < backup.sql
+
+   3. USE SUPABASE: If using Supabase for PostgreSQL
+      - You get a web dashboard to manage your data
+      - Free tier: 500 MB database, 2 projects
+      - Connection string works directly in Django
+
+================================================================================
+                          QUICK COMPARISON
+================================================================================
+
+Feature              | Vercel           | Render           | Railway
+---------------------|------------------|------------------|------------------
+Django Support       | Serverless only  | Full support     | Full support
+PostgreSQL           | Not included     | Free 90 days     | Free $5 credit
+File Uploads         | Not supported    | Supported        | Supported
+WebSockets           | Not supported    | Supported        | Supported
+Free Tier            | Yes              | Yes              | $5 free credit
+Custom Domain        | Yes              | Yes              | Yes
+Best For             | Frontend apps    | Full stack apps  | Full stack apps
+---------------------|------------------|------------------|------------------
+
+RECOMMENDATION: Use Render or Railway for Django + PostgreSQL projects.
+                Vercel is better for React/Next.js frontends.
+
+================================================================================

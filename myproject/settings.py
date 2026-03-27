@@ -30,7 +30,12 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = [
+           'localhost',
+           '127.0.0.1',
+           '.onrender.com',        # Allows all Render subdomains
+       ]
 
 
 # Application definition
@@ -135,22 +140,40 @@ CHANNEL_LAYERS = {
 
 
 
+
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'docplus_db',  
+#         'USER': 'macm2',    
+#         'PASSWORD': '',       
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'docplus_db',  
-        'USER': 'macm2',    
-        'PASSWORD': '',       
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
+
+    import dj_database_url
+
+       # Use DATABASE_URL from environment if available (Render),
+       # otherwise fall back to local PostgreSQL
+    if os.getenv('DATABASE_URL'):
+           DATABASES = {
+               'default': dj_database_url.config(
+                   default=os.getenv('DATABASE_URL'),
+                   conn_max_age=600
+               )
+           }
+    else:
+           DATABASES = {
+               'default': {
+                   'ENGINE': 'django.db.backends.postgresql',
+                   'NAME': 'docplus_db',
+                   'USER': 'macm2',
+                   'PASSWORD': '',
+                   'HOST': '127.0.0.1',
+                   'PORT': '5432',
+               }
 }
 
 
@@ -159,18 +182,18 @@ DATABASES = {
 
 #*uncomment this after testing for strong password in production
 AUTH_PASSWORD_VALIDATORS = [
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    # },
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
 ]
 
 
@@ -300,3 +323,11 @@ KHALTI_BASE_URL = 'https://dev.khalti.com/api/v2'
 ESEWA_SECRET_KEY    = os.getenv('ESEWA_SECRET_KEY', '8gBm/:&EnhH.1/q')
 ESEWA_PRODUCT_CODE  = os.getenv('ESEWA_PRODUCT_CODE', 'EPAYTEST')
 ESEWA_PAYMENT_URL   = os.getenv('ESEWA_PAYMENT_URL', 'https://rc-epay.esewa.com.np/api/epay/main/v2/form')
+
+# ── Production Security Settings ────────────────────────────
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    CSRF_TRUSTED_ORIGINS = [
+        'https://*.onrender.com',]
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True

@@ -1,118 +1,131 @@
-{% extends 'base.html' %}
+{% extends 'base/base.html' %}
 {% load static %}
 
-{% block title %}Manage Appointment{% endblock %}
+{% block title %}Manage Appointment - DocPlus{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/appointment/manage_appointment.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="card shadow-lg border-0 rounded-lg overflow-hidden" style="max-width: 800px; margin: 0 auto;">
-        <div class="card-header bg-primary text-white p-4">
-            <h2 class="mb-0">Manage Your Appointment</h2>
-            <p class="mb-0 text-white-50">Dr. {{ appointment.doctor.user.get_full_name }} | {{ appointment.date }} at {{ appointment.time_slot_display }}</p>
+<div class="manage-wrapper">
+    <div class="manage-container">
+        <!-- Breadcrumb / Back -->
+        <a href="{% url 'profile' %}" class="back-btn">
+            <i class="ri-arrow-left-s-line" style="font-size: 20px;"></i> Back to My Appointments
+        </a>
+
+        <!-- Header Hero -->
+        <div class="appointment-hero">
+            <div class="hero-info">
+                <h1>Manage Your Appointment</h1>
+                <p>
+                    <i class="ri-user-heart-line"></i> 
+                    {% if appointment.doctor.user.get_full_name %}
+                        Dr. {{ appointment.doctor.user.get_full_name }}
+                    {% else %}
+                        Dr. {{ appointment.doctor.user.last_name }}
+                    {% endif %}
+                    <span style="margin: 0 10px; opacity: 0.5;">•</span>
+                    <i class="ri-calendar-event-line"></i> {{ appointment.date|date:"l, F d, Y" }}
+                    <span style="margin: 0 10px; opacity: 0.5;">•</span>
+                    <i class="ri-time-line"></i> {{ appointment.start_time|time:"h:i A" }}
+                </p>
+            </div>
+            <div class="status-badge-large">
+                <i class="ri-checkbox-circle-fill" style="color: #22c55e;"></i> {{ appointment.status|title }}
+            </div>
         </div>
-        
-        <div class="card-body p-4 bg-light">
-            {% if not can_manage %}
-            <div class="alert alert-warning border-0 shadow-sm mb-4">
-                <i class="fas fa-exclamation-triangle mr-2"></i>
-                This appointment is within 24 hours and cannot be rescheduled or refunded online. Please contact the clinic for assistance.
-            </div>
-            {% endif %}
 
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="h-100 p-4 bg-white rounded shadow-sm">
-                        <h4 class="text-primary mb-3"><i class="fas fa-calendar-alt mr-2"></i> Option 1: Reschedule</h4>
-                        <p class="text-muted">Pick a new date and time for your consultation. No additional payment required.</p>
-                        <hr>
-                        
-                        {% if can_manage %}
-                        <form action="{% url 'reschedule_appointment' appointment.id %}" method="POST">
-                            {% csrf_token %}
-                            <div class="form-group mb-3">
-                                <label class="font-weight-bold">Select New Date</label>
-                                <input type="date" name="appointment_date" class="form-control" required min="{{ today|date:'Y-m-d' }}">
-                            </div>
-                            
-                            <div class="form-group mb-3">
-                                <label class="font-weight-bold">Select New Time Slot</label>
-                                <select name="time_slot" class="form-control" required>
-                                    <option value="">-- Choose a Slot --</option>
-                                    <option value="09:00 AM">09:00 AM</option>
-                                    <option value="10:00 AM">10:00 AM</option>
-                                    <option value="11:00 AM">11:00 AM</option>
-                                    <option value="02:00 PM">02:00 PM</option>
-                                    <option value="03:00 PM">03:00 PM</option>
-                                    <option value="04:00 PM">04:00 PM</option>
-                                </select>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-primary btn-block py-2">
-                                <i class="fas fa-check-circle mr-2"></i> Confirm Reschedule
-                            </button>
-                        </form>
-                        {% else %}
-                        <button class="btn btn-secondary btn-block py-2 disabled" disabled>Reschedule Unavailable</button>
-                        {% endif %}
+        {% if not can_manage %}
+        <div class="alert-banner">
+            <i class="ri-error-warning-fill" style="font-size: 32px; color: #f97316;"></i>
+            <div>
+                <h4 style="font-weight: 800; margin-bottom: 8px; font-size: 18px;">Management Period Expired</h4>
+                <p style="font-size: 16px; line-height: 1.6; opacity: 0.9;">Appointments can only be rescheduled or cancelled more than <strong>24 hours</strong> before the scheduled time. For critical changes, please contact our support team or the hospital directly.</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="options-grid">
+            <!-- Option 1: Reschedule -->
+            <div class="option-card">
+                <div class="option-icon reschedule-icon">
+                    <i class="ri-calendar-check-line"></i>
+                </div>
+                <h2>Option 1: Reschedule</h2>
+                <div class="policy-tag">
+                    <i class="ri-history-line"></i> No-fee rescheduling
+                </div>
+                <p>Can't make it? Adjust your consultation to a better date and time without any additional cost.</p>
+                
+                <form action="{% url 'reschedule_appointment' appointment.id %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-label">Pick a New Date</label>
+                        <input type="date" name="appointment_date" class="form-control" required min="{{ today|date:'Y-m-d' }}" {% if not can_manage %}disabled{% endif %}>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Choose a Time Slot</label>
+                        <select name="time_slot" class="form-control" required {% if not can_manage %}disabled{% endif %}>
+                            <option value="">-- View Available Slots --</option>
+                            {% for slot in available_slots %}
+                                <option value="{{ slot }}">{{ slot }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-manage btn-reschedule {% if not can_manage %}btn-disabled{% endif %}" {% if not can_manage %}disabled{% endif %}>
+                        <i class="ri-refresh-line"></i> Update Appointment
+                    </button>
+                </form>
+            </div>
+
+            <!-- Option 2: Cancel & Refund -->
+            <div class="option-card">
+                <div class="option-icon refund-icon">
+                    <i class="ri-close-circle-line"></i>
+                </div>
+                <h2>Option 2: Cancel & Refund</h2>
+                <div class="policy-tag">
+                    <i class="ri-verified-badge-line"></i> Full Refund Eligible
+                </div>
+                <p>Cancel your booking and receive a full refund to your original payment method automatically.</p>
+                
+                <div class="payment-info">
+                    <div>
+                        <span>Amount to Refund:</span>
+                        <strong>NPR {{ appointment.amount }}</strong>
+                    </div>
+                    <div>
+                        <span>Original Method:</span>
+                        <strong>{{ appointment.payment_method|title }}</strong>
                     </div>
                 </div>
 
-                <div class="col-md-6 mb-4">
-                    <div class="h-100 p-4 bg-white rounded shadow-sm border-left border-danger" style="border-left-width: 4px !important;">
-                        <h4 class="text-danger mb-3"><i class="fas fa-undo mr-2"></i> Option 2: Cancel & Refund</h4>
-                        <p class="text-muted">Cancel your appointment and request a refund to your original payment method.</p>
-                        <hr>
-
-                        {% if can_manage %}
-                        <form action="{% url 'cancel_refund' appointment.id %}" method="POST" id="cancelForm">
-                            {% csrf_token %}
-                            <div class="form-group mb-3">
-                                <label class="font-weight-bold">Why are you cancelling?</label>
-                                <textarea name="cancellation_reason" class="form-control" rows="3" placeholder="I'm busy, feeling better, etc." required></textarea>
-                            </div>
-                            
-                            <div class="p-3 bg-light rounded mb-3" style="font-size: 0.9rem;">
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span>Refundable Amount:</span>
-                                    <strong>NPR {{ appointment.amount }}</strong>
-                                </div>
-                                <div class="d-flex justify-content-between text-muted">
-                                    <span>Payment Method:</span>
-                                    <span>{{ appointment.payment_method|title }}</span>
-                                </div>
-                            </div>
-                            
-                            <button type="button" class="btn btn-outline-danger btn-block py-2" onclick="confirmCancellation()">
-                                <i class="fas fa-times-circle mr-2"></i> Cancel & Request Refund
-                            </button>
-                        </form>
-                        {% else %}
-                        <button class="btn btn-secondary btn-block py-2 disabled" disabled>Refund Unavailable</button>
-                        {% endif %}
+                <form action="{% url 'cancel_and_refund' appointment.id %}" method="POST" id="cancelForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-label">Reason for Cancellation</label>
+                        <textarea name="reason" class="form-control" placeholder="Briefly let us know why..." required {% if not can_manage %}disabled{% endif %} style="resize: none; height: 95px;"></textarea>
                     </div>
-                </div>
+                    <button type="button" class="btn-manage btn-refund {% if not can_manage %}btn-disabled{% endif %}" {% if not can_manage %}disabled{% endif %} onclick="confirmRefund()">
+                        <i class="ri-hand-coin-line"></i> Cancel & Refund
+                    </button>
+                </form>
             </div>
-            
-            <div class="text-center mt-4">
-                <a href="{% url 'home' %}" class="text-muted"><i class="fas fa-arrow-left mr-1"></i> Back to Home</a>
-            </div>
+        </div>
+
+        <div style="margin-top: 60px; text-align: center; color: #94a3b8; font-size: 15px; border-top: 1px solid #e2e8f0; padding-top: 40px;">
+            <p>Need urgent assistance? Contact us at <strong>support@docplus.com.np</strong> or call <strong>+977-1-4444444</strong></p>
         </div>
     </div>
 </div>
 
 <script>
-function confirmCancellation() {
-    if (confirm("Are you sure you want to cancel this appointment? This action cannot be undone.")) {
+function confirmRefund() {
+    if (confirm("Are you sure you want to cancel this appointment and request a refund? This process is immediate and cannot be reversed.")) {
         document.getElementById('cancelForm').submit();
     }
 }
 </script>
-
-<style>
-    .bg-primary { background: #0C4D98 !important; }
-    .text-primary { color: #0C4D98 !important; }
-    .btn-primary { background: #0C4D98 !important; border-color: #0C4D98 !important; }
-    .btn-outline-danger:hover { color: white !important; }
-    .shadow-lg { box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important; }
-</style>
 {% endblock %}

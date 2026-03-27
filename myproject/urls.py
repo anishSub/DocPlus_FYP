@@ -29,6 +29,7 @@ urlpatterns = [
     path('find_hospital/', include('find_hospital.urls')),
     path('appointments/', include('appointments.urls')),
     path('doctorAdmin/', include('doctorAdmin.urls')),
+    path('hospitalAdmin/', include('hospitalAdmin.urls')),
     path('superAdmin/', include('superAdmin.urls')),
     path('accounts/', include('allauth.urls')),
 ]

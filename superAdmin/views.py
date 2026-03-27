@@ -12,6 +12,7 @@ from .models import PlatformSettings
 from accounts.models import User
 from find_hospital.models import Hospital
 from find_doctor.models import DoctorProfile
+from pages.models import PlatformTestimonial
 
 
 User = get_user_model()
@@ -46,8 +47,8 @@ class AdminOverviewView(TemplateView):
         
         # --- 5. Hospital Stats ---
         context['total_hospitals'] = Hospital.objects.count()
-        context['pending_hospitals'] = Hospital.objects.filter(is_approved=False)[:5]
-        context['pending_hospitals_count'] = Hospital.objects.filter(is_approved=False).count()
+        context['pending_hospitals'] = Hospital.objects.filter(is_verified=False)[:5]
+        context['pending_hospitals_count'] = Hospital.objects.filter(is_verified=False).count()
         
 
         recent_appointments = Appointment.objects.all().order_by('-date', '-start_time')[:5]
@@ -228,6 +229,7 @@ class VerifyReviewsView(TemplateView):
 
         doctor_reviews = DoctorReview.objects.all().select_related('user', 'doctor__user').order_by('-created_at')
         hospital_reviews = HospitalReview.objects.all().select_related('user', 'hospital').order_by('-created_at')
+        platform_reviews = PlatformTestimonial.objects.all().select_related('user').order_by('-created_at')
 
         # Search
         search_query = self.request.GET.get('q')
@@ -242,12 +244,25 @@ class VerifyReviewsView(TemplateView):
                 Q(hospital__name__icontains=search_query) |
                 Q(comment__icontains=search_query)
             )
+            platform_reviews = platform_reviews.filter(
+                Q(user__first_name__icontains=search_query) |
+                Q(user__username__icontains=search_query) |
+                Q(comment__icontains=search_query)
+            )
 
         context['doctor_reviews'] = doctor_reviews
         context['hospital_reviews'] = hospital_reviews
+        context['platform_reviews'] = platform_reviews
+
         context['pending_doctor_reviews'] = doctor_reviews.filter(is_approved=False).count()
         context['pending_hospital_reviews'] = hospital_reviews.filter(is_approved=False).count()
-        context['flagged_count'] = context['pending_doctor_reviews'] + context['pending_hospital_reviews']
+        context['pending_platform_reviews'] = platform_reviews.filter(is_approved=False).count()
+
+        context['flagged_count'] = (
+            context['pending_doctor_reviews'] + 
+            context['pending_hospital_reviews'] + 
+            context['pending_platform_reviews']
+        )
         context['search_query'] = search_query or ''
 
         return context
@@ -256,8 +271,11 @@ class VerifyReviewsView(TemplateView):
 def approve_review(request, review_type, pk):
     if review_type == 'doctor':
         review = get_object_or_404(DoctorReview, pk=pk)
+    elif review_type == 'platform':
+        review = get_object_or_404(PlatformTestimonial, pk=pk)
     else:
         review = get_object_or_404(HospitalReview, pk=pk)
+        
     review.is_approved = True
     review.save()
     messages.success(request, "Review has been approved.")
@@ -266,8 +284,11 @@ def approve_review(request, review_type, pk):
 def reject_review(request, review_type, pk):
     if review_type == 'doctor':
         review = get_object_or_404(DoctorReview, pk=pk)
+    elif review_type == 'platform':
+        review = get_object_or_404(PlatformTestimonial, pk=pk)
     else:
         review = get_object_or_404(HospitalReview, pk=pk)
+        
     review.delete()
     messages.error(request, "Review has been rejected and removed.")
     return redirect('super_admin_verify_reviews')

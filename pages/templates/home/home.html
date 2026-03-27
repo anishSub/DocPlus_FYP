@@ -340,6 +340,26 @@
         </div>
         
         <div class="testimonials-grid">
+            {% for testimonial in testimonials %}
+            <div class="testimonial-card">
+                <div class="stars">
+                    <i class="ri-star-fill" style="color: #fbbf24;"></i>
+                    <i class="{% if testimonial.rating >= 2 %}ri-star-fill{% else %}ri-star-line{% endif %}" style="color: #fbbf24;"></i>
+                    <i class="{% if testimonial.rating >= 3 %}ri-star-fill{% else %}ri-star-line{% endif %}" style="color: #fbbf24;"></i>
+                    <i class="{% if testimonial.rating >= 4 %}ri-star-fill{% else %}ri-star-line{% endif %}" style="color: #fbbf24;"></i>
+                    <i class="{% if testimonial.rating >= 5 %}ri-star-fill{% else %}ri-star-line{% endif %}" style="color: #fbbf24;"></i>
+                </div>
+                <p class="quote">"{{ testimonial.comment }}"</p>
+                <div class="user-profile">
+                    <div class="avatar">{{ testimonial.user.first_name|first|default:testimonial.user.username|first|upper }}</div>
+                    <div class="user-info">
+                        <h4>{{ testimonial.user.get_full_name|default:testimonial.user.username }}</h4>
+                        <span>Patient</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Static Fallback -->
             <div class="testimonial-card">
                 <div class="stars">
                     <i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i>
@@ -381,6 +401,7 @@
                     </div>
                 </div>
             </div>
+            {% endfor %}
         </div>
     </div>
 </section>

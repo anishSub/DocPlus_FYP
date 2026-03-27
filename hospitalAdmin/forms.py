@@ -1,5 +1,5 @@
 from django import forms
-from .models import Hospital, Service, Department
+from find_hospital.models import Hospital, Service, Department
 
 class HospitalUpdateForm(forms.ModelForm):
     # Custom widgets for M2M fields to make them Checkboxes instead of a list
@@ -20,7 +20,7 @@ class HospitalUpdateForm(forms.ModelForm):
             'name', 'hospital_type', 'established_year', 'phone', 'email', 
             'city', 'district', 'website', 'address', 'total_beds', 
             'description', 'services', 'departments', 'image', 
-            'emergency_available', 'opd_start', 'opd_end', 'opend_days', 
+            'emergency_available', 'opd_start', 'opd_end', 'appointment_link',
             'achievements'
         ]
         
@@ -39,7 +39,6 @@ class HospitalUpdateForm(forms.ModelForm):
             'appointment_link': forms.URLInput(attrs={'placeholder': 'https://hospital.com/book-now'}),
             'opd_start': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
             'opd_end': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
-            'opend_days': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Mon-Fri'}),
             'achievements': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'image': forms.FileInput(attrs={'class': 'file-input'}),
         }
