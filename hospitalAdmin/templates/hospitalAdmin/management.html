@@ -38,7 +38,7 @@
                 <i class="far fa-eye"></i> Profile
             </a>
 
-            <form method="POST" onsubmit="return confirm('Are you sure you want to remove Dr. {{ doctor.user.first_name }} from your hospital? This cannot be undone.');">
+            <form method="POST" onsubmit="confirmForm(event, 'Are you sure you want to remove Dr. {{ doctor.user.first_name }} from your hospital? This cannot be undone.');">
                 {% csrf_token %}
                 <input type="hidden" name="doctor_id" value="{{ doctor.id }}">
                 <input type="hidden" name="action" value="remove">

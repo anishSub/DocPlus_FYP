@@ -26,6 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
+FIELD_ENCRYPTION_KEY = os.getenv('FIELD_ENCRYPTION_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG') == 'True'
@@ -69,6 +70,7 @@ INSTALLED_APPS = [
     
     # WebSocket Support
     'channels',
+    'encrypted_model_fields',
 ]
 
 SITE_ID = 1  
@@ -153,28 +155,28 @@ CHANNEL_LAYERS = {
 # }
 
 
-    import dj_database_url
+import dj_database_url
 
-       # Use DATABASE_URL from environment if available (Render),
-       # otherwise fall back to local PostgreSQL
-    if os.getenv('DATABASE_URL'):
-           DATABASES = {
-               'default': dj_database_url.config(
-                   default=os.getenv('DATABASE_URL'),
-                   conn_max_age=600
-               )
-           }
-    else:
-           DATABASES = {
-               'default': {
-                   'ENGINE': 'django.db.backends.postgresql',
-                   'NAME': 'docplus_db',
-                   'USER': 'macm2',
-                   'PASSWORD': '',
-                   'HOST': '127.0.0.1',
-                   'PORT': '5432',
-               }
-}
+# Use DATABASE_URL from environment if available (Render),
+# otherwise fall back to local PostgreSQL
+if os.getenv('DATABASE_URL'):
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.getenv('DATABASE_URL'),
+            conn_max_age=600
+        )
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'docplus_db',
+            'USER': 'macm2',
+            'PASSWORD': '',
+            'HOST': '127.0.0.1',
+            'PORT': '5432',
+        }
+    }
 
 
 # Password validation

@@ -121,7 +121,7 @@
                             
                             <!-- UPDATED: Changed from <button> to <a> tag to link to the view -->
                             <!-- Ensure you have added path('delete-user/<int:pk>/', views.delete_user, name='delete_user') in your urls.py -->
-                            <a href="{% url 'delete_user' user.id %}" class="icon-btn delete" title="Delete User" onclick="return confirm('Are you sure you want to remove {{ user.first_name }}? This action cannot be undone.');">
+                            <a href="{% url 'delete_user' user.id %}" class="icon-btn delete" title="Delete User" onclick="confirmLink(event, 'Are you sure you want to remove {{ user.first_name }}? This action cannot be undone.');">
                                 <i class="far fa-trash-alt"></i>
                             </a>
                             

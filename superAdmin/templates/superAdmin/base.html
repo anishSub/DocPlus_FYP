@@ -19,8 +19,38 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Global Admin Messages Toast -->
+    <div id="message-container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="custom-toast {{ message.tags }}">
+                    <span>
+                        {% if message.tags == 'success' %}
+                            <i class="fas fa-check-circle" style="margin-right:8px"></i>
+                        {% elif message.tags == 'error' %}
+                            <i class="fas fa-exclamation-circle" style="margin-right:8px"></i>
+                        {% endif %}
+                        {{ message }}
+                    </span>
+                    <button class="toast-close" onclick="this.parentElement.remove();">&times;</button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const toasts = document.querySelectorAll('.custom-toast');
+                toasts.forEach(t => {
+                    t.style.transition = "opacity 0.5s ease";
+                    t.style.opacity = '0';
+                    setTimeout(() => t.remove(), 500);
+                });
+            }, 4000);
+        });
+    </script>
+    {% endif %}
 
-    <!-- 1. TOP NAVBAR (Dark Blue) -->
     <header class="top-navbar">
         <div class="nav-left">
             <button class="icon-btn menu-toggle" id="menu-toggle">
@@ -107,6 +137,7 @@
     <script src="{% static 'js/superAdmin/sidebar.js' %}"></script>
 
     <!-- Page Specific JS -->
+    <script src="{% static 'js/global_toast.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

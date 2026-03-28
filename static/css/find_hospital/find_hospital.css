@@ -375,6 +375,7 @@
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
+    text-align: center; /* Center the text and icons */
     transition: all 0.3s ease;
     /* Smoother transition for all properties */
 }
@@ -438,4 +439,30 @@
         align-items: flex-start;
         gap: 12px;
     }
+}
+
+/* --- Favorite / Share Action Icons --- */
+.action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #f3f4f6;
+    color: #6b7280;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, transform 0.15s;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.action-icon:hover {
+    background: #e0f2fe;
+    color: var(--primary);
+    transform: scale(1.12);
+}
+
+.action-icon .fas.fa-heart {
+    color: #ef4444;
 }

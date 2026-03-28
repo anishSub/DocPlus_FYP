@@ -45,7 +45,7 @@
                 </div>
                 <div class="card-actions">
                     <a href="{% url 'approve_hospital' hospital.pk %}" class="btn btn-approve"><i class="fas fa-check-circle"></i> Approve</a>
-                    <a href="{% url 'reject_hospital' hospital.pk %}" class="btn btn-reject" onclick="return confirm('Are you sure you want to reject this hospital?')"><i class="fas fa-times-circle"></i> Reject</a>
+                    <a href="{% url 'reject_hospital' hospital.pk %}" class="btn btn-reject" onclick="confirmLink(event, 'Are you sure you want to reject this hospital?')"><i class="fas fa-times-circle"></i> Reject</a>
                 </div>
             </div>
             {% endfor %}
@@ -76,7 +76,13 @@
                     </div>
                 </div>
                 <div class="card-tools">
-                    <a href="{% url 'reject_hospital' hospital.pk %}" class="icon-tool delete" onclick="return confirm('Are you sure you want to delete this hospital?')"><i class="far fa-trash-alt"></i></a>
+                    <span class="action-icon" title="Save Hospital" onclick="event.preventDefault(); toggleFavorite(this, {{ hospital.id }});">
+                        <i class="far fa-heart"></i>
+                    </span>
+                    <span class="action-icon" title="Share Hospital" onclick="event.preventDefault(); shareProfile('Hospital {{ hospital.name }}', '{{ request.scheme }}://{{ request.get_host }}{% url 'hospital_detail' hospital.pk %}');">
+                        <i class="fas fa-share-alt"></i>
+                    </span>
+                    <a href="{% url 'reject_hospital' hospital.pk %}" class="icon-tool delete" onclick="confirmLink(event, 'Are you sure you want to delete this hospital?')"><i class="far fa-trash-alt"></i></a>
                 </div>
             </div>
             {% empty %}
@@ -87,4 +93,60 @@
             {% endfor %}
         </div>
     </div>
+    <script>
+        // --- FAVORITE TOGGLE (AJAX) ---
+        function toggleFavorite(element, hospitalId) {
+            {% if not request.user.is_authenticated %}
+            const nextUrl = "{% url 'login' %}?next=" + encodeURIComponent(window.location.pathname + window.location.search);
+            showCustomToast("Please login as a patient to save favorite hospitals.", "error", "Login Now", nextUrl);
+            return;
+            {% endif %}
+
+            const icon = element.querySelector('i');
+            fetch(`/api/toggle-favorite-hospital/${hospitalId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    if (data.is_favorite) {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                        icon.style.color = '#ef4444';
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                        icon.style.color = '';
+                    }
+                } else {
+                    showCustomToast(data.message, "error");
+                }
+            })
+            .catch(error => {
+                console.error('Error toggling favorite:', error);
+                showCustomToast("Something went wrong while trying to save the hospital.", "error");
+            });
+        }
+
+        // --- SHARE PROFILE ---
+        function shareProfile(title, url) {
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    text: 'Check out this hospital on DocPlus!',
+                    url: url
+                }).catch((error) => console.log('Error sharing:', error));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    showCustomToast("Link copied to clipboard!", "success");
+                }).catch(err => {
+                    showCustomToast("Failed to copy link. Please manually copy the URL.", "error");
+                });
+            }
+        }
+    </script>
 {% endblock %}

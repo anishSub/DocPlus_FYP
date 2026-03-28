@@ -208,44 +208,42 @@
                 const data = await response.json();
 
                 if (data.status === 'success') {
-                    alert('Payment method added successfully!');
-                    location.reload();
+                    showCustomToast('Payment method added successfully!', 'success');
+                    setTimeout(() => location.reload(), 1500);
                 } else {
-                    alert('Error: ' + data.message);
+                    showCustomToast('Error: ' + data.message, 'error');
                 }
             } catch (error) {
-                alert('Failed to add payment method. Please try again.');
+                showCustomToast('Failed to add payment method. Please try again.', 'error');
                 console.error('Error:', error);
             }
         });
 
-        async function deleteAccount(accountId) {
-            if (!confirm('Are you sure you want to delete this payment method?')) {
-                return;
-            }
+        function deleteAccount(accountId) {
+            showCustomConfirm('Are you sure you want to delete this payment method?', async () => {
+                try {
+                    const response = await fetch('{% url "delete_payment_method" %}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({ id: accountId })
+                    });
 
-            try {
-                const response = await fetch('{% url "delete_payment_method" %}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    },
-                    body: JSON.stringify({ id: accountId })
-                });
+                    const data = await response.json();
 
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    alert('Payment method deleted successfully!');
-                    location.reload();
-                } else {
-                    alert('Error: ' + data.message);
+                    if (data.status === 'success') {
+                        showCustomToast('Payment method deleted successfully!', 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        showCustomToast('Error: ' + data.message, 'error');
+                    }
+                } catch (error) {
+                    showCustomToast('Failed to delete payment method. Please try again.', 'error');
+                    console.error('Error:', error);
                 }
-            } catch (error) {
-                alert('Failed to delete payment method. Please try again.');
-                console.error('Error:', error);
-            }
+            });
         }
 
         async function setPrimaryAccount(accountId) {
@@ -262,13 +260,13 @@
                 const data = await response.json();
 
                 if (data.status === 'success') {
-                    alert('Primary payment method updated!');
-                    location.reload();
+                    showCustomToast('Primary payment method updated!', 'success');
+                    setTimeout(() => location.reload(), 1500);
                 } else {
-                    alert('Error: ' + data.message);
+                    showCustomToast('Error: ' + data.message, 'error');
                 }
             } catch (error) {
-                alert('Failed to update primary payment method. Please try again.');
+                showCustomToast('Failed to update primary payment method. Please try again.', 'error');
                 console.error('Error:', error);
             }
         }

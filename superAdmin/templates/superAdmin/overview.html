@@ -145,14 +145,14 @@
             <div class="actions">
                 <a href="{% url 'approve_doctor' doctor.pk %}" 
                     class="btn approve" 
-                    onclick="return confirm('Approve Dr. {{ doctor.user.first_name }}?')" 
+                    onclick="confirmLink(event, 'Approve Dr. {{ doctor.user.first_name }}?')" 
                     style="text-align:center; text-decoration:none;">
                     Approve
                 </a>
 
                 <a href="{% url 'reject_doctor' doctor.pk %}" 
                     class="btn reject" 
-                    onclick="return confirm('Reject application for Dr. {{ doctor.user.first_name }}?')"
+                    onclick="confirmLink(event, 'Reject application for Dr. {{ doctor.user.first_name }}?')"
                     style="text-align:center; text-decoration:none;">
                     Reject
                 </a>

@@ -95,22 +95,32 @@
 .rating-row {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 16px;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 .rating-badge {
     background: #FEF9C3;
     color: #854D0E;
-    padding: 4px 10px;
-    border-radius: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    align-self: center;
+    line-height: 1;
 }
 
 .review-text {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text-light);
+    font-weight: 500;
+    align-self: center;
+    line-height: 1;
 }
 
 .stat-row {
@@ -823,12 +833,48 @@ a.btn-book-header:hover {
         justify-content: center;
     }
 
-    .btn-header {
-        width: 100%;
-        justify-content: center;
-    }
+  .btn-header {
+    width: 100%;
+    justify-content: center;
+  }
 
-    .tabs-scroll {
-        gap: 20px;
-    }
+  .tabs-scroll {
+    gap: 20px;
+  }
+}
+
+/* --- MAP SECTION --- */
+.map-section-card {
+  margin-bottom: 24px;
+}
+
+.map-container {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e0e0e0;
+}
+
+.hospital-location-map {
+  width: 100%;
+  height: 450px;
+  background: #f9fafb;
+}
+
+/* Leaflet specific style fix */
+.leaflet-container {
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* Responsive map */
+@media (max-width: 900px) {
+  .hospital-location-map {
+    height: 350px;
+  }
+}
+
+@media (max-width: 600px) {
+  .hospital-location-map {
+    height: 300px;
+  }
 }

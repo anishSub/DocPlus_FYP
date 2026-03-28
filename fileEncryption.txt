@@ -1,0 +1,154 @@
+================================================================================
+          COMPLETE GUIDE: SECURING SENSITIVE DOCTOR DOCUMENTS
+          USING PRIVATE AWS S3 BUCKETS AND PRE-SIGNED URLs
+================================================================================
+
+Why do we need this?
+--------------------------------------------------------------------------
+Right now, files like `medical_license_doc`, `degree_certificate`, and `cv` 
+are saved directly to the server's hard drive (/media/ folder). 
+If a bad actor gets access to the server, or guesses the file path, they 
+can download these sensitive files. Furthermore, if you deploy to Render, 
+ephemeral storage means all uploaded files get deleted every time your 
+app restarts.
+
+The Industry Standard Solution:
+--------------------------------------------------------------------------
+Save files to a completely private Amazon S3 bucket using `django-storages`.
+Django will generate a temporary, expiring "Pre-Signed URL" only when an 
+authorized Admin requests to view the file. After X minutes, the URL dies.
+
+Follow these steps to implement this for your DocPlus app.
+
+================================================================================
+                    STEP 1: SET UP THE AWS S3 BUCKET
+================================================================================
+
+1. Go to your AWS Console (console.aws.amazon.com).
+2. Search for "S3" and create a New Bucket.
+   - Name: `docplus-secure-storage` (must be globally unique)
+   - Region: Choose the closest one to your users (e.g., ap-south-1 Mumbai)
+   - Block Public Access: LEAVE CHECKED! (Very important. This keeps files private).
+   - Bucket Versioning: Optional.
+   - Default Encryption: Enable "Server-side encryption with Amazon S3 managed keys (SSE-S3)".
+
+================================================================================
+                   STEP 2: CREATE AN IAM USER FOR DJANGO
+================================================================================
+
+Your Django app needs permission to upload and generate URLs for this bucket.
+
+1. In AWS Console, search for "IAM" -> Users -> Create User.
+2. Name the user `docplus-s3-uploader`.
+3. In Permissions, choose "Attach policies directly" -> Create Policy.
+4. Add the following JSON policy (replace the bucket name if different):
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:DeleteObject"
+            ],
+            "Resource": "arn:aws:s3:::docplus-secure-storage/*"
+        }
+    ]
+}
+
+5. Save the policy as `DocPlusS3Policy` and attach it to your IAM user.
+6. Create Access Keys for this user: Go to User -> Security Credentials -> Create Access Key.
+   ⚠️ SAVE THE ACCESS KEY ID AND SECRET ACCESS KEY IMMEDIATELY!
+
+================================================================================
+                  STEP 3: INSTALL REQUIRED DJANGO PACKAGES
+================================================================================
+
+In your terminal, activate your virtual environment and run:
+
+    pip install django-storages boto3
+    pip freeze > requirements.txt
+
+================================================================================
+                 STEP 4: CONFIGURE settings.py IN DJANGO
+================================================================================
+
+Add the new environment variables to your `.env` file (and later to Render):
+
+    AWS_ACCESS_KEY_ID=your_access_key
+    AWS_SECRET_ACCESS_KEY=your_secret_key
+    AWS_STORAGE_BUCKET_NAME=docplus-secure-storage
+    AWS_S3_REGION_NAME=ap-south-1
+
+In your `myproject/settings.py`, add 'storages' to your apps:
+
+    INSTALLED_APPS = [
+        ...
+        'storages',
+        ...
+    ]
+
+At the bottom of `settings.py`, configure AWS:
+
+    import os
+    
+    # Check if AWS is configured
+    if os.getenv('AWS_STORAGE_BUCKET_NAME'):
+        AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+        AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+        AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
+        
+        # This forces S3 to generate pre-signed URLs instead of public URLs!
+        AWS_S3_FILE_OVERWRITE = False
+        AWS_DEFAULT_ACL = None # Forces bucket policy
+        AWS_QUERYSTRING_AUTH = True # Enables Pre-signed URLs!
+        AWS_QUERYSTRING_EXPIRE = 3600 # URLs expire in 1 hour (3600 seconds)
+        
+        # Set S3 as the default storage class for all FileFields
+        DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+================================================================================
+            STEP 5: HOW TO VIEW FILES SAFELY IN YOUR TEMPLATES
+================================================================================
+
+Since your bucket is entirely private, you cannot just output `doctor.cv.url` 
+and expect it to work forever. 
+
+When you call `doctor.cv.url` inside a template (e.g., in the Admin dashboard), 
+the `boto3` library automatically asks AWS to generate a temporary link.
+
+Example in your Admin Template:
+--------------------------------------------------------------------------
+    {% if doctor.medical_license_doc %}
+        <!-- This automatically generates a 1-hour pre-signed URL -->
+        <a href="{{ doctor.medical_license_doc.url }}" target="_blank">
+            View License Details (Link expires in 1 hour)
+        </a>
+    {% endif %}
+
+Why is this secure?
+If someone copies that URL and tries to send it to a friend, or tries to open 
+it tomorrow, they will see an XML "AccessDenied: Request has expired" error 
+from Amazon. 
+
+Only authorized admins who are currently logged into DocPlus and click the 
+button will trigger Django to generate a fresh, working URL for them.
+
+================================================================================
+                     SUMMARY OF YOUR SECURITY POSTURE
+================================================================================
+
+With the database encryption we added earlier + this AWS S3 setup:
+
+1. Passwords: PBKDF2 SHA256 Hashed (Irreversible)
+2. Database Sensitive Info (Phone, DOB, Chat, Medical Notes): AES Encrypted
+3. Uploaded Files (Licenses, Degrees): Private S3 Bucket, Encrypted at Rest,
+   accessible ONLY via expiring Pre-Signed authentication URLs.
+
+Your application is now incredibly robust against data breaches and follows 
+strict healthcare compliance protocols.
+================================================================================

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Map Test</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-container {
+            border: 2px solid #0092B8;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        #hospital-map {
+            width: 100%;
+            height: 450px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+        }
+        h3 {
+            color: #101828;
+            margin-bottom: 15px;
+        }
+        .info {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hospital Map Test</h1>
+    
+    <div class="info">
+        <h3>Testing Parameters:</h3>
+        <p id="test-params"></p>
+    </div>
+    
+    <div class="test-container">
+        <h3>Test Map (Kathmandu Hospital)</h3>
+        <div id="hospital-map"></div>
+        <div id="status" style="margin-top: 15px; padding: 10px; background: #f9fafb; border-radius: 8px;">
+            Loading...
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        function testMap() {
+            console.log('=== MAP TEST STARTED ===');
+            
+            var mapContainer = document.getElementById('hospital-map');
+            var statusDiv = document.getElementById('status');
+            var paramsDiv = document.getElementById('test-params');
+            
+            if (!mapContainer) {
+                statusDiv.innerHTML = '<span style="color: red;">❌ Map container not found!</span>';
+                return;
+            }
+            
+            statusDiv.innerHTML = '<span style="color: blue;">⏳ Testing Nominatim API...</span>';
+            
+            var hospitalName = "Norvic Hospital";
+            var city = "Kathmandu";
+            var district = "";
+            var address = "Prasuti Griha Marg, Thapathali";
+            
+            paramsDiv.innerText = `Hospital: ${hospitalName}, City: ${city}, District: ${district}, Address: ${address}`;
+            
+            var searchQuery = hospitalName + " " + city + " Nepal";
+            console.log('Search query:', searchQuery);
+            
+            fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(searchQuery), {
+                headers: {
+                    'Accept': 'application/json',
+                    'User-Agent': 'DocPlus-Healthcare-App/1.0'
+                }
+            })
+            .then(function(response) {
+                if (!response.ok) throw new Error('HTTP error: ' + response.status);
+                return response.json();
+            })
+            .then(function(data) {
+                console.log('Nominatim response:', data);
+                
+                if (data && data.length > 0) {
+                    var result = data[0];
+                    var lat = parseFloat(result.lat);
+                    var lon = parseFloat(result.lon);
+                    var displayName = result.display_name;
+                    
+                    statusDiv.innerHTML = '<span style="color: green;">✅ Location found: ' + lat + ', ' + lon + '</span><br><small>' + displayName + '</small>';
+                    
+                    console.log('Initializing map...');
+                    
+                    if (typeof L === 'undefined') {
+                        statusDiv.innerHTML += '<br><span style="color: red;">❌ Leaflet not loaded!</span>';
+                        return;
+                    }
+                    
+                    // Check if already initialized
+                    if (mapContainer._leaflet_id) {
+                        statusDiv.innerHTML += '<br><span style="color: orange;">⚠️ Map already initialized, reusing...</span>';
+                        var map = L.map(mapContainer);
+                        map.setView([lat, lon], 14);
+                    } else {
+                        var map = L.map(mapContainer, {
+                            center: [lat, lon],
+                            zoom: 14
+                        });
+                        statusDiv.innerHTML += '<br><span style="color: green;">✅ Map initialized</span>';
+                    }
+                    
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; OpenStreetMap contributors'
+                    }).addTo(map);
+                    
+                    var redIcon = L.divIcon({
+                        className: 'custom-red-marker',
+                        html: '<div style="background-color: #dc3545; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3);"></div>',
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
+                    });
+                    
+                    L.marker([lat, lon], { icon: redIcon })
+                        .addTo(map)
+                        .bindPopup('<strong>' + hospitalName + '</strong><br/>' + displayName)
+                        .openPopup();
+                    
+                    statusDiv.innerHTML += '<br><span style="color: green;">✅ Map loaded successfully!</span>';
+                    
+                    setTimeout(function() {
+                        if (map && typeof map.invalidateSize === 'function') {
+                            map.invalidateSize();
+                            console.log('Map size invalidated');
+                        }
+                    }, 100);
+                    
+                } else {
+                    statusDiv.innerHTML = '<span style="color: orange;">⚠️ Location not found by Nominatim API</span>';
+                }
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+                statusDiv.innerHTML = '<span style="color: red;">❌ Error: ' + error.message + '</span>';
+            });
+        }
+        
+        // Run test when page loads
+        document.addEventListener('DOMContentLoaded', testMap);
+    </script>
+</body>
+</html>

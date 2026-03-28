@@ -123,9 +123,9 @@
 
 <script>
 function confirmRefund() {
-    if (confirm("Are you sure you want to cancel this appointment and request a refund? This process is immediate and cannot be reversed.")) {
+    showCustomConfirm("Are you sure you want to cancel this appointment and request a refund? This process is immediate and cannot be reversed.", () => {
         document.getElementById('cancelForm').submit();
-    }
+    });
 }
 </script>
 {% endblock %}

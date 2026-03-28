@@ -80,7 +80,17 @@
                     
                     <div class="card-body">
                         <div class="card-main-info">
-                            <h3>{{ hospital.name }}</h3>
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <h3 style="margin:0;">{{ hospital.name }}</h3>
+                                <div class="card-secondary-actions" style="display:flex; gap:8px; flex-shrink:0; margin-left:10px;">
+                                    <span class="action-icon" title="Save Hospital" onclick="event.preventDefault(); toggleFavoriteHospital(this, {{ hospital.id }});">
+                                        <i class="{% if hospital.id in favorited_hospital_ids %}fas{% else %}far{% endif %} fa-heart" {% if hospital.id in favorited_hospital_ids %}style="color:#ef4444;"{% endif %}></i>
+                                    </span>
+                                    <span class="action-icon" title="Share Hospital" onclick="event.preventDefault(); shareHospital('{{ hospital.name }}', '{{ request.scheme }}://{{ request.get_host }}{% url 'hospital_detail' hospital.pk %}');">
+                                        <i class="fas fa-share-alt"></i>
+                                    </span>
+                                </div>
+                            </div>
                             {% if hospital.match_reason %}
                                 <p class="match-reason"><i class="fas fa-check-circle"></i> {{ hospital.match_reason }}</p>
                             {% endif %}
@@ -173,4 +183,79 @@
 
     </div>
 </section>
+
+<script>
+// --- CSRF helper ---
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// --- FAVORITE TOGGLE (AJAX) ---
+function toggleFavoriteHospital(element, hospitalId) {
+    {% if not request.user.is_authenticated %}
+    const nextUrl = "{% url 'login' %}?next=" + encodeURIComponent(window.location.pathname + window.location.search);
+    showCustomToast("Please login as a patient to save favorite hospitals.", "error", "Login Now", nextUrl);
+    return;
+    {% endif %}
+
+    const icon = element.querySelector('i');
+    fetch(`/api/toggle-favorite-hospital/${hospitalId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            if (data.is_favorite) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                icon.style.color = '#ef4444';
+                showCustomToast('Hospital saved to your favorites!', 'success');
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                icon.style.color = '';
+                showCustomToast('Hospital removed from favorites.', 'success');
+            }
+        } else {
+            showCustomToast(data.message || 'Something went wrong.', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error toggling favorite:', error);
+        showCustomToast('Something went wrong while trying to save the hospital.', 'error');
+    });
+}
+
+// --- SHARE HOSPITAL ---
+function shareHospital(name, url) {
+    if (navigator.share) {
+        navigator.share({
+            title: name,
+            text: 'Check out this hospital on DocPlus!',
+            url: url
+        }).catch(err => console.log('Share cancelled:', err));
+    } else {
+        navigator.clipboard.writeText(url).then(() => {
+            showCustomToast('Link copied to clipboard!', 'success');
+        }).catch(() => {
+            showCustomToast('Failed to copy link. Please copy the URL manually.', 'error');
+        });
+    }
+}
+</script>
 {% endblock %}

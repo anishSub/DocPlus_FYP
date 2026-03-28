@@ -339,6 +339,16 @@
 }
 
 /* Identity Section */
+.doc-identity-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.doc-identity {
+    flex: 1;
+}
+
 .doc-identity h3 {
     font-size: 20px;
     font-weight: 600;
@@ -362,10 +372,39 @@
     /* Added separation */
 }
 
+/* Secondary Actions (Heart/Share) */
+.card-secondary-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.action-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background-color: #F3F4F6;
+    color: #4B5563;
+    font-size: 15px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: 1px solid #E5E7EB;
+}
+
+.action-icon:hover {
+    background-color: #0092B8;
+    color: white;
+    border-color: #0092B8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 146, 184, 0.25);
+}
+
 /* Meta Row (Years & Location) */
 .doc-meta-row {
     display: flex;
-    gap: 24px;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -397,7 +436,6 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    /* Increased gap */
 }
 
 .detail-block label {
@@ -454,63 +492,51 @@
 }
 
 
-/* --- FINAL BUTTON STYLES (Unique Classes to Fix Cache) --- */
-.doc-card-btns-final {
+/* --- ACTION BUTTONS (Matching Find Hospital) --- */
+.action-buttons {
     display: flex;
-    /* Row Layout */
-    gap: 12px;
-    margin-top: 15px;
+    gap: 16px;
+    margin-top: 8px;
     width: 100%;
 }
 
-.btn-profile-final {
+.btn-view-profile,
+.btn-book-now {
     flex: 1;
-    padding: 10px;
+    padding: 12px;
     border-radius: 8px;
+    font-size: 16px;
     font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
     cursor: pointer;
-    font-size: 14px;
-    text-decoration: none;
-    transition: all 0.2s ease;
-
-    background-color: white;
-    border: 1px solid #E5E7EB;
-    color: #4B5563;
+    text-align: center;
+    transition: all 0.3s ease;
 }
 
-.btn-profile-final:hover {
-    border-color: #0C4D98;
-    color: #0C4D98;
-    background-color: #F9FAFB;
+/* "View Profile" - Outline to Solid Hover */
+.btn-view-profile {
+    background: white;
+    color: var(--primary);
+    border: 2px solid var(--primary);
 }
 
-.btn-book-final {
-    flex: 1;
-    padding: 10px;
-    border-radius: 8px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    text-decoration: none;
-    transition: all 0.2s ease;
-
-    background: var(--gradient);
-    /* Gradient Book Button */
-    border: none;
+.btn-view-profile:hover {
+    background-color: var(--primary);
     color: white;
+    box-shadow: 0 4px 10px rgba(0, 146, 184, 0.3);
+    transform: translateY(-2px);
 }
 
-.btn-book-final:hover {
+/* "Book Now" - Gradient Button */
+.btn-book-now {
+    color: white;
+    border: none;
+    background: linear-gradient(90deg, #0092B8 0%, #1C398E 100%);
+}
+
+.btn-book-now:hover {
     opacity: 0.9;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(28, 57, 142, 0.3);
 }
 
 /* --- Responsive --- */

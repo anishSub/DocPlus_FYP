@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from find_doctor.models import DoctorProfile
+from encrypted_model_fields.fields import EncryptedTextField
 
 #Reverse	user.appointments.all()	Gets all appointments belonging to that specific User.
 class Appointment(models.Model):
@@ -31,8 +32,8 @@ class Appointment(models.Model):
         return f"{self.start_time.strftime('%I:%M %p')} - {self.end_time.strftime('%I:%M %p')}"
     
     # 3. Medical Info
-    reason = models.TextField()
-    symptoms = models.TextField(blank=True, null=True)
+    reason = EncryptedTextField()
+    symptoms = EncryptedTextField(blank=True, null=True)
     medical_reports = models.FileField(upload_to='medical_reports/', blank=True, null=True)
 
     # 4. Payment & Status
@@ -105,7 +106,7 @@ class ChatMessage(models.Model):
         choices=[('doctor', 'Doctor'), ('patient', 'Patient')]
     )
     sender_name = models.CharField(max_length=255)  # Store name for display
-    message = models.TextField()
+    message = EncryptedTextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
     

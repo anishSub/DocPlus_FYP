@@ -110,7 +110,7 @@ function validateForm() {
     if (currentTab == 1) {
         let hiddenDept = document.getElementById("hiddenDeptField");
         if (hiddenDept.value == "") {
-            alert("Please add at least one department.");
+            showCustomToast("Please add at least one department.", "error");
             valid = false;
         }
     }

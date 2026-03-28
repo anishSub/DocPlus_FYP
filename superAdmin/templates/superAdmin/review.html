@@ -59,7 +59,7 @@
             {% else %}
             <div class="action-buttons">
                 <a href="{% url 'approve_review' 'doctor' review.pk %}" class="btn btn-approve"><i class="fas fa-check"></i> Approve</a>
-                <a href="{% url 'reject_review' 'doctor' review.pk %}" class="btn btn-reject" onclick="return confirm('Are you sure you want to reject this review?')"><i class="fas fa-times"></i> Reject</a>
+                <a href="{% url 'reject_review' 'doctor' review.pk %}" class="btn btn-reject" onclick="confirmLink(event, 'Are you sure you want to reject this review?')"><i class="fas fa-times"></i> Reject</a>
             </div>
             {% endif %}
         </div>
@@ -106,7 +106,7 @@
             {% else %}
             <div class="action-buttons">
                 <a href="{% url 'approve_review' 'hospital' review.pk %}" class="btn btn-approve"><i class="fas fa-check"></i> Approve</a>
-                <a href="{% url 'reject_review' 'hospital' review.pk %}" class="btn btn-reject" onclick="return confirm('Are you sure you want to reject this review?')"><i class="fas fa-times"></i> Reject</a>
+                <a href="{% url 'reject_review' 'hospital' review.pk %}" class="btn btn-reject" onclick="confirmLink(event, 'Are you sure you want to reject this review?')"><i class="fas fa-times"></i> Reject</a>
             </div>
             {% endif %}
         </div>
@@ -153,7 +153,7 @@
             {% else %}
             <div class="action-buttons">
                 <a href="{% url 'approve_review' 'platform' review.pk %}" class="btn btn-approve"><i class="fas fa-check"></i> Approve</a>
-                <a href="{% url 'reject_review' 'platform' review.pk %}" class="btn btn-reject" onclick="return confirm('Are you sure you want to reject this feedback?')"><i class="fas fa-times"></i> Reject</a>
+                <a href="{% url 'reject_review' 'platform' review.pk %}" class="btn btn-reject" onclick="confirmLink(event, 'Are you sure you want to reject this feedback?')"><i class="fas fa-times"></i> Reject</a>
             </div>
             {% endif %}
         </div>

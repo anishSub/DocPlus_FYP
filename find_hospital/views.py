@@ -77,6 +77,11 @@ class FindHospitalView(View):
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
+        # Get IDs of hospitals this patient has favorited (for heart icon state)
+        favorited_hospital_ids = set()
+        if request.user.is_authenticated and hasattr(request.user, 'patient_profile'):
+            favorited_hospital_ids = set(request.user.patient_profile.favorite_hospitals.values_list('id', flat=True))
+
         context = {
             'hospitals': page_obj,
             'total_count': total_count,
@@ -84,6 +89,7 @@ class FindHospitalView(View):
             'city_filter': city_filter,
             'cities': cities,
             'search_type': search_type,
+            'favorited_hospital_ids': favorited_hospital_ids,
         }
         return render(request, 'find_hospital/find_hospital.html', context)
 

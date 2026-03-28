@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'find_doctor/css/find_doctor.css' %}">
+    <link rel="stylesheet" href="{% static 'find_doctor/css/find_doctor.css' %}?v=6">
 {% endblock %}
 
 {% block content %}
@@ -48,10 +48,18 @@
                     </div>
                 
                     <div class="card-body">
-                        <div class="doc-identity">
-                            <h3>Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h3>
-                            <span class="specialty">{{ doctor.specialization }}</span>
-                            <p class="degree">{{ doctor.medical_degree }}</p>
+                        <div class="doc-identity-wrapper">
+                            <div class="doc-identity">
+                                <h3>Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h3>
+                                <span class="specialty">{{ doctor.specialization }}</span>
+                                <p class="degree">{{ doctor.medical_degree }}</p>
+                            </div>
+                            <div class="card-secondary-actions">
+                                <span class="action-icon" title="Save Doctor" onclick="event.preventDefault(); toggleFavorite(this, {{ doctor.id }});">
+                                    <i class="{% if doctor.id in favorited_doctor_ids %}fas{% else %}far{% endif %} fa-heart" {% if doctor.id in favorited_doctor_ids %}style="color: #ef4444;"{% endif %}></i>
+                                </span>
+                                <span class="action-icon" title="Share Profile" onclick="event.preventDefault(); shareProfile('Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}', '{{ request.scheme }}://{{ request.get_host }}{% url 'doctor_detail' doctor.pk %}');"><i class="fas fa-share-alt"></i></span>
+                            </div>
                         </div>
 
                         <div class="doc-meta-row">
@@ -102,13 +110,13 @@
                         </div>
 
                         <div class="action-buttons">
-                            <button class="btn-view-profile">
+                            <span class="btn-view-profile">
                                 <i class="far fa-eye"></i> View Profile
-                            </button>
+                            </span>
                             
-                            <button class="btn-book-now">
+                            <span class="btn-book-now">
                                 <i class="far fa-calendar-check"></i> Book Now
-                            </button>
+                            </span>
                         </div>
                     </div>
                     </div>
@@ -149,4 +157,120 @@
 
     </div>
 </section>
+
+<script>
+    // --- CUSTOM JS TOAST NOTIFICATION ---
+    function showCustomToast(message, type='error', actionText=null, actionUrl=null) {
+        let container = document.getElementById('message-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'message-container';
+            document.body.appendChild(container);
+        }
+
+        const toast = document.createElement('div');
+        toast.className = `custom-toast ${type}`;
+        
+        let iconHtml = type === 'success' ? '<i class="ri-checkbox-circle-line" style="margin-right:8px"></i>' : '<i class="ri-error-warning-line" style="margin-right:8px"></i>';
+        
+        let actionHtml = '';
+        if (actionText && actionUrl) {
+            actionHtml = `<a href="${actionUrl}" style="margin-left: 12px; padding: 4px 10px; background: rgba(255,255,255,0.2); border-radius: 4px; color: inherit; text-decoration: none; font-weight: 600; font-size: 13px;">${actionText}</a>`;
+        }
+
+        toast.innerHTML = `
+            <span style="display: flex; align-items: center;">
+                ${iconHtml}
+                ${message}
+                ${actionHtml}
+            </span>
+            <button class="toast-close" onclick="this.parentElement.remove();">&times;</button>
+        `;
+        
+        container.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                if (toast.parentElement) toast.remove();
+            }, 500);
+        }, 5000);
+    }
+
+    // --- NATIVE WEB SHARE API ---
+    function shareProfile(title, url) {
+        if (navigator.share) {
+            navigator.share({
+                title: title,
+                text: 'Check out this doctor on DocPlus!',
+                url: url
+            }).catch((error) => console.log('Error sharing:', error));
+        } else {
+            // Fallback for desktop browsers without Share API
+            navigator.clipboard.writeText(url).then(() => {
+                showCustomToast("Link copied to clipboard!", "success");
+            }).catch(err => {
+                showCustomToast("Failed to copy link. Please manually copy the URL.", "error");
+            });
+        }
+    }
+    
+    // Helper function to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // --- FAVORITE TOGGLE (AJAX) ---
+    function toggleFavorite(element, doctorId) {
+        {% if not request.user.is_authenticated %}
+        const nextUrl = "{% url 'login' %}?next=" + encodeURIComponent(window.location.pathname + window.location.search);
+        showCustomToast("Please login as a patient to save favorite doctors.", "error", "Login Now", nextUrl);
+        return;
+        {% endif %}
+
+        const icon = element.querySelector('i');
+        
+        fetch(`/api/toggle-favorite-doctor/${doctorId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                if (data.is_favorite) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    icon.style.color = '#ef4444'; // Solid Red
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    icon.style.color = ''; // Revert to outlined
+                }
+            } else {
+                showCustomToast(data.message, "error");
+            }
+        })
+        .catch(error => {
+            console.error('Error toggling favorite:', error);
+            showCustomToast("Something went wrong while trying to save the doctor.", "error");
+        });
+    }
+</script>
+
 {% endblock %}

@@ -15,20 +15,20 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    {% if messages %}
     <div id="message-container">
-        {% for message in messages %}
-            <div class="custom-toast {{ message.tags }}">
-                <span>
-                    {% if message.tags == 'success' %}<i class="ri-checkbox-circle-line" style="margin-right:8px"></i>{% endif %}
-                    {% if message.tags == 'error' %}<i class="ri-error-warning-line" style="margin-right:8px"></i>{% endif %}
-                    {{ message }}
-                </span>
-                <button class="toast-close" onclick="this.parentElement.remove();">&times;</button>
-            </div>
-        {% endfor %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="custom-toast {{ message.tags }}">
+                    <span>
+                        {% if message.tags == 'success' %}<i class="ri-checkbox-circle-line" style="margin-right:8px"></i>{% endif %}
+                        {% if message.tags == 'error' %}<i class="ri-error-warning-line" style="margin-right:8px"></i>{% endif %}
+                        {{ message }}
+                    </span>
+                    <button class="toast-close" onclick="this.parentElement.remove();">&times;</button>
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
-    {% endif %}
 
 
     <header class="header">
@@ -221,6 +221,7 @@
             }, 4000); // 4000ms = 4 seconds
         });
     </script>
+    <script src="{% static 'js/global_toast.js' %}"></script>
 
     {% block extra_js %}
     {% endblock %}

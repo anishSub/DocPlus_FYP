@@ -26,13 +26,19 @@ class User(AbstractUser):
 from django.db import models
 from django.conf import settings
 
+from encrypted_model_fields.fields import EncryptedCharField, EncryptedDateField
+
 class PatientProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='patient_profile')
     
+    # --- Saved Doctors & Hospitals ---
+    favorite_doctors = models.ManyToManyField('find_doctor.DoctorProfile', blank=True, related_name='favorited_by_patients')
+    favorite_hospitals = models.ManyToManyField('find_hospital.Hospital', blank=True, related_name='favorited_by_patients')
+    
     # --- Basic Info ---
     profile_image = models.ImageField(upload_to='patients/profile_pics/', blank=True, null=True)
-    mobile_number = models.CharField(max_length=15, blank=True)
-    date_of_birth = models.DateField(null=True, blank=True)
+    mobile_number = EncryptedCharField(max_length=50, blank=True)
+    date_of_birth = EncryptedDateField(null=True, blank=True)
     
     GENDER_CHOICES = [('M', 'Male'), ('F', 'Female'), ('O', 'Other')]
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True)

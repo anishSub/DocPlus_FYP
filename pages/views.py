@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views import View
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
@@ -128,12 +128,16 @@ class ProfileView(LoginRequiredMixin, View):
         # B. Stats
         total_appts = Appointment.objects.filter(user=user).count()
         
+        # C. Saved Doctors
+        favorite_doctors = profile.favorite_doctors.all() if profile.favorite_doctors.exists() else []
+
         context = {
             'user': user,
             'profile': profile,
             'upcoming_appt': upcoming_appt,
             'recent_appts': recent_appts,
             'total_appts': total_appts,
+            'favorite_doctors': favorite_doctors,
         }
         return render(request, 'profile_view/profile_view.html', context)
 
@@ -208,6 +212,48 @@ class GlobalSearchView(View):
             })
 
         return JsonResponse({
-            'doctors': doctor_results,
             'hospitals': hospital_results
         })
+
+# --- 4. TOGGLE FAVORITE DOCTOR (AJAX) ---
+class ToggleFavoriteDoctorView(View):
+    def post(self, request, doctor_id):
+        if not request.user.is_authenticated:
+            return JsonResponse({'status': 'error', 'message': 'You must be logged in as a patient to save a doctor.'}, status=401)
+            
+        if not hasattr(request.user, 'patient_profile'):
+            return JsonResponse({'status': 'error', 'message': 'Only patients can save doctors.'}, status=403)
+            
+        doctor = get_object_or_404(DoctorProfile, id=doctor_id)
+        profile = request.user.patient_profile
+        
+        if profile.favorite_doctors.filter(id=doctor.id).exists():
+            profile.favorite_doctors.remove(doctor)
+            is_favorite = False
+        else:
+            profile.favorite_doctors.add(doctor)
+            is_favorite = True
+            
+        return JsonResponse({'status': 'success', 'is_favorite': is_favorite})
+
+# --- 5. TOGGLE FAVORITE HOSPITAL (AJAX) ---
+class ToggleFavoriteHospitalView(View):
+    def post(self, request, hospital_id):
+        if not request.user.is_authenticated:
+            return JsonResponse({'status': 'error', 'message': 'You must be logged in as a patient to save a hospital.'}, status=401)
+            
+        if not hasattr(request.user, 'patient_profile'):
+            return JsonResponse({'status': 'error', 'message': 'Only patients can save hospitals.'}, status=403)
+        
+        from find_hospital.models import Hospital
+        hospital = get_object_or_404(Hospital, id=hospital_id)
+        profile = request.user.patient_profile
+        
+        if profile.favorite_hospitals.filter(id=hospital.id).exists():
+            profile.favorite_hospitals.remove(hospital)
+            is_favorite = False
+        else:
+            profile.favorite_hospitals.add(hospital)
+            is_favorite = True
+            
+        return JsonResponse({'status': 'success', 'is_favorite': is_favorite})

@@ -100,12 +100,21 @@ class FindDoctorView(View):
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         
+        # Get favorited doctor IDs for the logged-in patient
+        favorited_doctor_ids = []
+        if request.user.is_authenticated and hasattr(request.user, 'patient_profile'):
+            try:
+                favorited_doctor_ids = list(request.user.patient_profile.favorite_doctors.values_list('id', flat=True))
+            except Exception:
+                pass
+        
         context = {
             'page_obj': page_obj,
             'query': query,
             'total_count': len(doctors) if isinstance(doctors, list) else doctors.count(),
             'search_type': search_type,
             'matched_specialties': matched_specialties,
+            'favorited_doctor_ids': favorited_doctor_ids,
         }
         
         return render(request, 'find_doctor/find_doctor.html', context)

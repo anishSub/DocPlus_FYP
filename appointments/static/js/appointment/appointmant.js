@@ -96,12 +96,12 @@
             const timeSlot = document.getElementById('selectedTimeSlot').value;
             if (!timeSlot) {
                 isValid = false;
-                alert("Please select a time slot.");
+                showCustomToast("Please select a time slot.", "error");
             }
         }
 
         if (!isValid && step !== 2) { // Step 2 has its own alert
-            alert('Please fill in all required fields.');
+            showCustomToast('Please fill in all required fields.', 'error');
         }
         return isValid;
     }

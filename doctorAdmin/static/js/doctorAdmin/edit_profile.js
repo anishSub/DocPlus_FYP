@@ -69,7 +69,7 @@ function addSlot() {
     const start = document.getElementById('new-start').value;
     const end = document.getElementById('new-end').value;
 
-    if(!start || !end) { alert("Please select start and end times"); return; }
+    if(!start || !end) { showCustomToast("Please select start and end times", "error"); return; }
 
     // --- FIX 2: Use Config URL and Config Token ---
     fetch(SCHEDULE_CONFIG.urls.add, {
@@ -87,27 +87,27 @@ function addSlot() {
             document.getElementById('new-start').value = ''; // Clear inputs
             document.getElementById('new-end').value = '';
         } else {
-            alert("Error adding slot: " + data.message);
+            showCustomToast("Error adding slot: " + data.message, "error");
         }
     });
 }
 
 // 4. Delete Slot Logic
 function deleteSlot(id) {
-    if(!confirm("Remove this time slot?")) return;
-
-    // --- FIX 3: Use Config URL and Config Token ---
-    fetch(SCHEDULE_CONFIG.urls.delete, {
-        method: "POST",
-        headers: { 
-            "Content-Type": "application/json", 
-            "X-CSRFToken": SCHEDULE_CONFIG.csrfToken 
-        },
-        body: JSON.stringify({ id: id })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.status === 'success') loadDay(currentDay);
+    showCustomConfirm("Remove this time slot?", () => {
+        // --- FIX 3: Use Config URL and Config Token ---
+        fetch(SCHEDULE_CONFIG.urls.delete, {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json", 
+                "X-CSRFToken": SCHEDULE_CONFIG.csrfToken 
+            },
+            body: JSON.stringify({ id: id })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'success') loadDay(currentDay);
+        });
     });
 }
 

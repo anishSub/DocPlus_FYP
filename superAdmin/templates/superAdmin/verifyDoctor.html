@@ -72,11 +72,11 @@
             </div>
 
             <div class="actions-footer">
-                <a href="{% url 'approve_doctor' doctor.pk %}" class="btn btn-approve" onclick="return confirm('Are you sure you want to approve this doctor?');">
+                <a href="{% url 'approve_doctor' doctor.pk %}" class="btn btn-approve" onclick="confirmLink(event, 'Are you sure you want to approve this doctor?');">
                     <i class="fas fa-check-circle"></i> Approve & Activate
                 </a>
 
-                <a href="{% url 'reject_doctor' doctor.pk %}" class="btn btn-reject" onclick="return confirm('Are you sure you want to REJECT and DELETE this application?');">
+                <a href="{% url 'reject_doctor' doctor.pk %}" class="btn btn-reject" onclick="confirmLink(event, 'Are you sure you want to REJECT and DELETE this application?');">
                     <i class="fas fa-times-circle"></i> Reject Application
                 </a>
 

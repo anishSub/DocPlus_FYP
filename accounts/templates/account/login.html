@@ -82,7 +82,7 @@
                             const email = document.getElementById('login_email').value;
                             const password = document.getElementById('login_password').value;
                             if(!email || !password) {
-                                alert('Please fill in both email and password.');
+                                showCustomToast('Please fill in both email and password.', 'error');
                                 return false;
                             }
                             return true;
